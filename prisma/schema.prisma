@@ -1,0 +1,294 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Seller {
+  id            BigInt              @id @default(autoincrement())
+  domain        String?
+  name          String?
+  logo          String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
+  discountRules DiscountRule[]
+  productFeeds  ProductFeed[]
+  offers        Offer[]
+  categories    Category[]
+  items         SellerItem[]
+  credentials   SellerCredentials[]
+}
+
+model SellerCredentials {
+  id             BigInt   @id @default(autoincrement())
+  seller         Seller   @relation(fields: [sellerId], references: [id])
+  key            String   @default(uuid())
+  secret         String   @default(uuid())
+  token          String
+  sellerId       BigInt
+  expirationDate DateTime
+  isValid        Boolean  @default(true)
+}
+
+model Brand {
+  id         BigInt      @id @default(autoincrement())
+  name       String
+  normalized String
+  itemGroups ItemGroup[]
+
+  @@unique([name, normalized])
+}
+
+model DiscountRule {
+  id                BigInt                 @id @default(autoincrement())
+  seller            Seller                 @relation(fields: [sellerId], references: [id])
+  locale            Locale                 @relation(fields: [localeId], references: [id])
+  amount            Decimal
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @default(now()) @updatedAt
+  categoryDiscounts CategoryDiscountRule[] // Link to category-specific discounts
+  sellerId          BigInt
+  localeId          BigInt
+
+  @@unique([sellerId, localeId])
+}
+
+model CategoryDiscountRule {
+  id             BigInt       @id @default(autoincrement())
+  discountRule   DiscountRule @relation(fields: [discountRuleId], references: [id])
+  discountRuleId BigInt
+  amount         Decimal
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  category       Category     @relation(fields: [categoryId], references: [id])
+  categoryId     BigInt
+  offers         Offer[]
+
+  @@index([discountRuleId, categoryId])
+}
+
+model ProductFeed {
+  id         BigInt       @id @default(autoincrement())
+  link       String //where the product feed is hosted
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  seller     Seller       @relation(fields: [sellerId], references: [id])
+  sellerId   BigInt
+  locale     Locale       @relation(fields: [localeId], references: [id])
+  localeId   BigInt
+  SellerItem SellerItem[]
+
+  @@index([sellerId, localeId])
+}
+
+model Locale {
+  id               BigInt            @id @default(autoincrement())
+  code             String
+  currency         String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  discounts        DiscountRule[]
+  productFeeds     ProductFeed[]
+  offers           Offer[]
+  categories       Category[]
+  itemDescriptions ItemDescription[]
+  itemSizes        ItemSize[]
+}
+
+model Category {
+  id            BigInt                 @id @default(autoincrement())
+  name          String
+  path          String
+  breadCrumbs   String[]
+  parent        Category?              @relation("ParentChild", fields: [parentId], references: [id])
+  parentId      BigInt?
+  seller        Seller                 @relation(fields: [sellerId], references: [id])
+  locale        Locale                 @relation(fields: [localeId], references: [id])
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  discountRules CategoryDiscountRule[]
+  children      Category[]             @relation("ParentChild")
+  items         ItemDescription[]
+  sellerId      BigInt
+  localeId      BigInt
+
+  @@index([sellerId, localeId])
+}
+
+model ItemGroup {
+  id              BigInt            @id @default(autoincrement())
+  sku             String
+  brand           Brand             @relation(fields: [brandId], references: [id])
+  name            String
+  gender          String
+  ageGroup        String
+  image           String
+  images          String[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  itemDescription ItemDescription[]
+  brandId         BigInt
+  items           Item[]
+
+  @@index([brandId, sku, gender, ageGroup])
+}
+
+model Item {
+  id          BigInt       @id @default(autoincrement())
+  itemGroup   ItemGroup    @relation(fields: [itemGroupId], references: [id])
+  itemGroupId BigInt
+  sku         String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  sizes       ItemSize[]
+  sellers     SellerItem[]
+  offers      Offer[]
+}
+
+model ItemSize {
+  id           BigInt     @id @default(autoincrement())
+  sizeOption   SizeOption @relation(fields: [sizeOptionId], references: [id])
+  sizeOptionId BigInt
+  item         Item       @relation(fields: [itemId], references: [id])
+  itemId       BigInt
+  locale       Locale     @relation(fields: [localeId], references: [id])
+  localeId     BigInt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model SellerItem {
+  id            BigInt      @id @default(autoincrement())
+  item          Item        @relation(fields: [itemId], references: [id])
+  itemId        BigInt
+  seller        Seller      @relation(fields: [sellerId], references: [id])
+  sellerId      BigInt
+  productFeed   ProductFeed @relation(fields: [productFeedId], references: [id])
+  productFeedId BigInt
+  availability  String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model SizeOption {
+  id         BigInt     @id @default(autoincrement())
+  sizeSystem String
+  sizeType   String
+  size       String
+  items      ItemSize[]
+}
+
+model ItemDescription {
+  id          BigInt    @id @default(autoincrement())
+  itemGroup   ItemGroup @relation(fields: [itemGroupId], references: [id])
+  title       String
+  description String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  BigInt
+  color       String
+  material    String
+  pattern     String
+  price       Decimal
+  salePrice   Decimal
+  currency    String
+  link        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  itemGroupId BigInt
+  locale      Locale    @relation(fields: [localeId], references: [id])
+  localeId    BigInt
+
+  @@unique([itemGroupId, localeId])
+}
+
+model Offer {
+  id                BigInt                @id @default(autoincrement())
+  seller            Seller                @relation(fields: [sellerId], references: [id])
+  locale            Locale                @relation(fields: [localeId], references: [id])
+  reference         String
+  condition         String
+  availableDate     DateTime              @default(now())
+  expirationDate    DateTime
+  item              Item                  @relation(fields: [itemId], references: [id])
+  itemId            BigInt
+  appliedDiscount   CategoryDiscountRule? @relation(fields: [appliedDiscountId], references: [id])
+  appliedDiscountId BigInt?
+  price             Decimal
+  shipAddress       String
+  archived          Boolean               @default(false)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  orders            Order[]
+  sellerId          BigInt
+  localeId          BigInt
+
+  @@index([sellerId, localeId, itemId])
+}
+
+model Order {
+  id             BigInt          @id @default(autoincrement())
+  offer          Offer           @relation(fields: [offerId], references: [id])
+  offerId        BigInt
+  reference      String?
+  email          String //buyer email address for contacting them regarding the shipment
+  shipName       String
+  shipAddress    String
+  subTotal       Decimal
+  tax            Decimal
+  shipping       Decimal
+  total          Decimal
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  transportOrder TransportOrder?
+  status         OrderStatus[]
+  payment        Payment?
+
+  @@index([offerId])
+}
+
+model TransportOrder {
+  id          BigInt        @id @default(autoincrement())
+  order       Order         @relation(fields: [orderId], references: [id])
+  orderId     BigInt        @unique
+  partner     String //for multiple transport partners
+  pickDate    DateTime
+  deliverDate DateTime
+  reference   String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  status      OrderStatus[]
+}
+
+model OrderStatus {
+  id               BigInt         @id @default(autoincrement())
+  order            Order          @relation(fields: [orderId], references: [id])
+  orderId          BigInt
+  transport        TransportOrder @relation(fields: [transportOrderId], references: [id])
+  transportOrderId BigInt
+  deliveryDate     DateTime
+  status           String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Payment {
+  id        BigInt   @id @default(autoincrement())
+  reference String
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   BigInt   @unique
+  method    String
+  amount    Decimal
+  currency  String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
