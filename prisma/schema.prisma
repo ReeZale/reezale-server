@@ -77,15 +77,15 @@ model CategoryDiscountRule {
 }
 
 model ProductFeed {
-  id         BigInt       @id @default(autoincrement())
-  link       String //where the product feed is hosted
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  seller     Seller       @relation(fields: [sellerId], references: [id])
-  sellerId   BigInt
-  locale     Locale       @relation(fields: [localeId], references: [id])
-  localeId   BigInt
-  SellerItem SellerItem[]
+  id          BigInt       @id @default(autoincrement())
+  link        String //where the product feed is hosted
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  seller      Seller       @relation(fields: [sellerId], references: [id])
+  sellerId    BigInt
+  locale      Locale       @relation(fields: [localeId], references: [id])
+  localeId    BigInt
+  sellerItems SellerItem[]
 
   @@index([sellerId, localeId])
 }
@@ -139,6 +139,7 @@ model ItemGroup {
   brandId         BigInt
   items           Item[]
 
+  @@unique([brandId, sku])
   @@index([brandId, sku, gender, ageGroup])
 }
 
@@ -152,6 +153,8 @@ model Item {
   sizes       ItemSize[]
   sellers     SellerItem[]
   offers      Offer[]
+
+  @@unique([itemGroupId, sku])
 }
 
 model ItemSize {
@@ -164,6 +167,8 @@ model ItemSize {
   localeId     BigInt
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@unique([itemId, sizeOptionId, localeId])
 }
 
 model SellerItem {
@@ -177,6 +182,8 @@ model SellerItem {
   availability  String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  @@unique([itemId, sellerId])
 }
 
 model SizeOption {
@@ -185,6 +192,8 @@ model SizeOption {
   sizeType   String
   size       String
   items      ItemSize[]
+
+  @@unique([sizeSystem, sizeType, size])
 }
 
 model ItemDescription {
@@ -231,6 +240,7 @@ model Offer {
   sellerId          BigInt
   localeId          BigInt
 
+  @@unique([reference, sellerId, itemId])
   @@index([sellerId, localeId, itemId])
 }
 

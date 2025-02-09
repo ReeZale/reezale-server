@@ -1,11 +1,12 @@
 const express = require("express");
-const dotenv = require("dotenv"); // Load environment variables
+const dotenv = require("dotenv").config(); // Load environment variables
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
 const ginaTricot = require("./data/store/gina-tricot");
 
-dotenv.config();
+console.log(process.env.PORT); // 4000
+console.log(process.env.FEED_DIRECTORY); // "/path/to/feeds"
 
 const app = express();
 
@@ -34,7 +35,7 @@ app.use("/api/v1", router);
 
 (async () => {
   try {
-    await ginaTricot();
+    //await ginaTricot();
   } catch (error) {
     console.error("Error during initialization:", error);
     process.exit(1); // Exit the process on failure
