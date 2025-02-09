@@ -1,20 +1,40 @@
 const express = require("express");
-const dotenv = require("dotenv").config(); // Load environment variables
+require("dotenv").config(); // Load environment variables
+const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
-const ginaTricot = require("./data/store/gina-tricot");
-
-console.log(process.env.PORT); // 4000
-console.log(process.env.FEED_DIRECTORY); // "/path/to/feeds"
 
 const app = express();
+
+async function initializePrisma() {
+  try {
+    await prisma.$connect();
+    console.log("✅ Prisma connected to the database.");
+  } catch (error) {
+    console.error("❌ Prisma connection failed:", error);
+    process.exit(1); // Stop app if Prisma can't connect
+  }
+}
+
+// ✅ Gracefully disconnect Prisma on shutdown
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  console.log("🔌 Prisma disconnected.");
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  console.log("🔌 Prisma disconnected.");
+  process.exit(0);
+});
 
 // Enable CORS for all routes
 app.use(
   cors({
-    origin: "http://localhost:3000", // ✅ Use a specific origin
-    credentials: true,
+    origin: "*", // ✅ Use a specific origin
+    credentials: false,
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
   })
@@ -32,15 +52,6 @@ BigInt.prototype.toJSON = function () {
 
 // Use the centralized router
 app.use("/api/v1", router);
-
-(async () => {
-  try {
-    //await ginaTricot();
-  } catch (error) {
-    console.error("Error during initialization:", error);
-    process.exit(1); // Exit the process on failure
-  }
-})();
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
