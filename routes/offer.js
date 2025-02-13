@@ -37,9 +37,9 @@ router.get("/", async (req, res) => {
           select: {
             id: true, // Item ID
             offers: {
-              where: { sellerId: seller.id }, // ✅ Ensure only seller's offers are included
-              orderBy: { price: "asc" }, // ✅ Get lowest offer price
-              take: 1, // ✅ Only select the cheapest offer
+              where: { sellerId: seller.id },
+              orderBy: { price: "asc" },
+              take: 1,
               select: { price: true },
             },
           },
@@ -77,7 +77,7 @@ router.get("/", async (req, res) => {
 
     return res.status(200).json({ data: mappedData });
   } catch (error) {
-    console.log("❌ Error:", error);
+    console.log("Error:", error);
     return res.status(500).json({ error: "Uncaught internal error" });
   }
 });
@@ -85,13 +85,15 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const seller = req.seller;
   const {
+    id,
     locale,
     reference,
+    offerType,
     condition,
     availableDate,
     expirationDate,
-    id,
     price,
+    sellerProfileId,
     shipAddress,
   } = req.body;
 
@@ -149,6 +151,7 @@ router.post("/", async (req, res) => {
             name: offerItem.title,
             gender: offerItem.gender,
             ageGroup: offerItem.age_group,
+            sellerId: seller.id,
             image: offerItem.image_link,
             images: offerItem.additional_image_link,
           },
@@ -161,11 +164,7 @@ router.post("/", async (req, res) => {
           existingLocale.id
         );
 
-        console.log("Categories created", categories);
-
-        console.log("Item group created", itemGroup);
-
-        const itemDescription = await prisma.itemDescription.upsert({
+        await prisma.itemDescription.upsert({
           where: {
             itemGroupId_localeId: {
               itemGroupId: itemGroup.id,
@@ -199,8 +198,20 @@ router.post("/", async (req, res) => {
           create: {
             itemGroupId: itemGroup.id,
             sku: offerItem.id,
+            gtin: offerItem.gtin || null,
+            mpn: offerItem.mpn || null,
+            sellerId: seller.id,
+            shipWeight: offerItem.shipping_weight,
+            shipLength: offerItem.shipping_length,
+            shipWidth: offerItem.shipping_width,
+            shipHeight: offerItem.shipping_height,
           },
-          update: {},
+          update: {
+            shipWeight: offerItem.shipping_weight,
+            shipLength: offerItem.shipping_length,
+            shipWidth: offerItem.shipping_width,
+            shipHeight: offerItem.shipping_height,
+          },
         });
 
         console.log("Item", item);
@@ -252,9 +263,11 @@ router.post("/", async (req, res) => {
           },
           create: {
             sellerId: seller.id,
+            sellerProfileId: sellerProfileId,
             localeId: existingLocale.id,
+            offerType: offerType || "business",
             reference: reference,
-            condition: condition,
+            condition: condition || "new",
             availableDate: availableDate,
             expirationDate: expirationDate,
             itemId: item.id,
@@ -280,10 +293,6 @@ router.post("/", async (req, res) => {
     console.log("Error", error);
     return res.status(500).json({ error: "Uncaught internal error" });
   }
-});
-
-router.put("/", async (req, res) => {
-  const seller = req.seller;
 });
 
 module.exports = router;

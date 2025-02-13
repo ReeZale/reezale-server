@@ -24,19 +24,47 @@ model Seller {
   productFeeds  ProductFeed[]
   offers        Offer[]
   categories    Category[]
-  items         SellerItem[]
   credentials   SellerCredentials[]
+  itemGroups    ItemGroup[]
+  items         Item[]
+  pageConfigs   PageConfig[]
+  images        Image[]
+}
+
+model PageConfig {
+  id        BigInt   @id @default(autoincrement())
+  image     Image    @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  imageId   BigInt
+  tagline   String?
+  locale    Locale   @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId  BigInt
+  seller    Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId  BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model SellerCredentials {
   id             BigInt   @id @default(autoincrement())
-  seller         Seller   @relation(fields: [sellerId], references: [id])
+  seller         Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   key            String   @default(uuid())
   secret         String   @default(uuid())
   token          String
   sellerId       BigInt
   expirationDate DateTime
   isValid        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updateAt       DateTime @default(now()) @updatedAt
+}
+
+model Image {
+  id          BigInt       @id @default(autoincrement())
+  seller      Seller       @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId    BigInt
+  url         String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  pageConfigs PageConfig[]
 }
 
 model Brand {
@@ -50,8 +78,8 @@ model Brand {
 
 model DiscountRule {
   id                BigInt                 @id @default(autoincrement())
-  seller            Seller                 @relation(fields: [sellerId], references: [id])
-  locale            Locale                 @relation(fields: [localeId], references: [id])
+  seller            Seller                 @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locale            Locale                 @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   amount            Decimal
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @default(now()) @updatedAt
@@ -64,12 +92,12 @@ model DiscountRule {
 
 model CategoryDiscountRule {
   id             BigInt       @id @default(autoincrement())
-  discountRule   DiscountRule @relation(fields: [discountRuleId], references: [id])
+  discountRule   DiscountRule @relation(fields: [discountRuleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   discountRuleId BigInt
   amount         Decimal
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
-  category       Category     @relation(fields: [categoryId], references: [id])
+  category       Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId     BigInt
   offers         Offer[]
 
@@ -77,15 +105,14 @@ model CategoryDiscountRule {
 }
 
 model ProductFeed {
-  id          BigInt       @id @default(autoincrement())
-  link        String //where the product feed is hosted
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  seller      Seller       @relation(fields: [sellerId], references: [id])
-  sellerId    BigInt
-  locale      Locale       @relation(fields: [localeId], references: [id])
-  localeId    BigInt
-  sellerItems SellerItem[]
+  id        BigInt   @id @default(autoincrement())
+  link      String //where the product feed is hosted
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  seller    Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId  BigInt
+  locale    Locale   @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId  BigInt
 
   @@index([sellerId, localeId])
 }
@@ -102,6 +129,7 @@ model Locale {
   categories       Category[]
   itemDescriptions ItemDescription[]
   itemSizes        ItemSize[]
+  pageConfigs      PageConfig[]
 }
 
 model Category {
@@ -109,10 +137,10 @@ model Category {
   name          String
   path          String
   breadCrumbs   String[]
-  parent        Category?              @relation("ParentChild", fields: [parentId], references: [id])
+  parent        Category?              @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   parentId      BigInt?
-  seller        Seller                 @relation(fields: [sellerId], references: [id])
-  locale        Locale                 @relation(fields: [localeId], references: [id])
+  seller        Seller                 @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locale        Locale                 @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt     DateTime               @default(now())
   updatedAt     DateTime               @updatedAt
   discountRules CategoryDiscountRule[]
@@ -127,12 +155,15 @@ model Category {
 model ItemGroup {
   id              BigInt            @id @default(autoincrement())
   sku             String
-  brand           Brand             @relation(fields: [brandId], references: [id])
+  brand           Brand             @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name            String
-  gender          String
-  ageGroup        String
+  gender          Gender
+  ageGroup        AgeGroup
+  sizeType        SizeType
   image           String
   images          String[]
+  seller          Seller?           @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId        BigInt?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   itemDescription ItemDescription[]
@@ -140,18 +171,46 @@ model ItemGroup {
   items           Item[]
 
   @@unique([brandId, sku])
-  @@index([brandId, sku, gender, ageGroup])
+  @@index([brandId, sku, gender, ageGroup, sizeType])
+}
+
+enum Gender {
+  male
+  female
+  unisex
+}
+
+enum AgeGroup {
+  adult
+  teen
+  kids
+  infant
+  toddler
+}
+
+enum SizeType {
+  regular
+  petite
+  plus
+  tall
 }
 
 model Item {
-  id          BigInt       @id @default(autoincrement())
-  itemGroup   ItemGroup    @relation(fields: [itemGroupId], references: [id])
+  id          BigInt     @id @default(autoincrement())
+  itemGroup   ItemGroup  @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   itemGroupId BigInt
   sku         String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  gtin        String?
+  mpn         String?
+  seller      Seller?    @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId    BigInt?
+  shipWeight  String?
+  shipLength  String?
+  shipWidth   String?
+  shipHeight  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   sizes       ItemSize[]
-  sellers     SellerItem[]
   offers      Offer[]
 
   @@unique([itemGroupId, sku])
@@ -159,11 +218,11 @@ model Item {
 
 model ItemSize {
   id           BigInt     @id @default(autoincrement())
-  sizeOption   SizeOption @relation(fields: [sizeOptionId], references: [id])
+  sizeOption   SizeOption @relation(fields: [sizeOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sizeOptionId BigInt
-  item         Item       @relation(fields: [itemId], references: [id])
+  item         Item       @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   itemId       BigInt
-  locale       Locale     @relation(fields: [localeId], references: [id])
+  locale       Locale     @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   localeId     BigInt
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -171,25 +230,10 @@ model ItemSize {
   @@unique([itemId, sizeOptionId, localeId])
 }
 
-model SellerItem {
-  id            BigInt      @id @default(autoincrement())
-  item          Item        @relation(fields: [itemId], references: [id])
-  itemId        BigInt
-  seller        Seller      @relation(fields: [sellerId], references: [id])
-  sellerId      BigInt
-  productFeed   ProductFeed @relation(fields: [productFeedId], references: [id])
-  productFeedId BigInt
-  availability  String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@unique([itemId, sellerId])
-}
-
 model SizeOption {
   id         BigInt     @id @default(autoincrement())
   sizeSystem String
-  sizeType   String
+  sizeType   SizeType   @default(regular)
   size       String
   items      ItemSize[]
 
@@ -198,10 +242,10 @@ model SizeOption {
 
 model ItemDescription {
   id          BigInt    @id @default(autoincrement())
-  itemGroup   ItemGroup @relation(fields: [itemGroupId], references: [id])
+  itemGroup   ItemGroup @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   title       String
   description String
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId  BigInt
   color       String
   material    String
@@ -213,7 +257,7 @@ model ItemDescription {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   itemGroupId BigInt
-  locale      Locale    @relation(fields: [localeId], references: [id])
+  locale      Locale    @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   localeId    BigInt
 
   @@unique([itemGroupId, localeId])
@@ -221,79 +265,171 @@ model ItemDescription {
 
 model Offer {
   id                BigInt                @id @default(autoincrement())
-  seller            Seller                @relation(fields: [sellerId], references: [id])
-  locale            Locale                @relation(fields: [localeId], references: [id])
+  seller            Seller                @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId          BigInt
+  sellerProfile     SellerProfile?        @relation(fields: [sellerProfileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerProfileId   BigInt?
+  offerType         OfferType             @default(business)
   reference         String
-  condition         String
+  condition         Condition?
   availableDate     DateTime              @default(now())
   expirationDate    DateTime
-  item              Item                  @relation(fields: [itemId], references: [id])
+  item              Item                  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   itemId            BigInt
-  appliedDiscount   CategoryDiscountRule? @relation(fields: [appliedDiscountId], references: [id])
+  appliedDiscount   CategoryDiscountRule? @relation(fields: [appliedDiscountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   appliedDiscountId BigInt?
   price             Decimal
-  shipAddress       String
+  currency          String?
+  locale            Locale                @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId          BigInt
+  shipAddress       String? //Depricate and replace with seller profile whcih contains the information necessary to create a transport order. Can provide anonimity to the seller in case of a return
   archived          Boolean               @default(false)
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
   orders            Order[]
-  sellerId          BigInt
-  localeId          BigInt
 
   @@unique([reference, sellerId, itemId])
   @@index([sellerId, localeId, itemId])
 }
 
+enum OfferType {
+  private
+  business
+}
+
+enum Condition {
+  new
+  used
+  refurbished
+}
+
+model SellerProfile {
+  id        BigInt   @id @default(autoincrement())
+  name      String?
+  email     String?  @unique
+  phone     String?  @unique
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  addressId BigInt?
+  member    Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade) // Optional link to a registered member
+  memberId  BigInt?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  offers    Offer[]
+}
+
 model Order {
-  id             BigInt          @id @default(autoincrement())
-  offer          Offer           @relation(fields: [offerId], references: [id])
-  offerId        BigInt
-  reference      String?
-  email          String //buyer email address for contacting them regarding the shipment
-  shipName       String
-  shipAddress    String
-  subTotal       Decimal
-  tax            Decimal
-  shipping       Decimal
-  total          Decimal
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  transportOrder TransportOrder?
-  status         OrderStatus[]
-  payment        Payment?
+  id                BigInt             @id @default(autoincrement())
+  offer             Offer              @relation(fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  offerId           BigInt
+  reference         String?
+  purchaseProfile   PurchaseProfile    @relation(fields: [purchaseProfileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  purchaseProfileId BigInt
+  currency          String
+  subTotal          Decimal
+  tax               Decimal
+  shipping          Decimal
+  total             Decimal
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  payment           Payment?
+  transportRequest  TransportRequest[]
 
   @@index([offerId])
 }
 
-model TransportOrder {
-  id          BigInt        @id @default(autoincrement())
-  order       Order         @relation(fields: [orderId], references: [id])
-  orderId     BigInt        @unique
-  partner     String //for multiple transport partners
-  pickDate    DateTime
-  deliverDate DateTime
-  reference   String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  status      OrderStatus[]
+model PurchaseProfile {
+  id        BigInt   @id @default(autoincrement())
+  name      String
+  email     String?  @unique
+  phone     String?  @unique
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  addressId BigInt?
+  member    Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade) // Optional link to a registered member
+  memberId  BigInt?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
 }
 
-model OrderStatus {
-  id               BigInt         @id @default(autoincrement())
-  order            Order          @relation(fields: [orderId], references: [id])
-  orderId          BigInt
-  transport        TransportOrder @relation(fields: [transportOrderId], references: [id])
-  transportOrderId BigInt
-  deliveryDate     DateTime
-  status           String
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+model Member {
+  id               BigInt            @id @default(autoincrement())
+  email            String            @unique
+  phone            String
+  verified         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  purchaseProfiles PurchaseProfile[] // Can be linked to multiple purchases
+  sellerProfiles   SellerProfile[]
+}
+
+model Address {
+  id               BigInt            @id @default(autoincrement())
+  street           String
+  unit             String? //Apartment or office unit
+  postCode         String
+  city             String
+  country          Country           @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId        BigInt
+  formattedAddress String            @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  purchaseProfiles PurchaseProfile[]
+  sellerProfiles   SellerProfile[]
+}
+
+model TransportRequest {
+  id                   BigInt          @id @default(autoincrement())
+  order                Order           @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderId              BigInt
+  type                 String //shipment request, service-point request, return request
+  method               String //shipment method: see easy bird documentation
+  sender               Json
+  receiver             Json
+  parcels              Json[]
+  attributes           Json?
+  deliveryDay          DateTime
+  release              Boolean?        @default(true)
+  deliveryRequirements Json?
+  transportOrder       TransportOrder?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model TransportOrder {
+  id                 BigInt           @id @default(autoincrement())
+  transportRequeest  TransportRequest @relation(fields: [trasnportRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  trasnportRequestId BigInt           @unique
+  trackingCode       String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  deliveries         Delivery[]
+}
+
+model Delivery {
+  id                   BigInt         @id @default(autoincrement())
+  transportOrder       TransportOrder @relation(fields: [transportOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transportOrderId     BigInt
+  deliveryId           String
+  method               String
+  trackingId           String
+  deliveryDate         DateTime
+  returnCode           String
+  attributes           Json
+  latestDeliveryDate   DateTime
+  earliestDeliveryDate DateTime
+  label                String
+  senderTrackingUrl    String
+  receiverTrackingUrl  String
+  status               Json
+  statusHistory        Json[]
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
 }
 
 model Payment {
   id        BigInt   @id @default(autoincrement())
   reference String
-  order     Order    @relation(fields: [orderId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   orderId   BigInt   @unique
   method    String
   amount    Decimal
@@ -301,4 +437,42 @@ model Payment {
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        BigInt    @id @default(autoincrement())
+  name      String
+  legalName String
+  address   String
+  city      String
+  postCode  String
+  country   Country   @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId BigInt
+  vat       String?
+  orgNumber String?
+  website   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  services  Service[]
+}
+
+model Service {
+  id          BigInt   @id @default(autoincrement())
+  name        String
+  description String
+  partner     Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  partnerId   BigInt
+  baseUrl     String
+  token       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Country {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @unique
+  name      String
+  currency  String
+  partners  Partner[]
+  addresses Address[]
 }

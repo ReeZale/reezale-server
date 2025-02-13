@@ -4,6 +4,7 @@ const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
+const ginaTricot = require("./data/store/gina-tricot");
 
 const app = express();
 
@@ -49,6 +50,15 @@ app.use(cookieParser());
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
+
+(async () => {
+  try {
+    //await ginaTricot();
+    console.log("✅ ginaTricot data loaded successfully");
+  } catch (error) {
+    console.error("❌ Error loading ginaTricot data:", error);
+  }
+})();
 
 // Use the centralized router
 app.use("/api/v1", router);

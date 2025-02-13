@@ -32,6 +32,10 @@
       <g:size>32</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751034</g:id>
@@ -62,6 +66,10 @@
       <g:size>34</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751036</g:id>
@@ -92,6 +100,10 @@
       <g:size>36</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751038</g:id>
@@ -122,6 +134,10 @@
       <g:size>38</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751040</g:id>
@@ -152,6 +168,10 @@
       <g:size>40</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751042</g:id>
@@ -182,6 +202,10 @@
       <g:size>42</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>245485751044</g:id>
@@ -212,6 +236,10 @@
       <g:size>44</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305032</g:id>
@@ -242,6 +270,10 @@
       <g:size>32</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305034</g:id>
@@ -272,6 +304,10 @@
       <g:size>34</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305036</g:id>
@@ -302,6 +338,10 @@
       <g:size>36</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305038</g:id>
@@ -332,6 +372,10 @@
       <g:size>38</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305040</g:id>
@@ -362,6 +406,10 @@
       <g:size>40</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305042</g:id>
@@ -392,6 +440,10 @@
       <g:size>42</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>214895305044</g:id>
@@ -422,6 +474,10 @@
       <g:size>44</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000032</g:id>
@@ -450,6 +506,10 @@
       <g:size>32</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000034</g:id>
@@ -478,6 +538,10 @@
       <g:size>34</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000036</g:id>
@@ -506,6 +570,10 @@
       <g:size>36</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000038</g:id>
@@ -534,6 +602,10 @@
       <g:size>38</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000040</g:id>
@@ -562,6 +634,10 @@
       <g:size>40</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000042</g:id>
@@ -590,6 +666,10 @@
       <g:size>42</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000044</g:id>
@@ -618,6 +698,10 @@
       <g:size>44</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000046</g:id>
@@ -646,6 +730,10 @@
       <g:size>46</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>204899000048</g:id>
@@ -674,6 +762,10 @@
       <g:size>48</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
       <g:id>250531420102</g:id>
@@ -702,9 +794,13 @@
       <g:size>XS</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
-      <g:id>250531420102</g:id>
+      <g:id>250531420103</g:id>
       <g:item_group_id>250531420</g:item_group_id>
       <g:title>Knitted shaped blazer</g:title>
       <g:description>Figursydd kofta med guldknappar framtill. Koftan är vit och har oversize fit. Den har lång ärm, v-ringning och intagen midja.</g:description>
@@ -720,8 +816,8 @@
       <g:availability>out_of_stock</g:availability>
       <g:price>599.95 SEK</g:price>
       <g:sale_price>599.95 SEK</g:sale_price>
-      <g:gtin>250531420102</g:gtin>
-      <g:mpn>250531420102</g:mpn>
+      <g:gtin>250531420103</g:gtin>
+      <g:mpn>250531420103</g:mpn>
       <g:gender>female</g:gender>
       <g:age_group>adult</g:age_group>
       <g:color>Offwhite (1420)</g:color>
@@ -730,9 +826,13 @@
       <g:size>S</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
-      <g:id>250531420102</g:id>
+      <g:id>250531420104</g:id>
       <g:item_group_id>250531420</g:item_group_id>
       <g:title>Knitted shaped blazer</g:title>
       <g:description>Figursydd kofta med guldknappar framtill. Koftan är vit och har oversize fit. Den har lång ärm, v-ringning och intagen midja.</g:description>
@@ -748,8 +848,8 @@
       <g:availability>out_of_stock</g:availability>
       <g:price>599.95 SEK</g:price>
       <g:sale_price>599.95 SEK</g:sale_price>
-      <g:gtin>250531420102</g:gtin>
-      <g:mpn>250531420102</g:mpn>
+      <g:gtin>250531420104</g:gtin>
+      <g:mpn>250531420104</g:mpn>
       <g:gender>female</g:gender>
       <g:age_group>adult</g:age_group>
       <g:color>Offwhite (1420)</g:color>
@@ -758,9 +858,13 @@
       <g:size>M</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
-      <g:id>250531420102</g:id>
+      <g:id>250531420105</g:id>
       <g:item_group_id>250531420</g:item_group_id>
       <g:title>Knitted shaped blazer</g:title>
       <g:description>Figursydd kofta med guldknappar framtill. Koftan är vit och har oversize fit. Den har lång ärm, v-ringning och intagen midja.</g:description>
@@ -776,8 +880,8 @@
       <g:availability>in_stock</g:availability>
       <g:price>599.95 SEK</g:price>
       <g:sale_price>599.95 SEK</g:sale_price>
-      <g:gtin>250531420102</g:gtin>
-      <g:mpn>250531420102</g:mpn>
+      <g:gtin>250531420105</g:gtin>
+      <g:mpn>250531420105</g:mpn>
       <g:gender>female</g:gender>
       <g:age_group>adult</g:age_group>
       <g:color>Offwhite (1420)</g:color>
@@ -786,9 +890,13 @@
       <g:size>L</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
     <item>
-      <g:id>250531420102</g:id>
+      <g:id>250531420106</g:id>
       <g:item_group_id>250531420</g:item_group_id>
       <g:title>Knitted shaped blazer</g:title>
       <g:description>Figursydd kofta med guldknappar framtill. Koftan är vit och har oversize fit. Den har lång ärm, v-ringning och intagen midja.</g:description>
@@ -804,8 +912,8 @@
       <g:availability>out_of_stock</g:availability>
       <g:price>599.95 SEK</g:price>
       <g:sale_price>599.95 SEK</g:sale_price>
-      <g:gtin>250531420102</g:gtin>
-      <g:mpn>250531420102</g:mpn>
+      <g:gtin>250531420106</g:gtin>
+      <g:mpn>250531420106</g:mpn>
       <g:gender>female</g:gender>
       <g:age_group>adult</g:age_group>
       <g:color>Offwhite (1420)</g:color>
@@ -814,6 +922,10 @@
       <g:size>XL</g:size>
       <g:size_system>EU</g:size_system>
       <g:size_type>regular</g:size_type>
+      <g:shipping_weight>500 g</g:shipping_weight>
+      <g:shipping_length>30 cm</g:shipping_length>
+      <g:shipping_width>25 cm</g:shipping_width>
+      <g:shipping_height>5 cm</g:shipping_height>
     </item>
   </channel>
 </rss>
