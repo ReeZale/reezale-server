@@ -9,8 +9,10 @@ const fileRouter = require("./routes/file");
 const profileRouter = require("./routes/profile");
 const shipmentRouter = require("./routes/shipments");
 const paymentRouter = require("./routes/payment");
+const sellerRouter = require("./routes/seller/router");
 
 const authenticateSeller = require("./middleware/authenticateSeller");
+const shopMiddleware = require("./middleware/shopMiddleware");
 
 router.use("/feeds", feedRouter);
 router.use("/offers", authenticateSeller, offerRouter);
@@ -21,5 +23,6 @@ router.use("/files", authenticateSeller, fileRouter);
 router.use("/profiles", profileRouter);
 router.use("/shipments", shipmentRouter);
 router.use("/payments", paymentRouter);
+router.use("/seller/:sellerKey", shopMiddleware, sellerRouter);
 
 module.exports = router;

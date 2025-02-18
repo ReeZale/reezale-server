@@ -22,11 +22,22 @@ async function createCategoryHierarchy(categoryPath, sellerId, localeId) {
       fullPath = fullPath ? `${fullPath} > ${categoryName}` : categoryName;
       breadCrumbs.push(categoryName);
 
+      const normalizePath = fullPath
+        .toLowerCase() // Convert to lowercase
+        .replace(/>/g, "/") // Replace ">" with "/"
+        .replace(/\s+/g, "-") // Replace spaces with "-"
+        .replace(/[åä]/g, "a") // Normalize "å", "ä" to "a"
+        .replace(/ö/g, "o") // Normalize "ö" to "o"
+        .replace(/[^a-z0-9/-]/g, ""); // Remove any other special characters
+
+      // Example Usage
+
       // Check if the category already exists
       let category = await prisma.category.findFirst({
         where: {
           name: categoryName,
           path: fullPath,
+          relativePath: normalizePath,
           sellerId,
           localeId,
           parentId,

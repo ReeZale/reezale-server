@@ -17,6 +17,7 @@ model Seller {
   id            BigInt              @id @default(autoincrement())
   domain        String?
   name          String?
+  key           String?             @unique
   logo          String?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @default(now()) @updatedAt
@@ -29,6 +30,7 @@ model Seller {
   items         Item[]
   pageConfigs   PageConfig[]
   images        Image[]
+  notifications OfferNotification[]
 }
 
 model PageConfig {
@@ -118,11 +120,11 @@ model ProductFeed {
 }
 
 model Locale {
-  id               BigInt            @id @default(autoincrement())
+  id               BigInt              @id @default(autoincrement())
   code             String
   currency         String
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
   discounts        DiscountRule[]
   productFeeds     ProductFeed[]
   offers           Offer[]
@@ -130,12 +132,14 @@ model Locale {
   itemDescriptions ItemDescription[]
   itemSizes        ItemSize[]
   pageConfigs      PageConfig[]
+  notifications    OfferNotification[]
 }
 
 model Category {
   id            BigInt                 @id @default(autoincrement())
   name          String
   path          String
+  relativePath  String? //normalized relative path of the page for navigation in our site
   breadCrumbs   String[]
   parent        Category?              @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   parentId      BigInt?
@@ -153,22 +157,23 @@ model Category {
 }
 
 model ItemGroup {
-  id              BigInt            @id @default(autoincrement())
+  id              BigInt              @id @default(autoincrement())
   sku             String
-  brand           Brand             @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brand           Brand               @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name            String
   gender          Gender
   ageGroup        AgeGroup
   sizeType        SizeType
   image           String
   images          String[]
-  seller          Seller?           @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seller          Seller?             @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellerId        BigInt?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
   itemDescription ItemDescription[]
   brandId         BigInt
   items           Item[]
+  notifications   OfferNotification[]
 
   @@unique([brandId, sku])
   @@index([brandId, sku, gender, ageGroup, sizeType])
@@ -287,9 +292,31 @@ model Offer {
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
   orders            Order[]
+  notifications     OfferNotification[]
 
   @@unique([reference, sellerId, itemId])
   @@index([sellerId, localeId, itemId])
+}
+
+//a service to store notifications for users that want to be notified when an item in a given size arrives
+model OfferNotification {
+  id               BigInt    @id @default(autoincrement())
+  email            String
+  sku              String
+  itemGroup        ItemGroup @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  itemGroupId      BigInt
+  locale           Locale    @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId         BigInt
+  seller           Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  notified         Boolean   @default(false)
+  notificationDate DateTime?
+  offer            Offer?    @relation(fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  offerId          BigInt?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sellerId         BigInt
+
+  @@unique([email, sku, sellerId, localeId])
 }
 
 enum OfferType {

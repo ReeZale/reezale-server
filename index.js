@@ -51,15 +51,6 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-(async () => {
-  try {
-    //await ginaTricot();
-    console.log("✅ ginaTricot data loaded successfully");
-  } catch (error) {
-    console.error("❌ Error loading ginaTricot data:", error);
-  }
-})();
-
 // Use the centralized router
 app.use("/api/v1", router);
 

@@ -9,8 +9,6 @@ const { parseStringPromise } = require("xml2js");
  */
 async function getItemGroupFromFeed(feedUrl, itemGroupId) {
   try {
-    console.log(`🔍 Fetching product feed from: ${feedUrl}`);
-
     // Fetch XML using Axios
     const response = await axios.get(feedUrl, { responseType: "text" });
 

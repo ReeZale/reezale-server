@@ -5,8 +5,6 @@ async function mergeFeedWithOffers(feedUrl, itemGroupId, sellerId) {
   // Fetch product feed items
   const feedItems = await getItemGroupFromFeed(feedUrl, itemGroupId);
 
-  console.log("Feed items", feedItems);
-
   // Fetch matching offers from the database
   const offers = await prisma.offer.findMany({
     where: {
@@ -23,8 +21,6 @@ async function mergeFeedWithOffers(feedUrl, itemGroupId, sellerId) {
       expirationDate: true,
     },
   });
-
-  console.log("Offers", offers);
 
   // Update feed items with offer data if available
   return feedItems.map((item) => {
