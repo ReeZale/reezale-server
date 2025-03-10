@@ -39,7 +39,8 @@ async function getItemGroupFromFeed(feedUrl, itemGroupId) {
     return filteredItems.map((item) => ({
       id: item["g:id"],
       size: item["g:size"],
-      price: parseFloat(item["g:price"].split(" ")[0]), // Convert price to number
+      shipping_weight: item["g:shipping_weight"],
+      price: parseFloat(item["g:price"].split(" ")[0]),
       sale_price: parseFloat(item["g:sale_price"].split(" ")[0]),
       availability: item["g:availability"],
     }));

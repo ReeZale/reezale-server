@@ -1,0 +1,85 @@
+const express = require("express");
+const Fuse = require("fuse.js"); // ✅ Import fuzzy search library
+const prisma = require("../../../config/prisma");
+const router = express.Router();
+
+router.get("/search", async (req, res) => {
+  try {
+    const { page = 1, limit = 25, search = "", parentPath = null } = req.query;
+
+    // Convert query parameters to integers
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (pageNumber - 1) * pageSize;
+
+    // ✅ Step 1: Fetch all product segments (only those with no children)
+    const allSegments = await prisma.productSegment.findMany({
+      where: {
+        path: {
+          startsWith: parentPath,
+          mode: "insensitive",
+        },
+        children: {
+          none: {}, // ✅ Only return segments with no children
+        },
+      },
+      orderBy: {
+        path: "asc",
+      },
+    });
+
+    // ✅ Step 2: Configure Fuse.js for better fuzzy search
+    const fuse = new Fuse(allSegments, {
+      keys: ["path"], // ✅ Search in the 'path' field
+      threshold: 0.5, // ✅ Lower threshold for more accurate matches
+      includeScore: true, // ✅ Include similarity score for ranking
+      shouldSort: true, // ✅ Sort results by relevance automatically
+    });
+
+    // ✅ Step 3: Perform fuzzy search & sort by relevance
+    const fuzzyResults = search
+      ? fuse.search(search)
+      : allSegments.map((item) => ({ item }));
+
+    // ✅ Step 4: Extract only the matched items (remove metadata)
+    const filteredSegments = fuzzyResults.map((result) => result.item);
+
+    // ✅ Step 5: Implement pagination manually
+    const paginatedResults = filteredSegments.slice(skip, skip + pageSize);
+    const totalCount = filteredSegments.length;
+
+    return res.status(200).json({
+      productSegments: paginatedResults,
+      pagination: {
+        currentPage: pageNumber,
+        pageSize,
+        totalPages: Math.ceil(totalCount / pageSize),
+        totalItems: totalCount,
+      },
+    });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/sub-categories", async (req, res) => {
+  const { categoryId = null } = req.query;
+  try {
+    const productSegments = await prisma.productSegment.findMany({
+      where: {
+        parentId: categoryId,
+      },
+      orderBy: {
+        path: "asc",
+      },
+    });
+
+    return res.status(200).json({ productSegments });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

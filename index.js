@@ -5,18 +5,27 @@ const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
 const ginaTricot = require("./data/store/gina-tricot");
+const {
+  processCategories,
+  processCategoryTranslations,
+} = require("./data/temp");
 
 const app = express();
 
-async function initializePrisma() {
-  try {
-    await prisma.$connect();
-    console.log("✅ Prisma connected to the database.");
-  } catch (error) {
-    console.error("❌ Prisma connection failed:", error);
-    process.exit(1); // Stop app if Prisma can't connect
-  }
-}
+// Enable CORS for all routes
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN, // ✅ Use a specific origin
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+  })
+);
+
+// Middleware to parse JSON and URL-encoded request bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // ✅ Gracefully disconnect Prisma on shutdown
 process.on("SIGINT", async () => {
@@ -31,25 +40,15 @@ process.on("SIGTERM", async () => {
   process.exit(0);
 });
 
-// Enable CORS for all routes
-app.use(
-  cors({
-    origin: "*", // ✅ Use a specific origin
-    credentials: false,
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-  })
-);
-
-// Middleware to parse JSON and URL-encoded request bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 // Globally handle BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
+
+(async () => {
+  //await processCategories("./data/google-categories.txt");
+  //await processCategoryTranslations("data/gc-se-sv.txt", 1);
+})();
 
 // Use the centralized router
 app.use("/api/v1", router);

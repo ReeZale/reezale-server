@@ -10,28 +10,11 @@ const {
 } = require("../services/transport/earybird");
 const router = express.Router();
 
-router.get("/delivery-options/:productId", async (req, res) => {
+router.post("/delivery-options", async (req, res) => {
   try {
-    // Validate required fields
+    const { country, zip, city, address, weight } = req.body.request;
 
-    const productId = req.params.productId;
-
-    if (!productId) {
-      return res.status(400).json({ error: "Missing productId or request" });
-    }
-
-    const { desiredDeliveryDate, country, zip, city, address, volume, weight } =
-      req.body;
-
-    if (
-      !desiredDeliveryDate ||
-      !country ||
-      !zip ||
-      !city ||
-      !address ||
-      !volume ||
-      !weight
-    ) {
+    if (!country || !zip || !city || !address || !weight) {
       return res
         .status(400)
         .json({ error: "Missing required request parameters" });
@@ -39,7 +22,10 @@ router.get("/delivery-options/:productId", async (req, res) => {
 
     // Call external service
 
-    const response = await checkDeliveryOption(productId, req.body);
+    const response = await checkDeliveryOption(
+      (productId = "home"),
+      req.body.request
+    );
 
     if (!response) {
       return res.status(404).json({ error: "No delivery options available" });
@@ -80,7 +66,7 @@ router.get("/pickup-options/:productId", async (req, res) => {
     }
 
     // Call external service
-    const response = await checkPickupOption(productId, req.body);
+    const response = await checkPickupOption(productId, req.body.request);
 
     if (!response) {
       return res.status(404).json({ error: "No delivery options available" });

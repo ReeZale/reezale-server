@@ -159,6 +159,8 @@ router.get("/:sku", async (req, res) => {
       seller.id
     );
 
+    console.log("Updated items", updatedItems);
+
     // Return the final item group object with updated items list
     return res.status(200).json({
       data: {

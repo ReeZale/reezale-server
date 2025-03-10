@@ -10,16 +10,25 @@ const profileRouter = require("./routes/profile");
 const shipmentRouter = require("./routes/shipments");
 const paymentRouter = require("./routes/payment");
 const sellerRouter = require("./routes/seller/router");
+const orderRouter = require("./routes/order");
+const authRouter = require("./routes/auth");
+const adminRouter = require("./routes/admin/router");
+const publicRouter = require("./routes/public/router");
 
 const authenticateSeller = require("./middleware/authenticateSeller");
 const shopMiddleware = require("./middleware/shopMiddleware");
+const adminAuthMiddleware = require("./middleware/adminAuthMiddleware");
 
+router.use("/auth", authRouter);
+router.use("/public", publicRouter);
+router.use("/admin", adminAuthMiddleware, adminRouter);
 router.use("/feeds", feedRouter);
 router.use("/offers", authenticateSeller, offerRouter);
 router.use("/navigation", authenticateSeller, navigationRouter);
 router.use("/items", authenticateSeller, itemsRouteer);
 router.use("/inventory", authenticateSeller, inventoryRouter);
 router.use("/files", authenticateSeller, fileRouter);
+router.use("/orders", orderRouter);
 router.use("/profiles", profileRouter);
 router.use("/shipments", shipmentRouter);
 router.use("/payments", paymentRouter);

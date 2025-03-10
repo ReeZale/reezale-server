@@ -4,6 +4,7 @@ const prisma = require("../../config/prisma");
 const TRANSPORT_EB_USERNAME = process.env.TRANSPORT_EB_USERNAME;
 const TRANSPORT_EB_PASSWORD = process.env.TRANSPORT_EB_PASSWORD;
 const TRANSPORT_EB_BASEURL = process.env.TRANSPORT_EB_BASEURL;
+const DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 // Create an Axios instance for authenticated API requests
 const apiClient = axios.create({
@@ -23,15 +24,29 @@ const authClient = axios.create({
   timeout: 5000,
 });
 
-// Function to get the stored token from Prisma
 const getToken = async () => {
   try {
     const tokenRecord = await prisma.service.findFirst({
       where: { id: BigInt(1) },
-      select: { token: true },
+      select: { token: true, updatedAt: true },
     });
 
-    return tokenRecord?.token || null;
+    if (!tokenRecord) {
+      console.log("No token found, requesting a new one...");
+      return await refreshToken(); // If no token exists, get a new one
+    }
+
+    const { token, updatedAt } = tokenRecord;
+    const lastUpdated = new Date(updatedAt);
+    const now = new Date();
+
+    // Check if the token was last updated more than 24 hours ago
+    if (now - lastUpdated > DAY_IN_MS) {
+      console.log("Token expired, refreshing...");
+      return await refreshToken();
+    }
+
+    return token; // Return the valid token
   } catch (error) {
     console.error("Error fetching auth token:", error.message);
     return null;
@@ -47,6 +62,9 @@ const refreshToken = async () => {
     });
 
     const token = response.data?.token;
+
+    console.log("Token", token);
+
     if (!token) {
       throw new Error("No token received from API");
     }
@@ -69,14 +87,13 @@ apiClient.interceptors.request.use(
   async (config) => {
     let token = await getToken();
 
-    // If no token is found, fetch a new one **without triggering the interceptor**
-    if (!token) {
-      token = await refreshToken();
-    }
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.error("❌ No valid token available.");
     }
+
+    console.log("Config", config);
 
     return config;
   },
@@ -93,13 +110,13 @@ const checkDeliveryOption = async (productId = "home", request) => {
 
     return data;
   } catch (error) {
-    console.error("Error refreshing check delivery option", error.message);
+    console.error("Error", error);
     return null;
   }
 };
 
 //error on supplier side
-const checkPickupOption = async (productId = "home", request) => {
+const checkPickupOption = async (productId = "c2c-home", request) => {
   //request format {desiredDeliveryDate: string:date, country: 2letter country code, zip: string, city: string, address: string, volume: int, weight: int}
 
   try {

@@ -90,10 +90,10 @@ router.post("/", async (req, res) => {
     reference,
     offerType,
     condition,
+    quantity,
     availableDate,
     expirationDate,
     price,
-    sellerProfileId,
     shipAddress,
   } = req.body;
 
@@ -263,7 +263,6 @@ router.post("/", async (req, res) => {
           },
           create: {
             sellerId: seller.id,
-            sellerProfileId: sellerProfileId,
             localeId: existingLocale.id,
             offerType: offerType || "business",
             reference: reference,
@@ -272,12 +271,14 @@ router.post("/", async (req, res) => {
             expirationDate: expirationDate,
             itemId: item.id,
             price: price.amount,
+            quantity: quantity,
             shipAddress: shipAddress,
             archived: false,
           },
           update: {
             condition: condition,
             price: price.amount,
+            quantity: quantity,
             availableDate: availableDate,
             expirationDate: expirationDate,
             shipAddress: shipAddress,
