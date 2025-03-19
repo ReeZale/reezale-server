@@ -16,7 +16,16 @@ router.get("/", async (req, res) => {
         },
       },
       include: {
-        locale: true, // Include locale details
+        locale: {
+          include: {
+            country: {
+              include: {
+                currency: true,
+              },
+            },
+            language: true,
+          },
+        }, // Include locale details
         storefront: true, // Include storefront details
       },
     });

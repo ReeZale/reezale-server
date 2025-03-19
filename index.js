@@ -8,7 +8,9 @@ const ginaTricot = require("./data/store/gina-tricot");
 const {
   processCategories,
   processCategoryTranslations,
+  updateProductCategories,
 } = require("./data/temp");
+const { uploadStandardFields } = require("./data/uploads/standardFields");
 
 const app = express();
 
@@ -48,6 +50,8 @@ BigInt.prototype.toJSON = function () {
 (async () => {
   //await processCategories("./data/google-categories.txt");
   //await processCategoryTranslations("data/gc-se-sv.txt", 1);
+  //await uploadStandardFields();
+  //await updateProductCategories();
 })();
 
 // Use the centralized router

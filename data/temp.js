@@ -147,4 +147,22 @@ async function processCategoryTranslations(filePath, localeId) {
   }
 }
 
-module.exports = { processCategories, processCategoryTranslations };
+async function updateProductCategories() {
+  const productSegments = await prisma.productSegment.updateMany({
+    where: {
+      path: {
+        startsWith: "Apparel",
+      },
+      standardTemplateId: null,
+    },
+    data: {
+      standardTemplateId: 1,
+    },
+  });
+}
+
+module.exports = {
+  processCategories,
+  processCategoryTranslations,
+  updateProductCategories,
+};

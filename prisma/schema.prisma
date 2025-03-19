@@ -28,17 +28,32 @@ model Account {
 }
 
 model User {
+  id         BigInt      @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  password   String
+  account    Account     @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId  BigInt
+  archive    Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @default(now()) @updatedAt
+  authTokens AuthToken[]
+
+  @@unique([email, password])
+}
+
+model AuthToken {
   id        BigInt   @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  accountId BigInt
-  archive   Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    BigInt
+  token     String   @unique
+  expiresAt DateTime
+  isValid   Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  @@unique([email, password])
+  @@index([expiresAt])
+  @@index([isValid])
 }
 
 model Organization {
@@ -65,11 +80,11 @@ model Organization {
 }
 
 model Storefront {
-  id                 BigInt              @id @default(autoincrement())
+  id                 BigInt                     @id @default(autoincrement())
   name               String // Storefront brand name
   logo               String? // Shared logo
   bannerImage        String? // Shared banner
-  domain             String              @unique // Primary domain (e.g., "brand.com")
+  domain             String                     @unique // Primary domain (e.g., "brand.com")
   refundPolicy       String?
   termsOfService     String?
   privacyPolicy      String?
@@ -78,64 +93,66 @@ model Storefront {
   instagram          String?
   linkedin           String?
   tiktok             String?
-  primaryColor       String              @default("#5A643E") // Primary brand color (hex code)
-  secondaryColor     String              @default("#7F8D58") // Secondary brand color
-  backgroundColor    String              @default("#F4F4F4") // Background color
-  textColor          String              @default("#333333") // Default text color
-  buttonColor        String              @default("#5A643E") // Button color
-  buttonTextColor    String              @default("#FFFFFF") // Button text color
-  fontFamily         String              @default("Inter, sans-serif") // Custom font family
-  borderRadius       Int                 @default(8) // Border radius for UI elements (e.g., buttons, cards)
+  primaryColor       String                     @default("#5A643E") // Primary brand color (hex code)
+  secondaryColor     String                     @default("#7F8D58") // Secondary brand color
+  backgroundColor    String                     @default("#F4F4F4") // Background color
+  textColor          String                     @default("#333333") // Default text color
+  buttonColor        String                     @default("#5A643E") // Button color
+  buttonTextColor    String                     @default("#FFFFFF") // Button text color
+  fontFamily         String                     @default("Inter, sans-serif") // Custom font family
+  borderRadius       Int                        @default(8) // Border radius for UI elements (e.g., buttons, cards)
   locales            StorefrontLocale[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @default(now()) @updatedAt
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @default(now()) @updatedAt
   account            Account?
   paymentAccounts    PaymentAccount[]
-  storeCategories    StoreCategory[]
   products           Product[]
   customOptionGroups CustomOptionGroup[]
-  tags               StoreTags[]
-  Template           Template[]
-  TemplateField      ProductField[]
+  templates          Template[]
+  fields             Field[]
+  productSegments    StorefrontProductSegment[]
+  marketSegments     StorefrontMarketSegment[]
+  regions            StorefrontRegion[]
+  categories         StoreCategory[]
 }
 
-model Template {
-  id               BigInt            @id @default(autoincrement())
-  name             String            @default("STANDARD")
-  storefront       Storefront        @relation(fields: [storefrontId], references: [id])
+//Standard produt segments that a store services
+model StorefrontProductSegment {
+  id               BigInt          @id @default(autoincrement())
+  storefront       Storefront      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storefrontId     BigInt
-  productTemplates ProductTemplate[]
+  productSegment   ProductSegment  @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId BigInt
+  primary          Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+  storeCategories  StoreCategory[]
+
+  @@unique([storefrontId, productSegmentId])
 }
 
-model ProductField {
-  id               BigInt            @id @default(autoincrement())
-  key              String
-  name             String
-  description      String
-  translations     Json?
-  index            Boolean           @default(false)
-  fieldType        FieldType         @default(text)
-  storefront       Storefront        @relation(fields: [storefrontId], references: [id])
-  storefrontId     BigInt
-  productTemplates ProductTemplate[]
+//Gender and age group market segment
+model StorefrontMarketSegment {
+  id           BigInt     @id @default(autoincrement())
+  storefront   Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  gender       Gender
+  ageGroup     AgeGroup
+  primary      Boolean
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  storefrontId BigInt
 }
 
-model ProductTemplate {
-  id              BigInt       @id @default(autoincrement())
-  template        Template     @relation(fields: [templateId], references: [id])
-  templateId      BigInt
-  templateField   ProductField @relation(fields: [templateFieldId], references: [id])
-  templateFieldId BigInt
-  order           Int
-  required        Boolean      @default(true)
-}
-
-enum FieldType {
-  text
-  longText
-  list
-  link
-  date
+//The regions that a storefront services
+model StorefrontRegion {
+  id           BigInt     @id @default(autoincrement())
+  storefront   Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId BigInt
+  locale       Locale     @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId     BigInt
+  primary      Boolean
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
 }
 
 model StorefrontLocale {
@@ -203,40 +220,33 @@ enum PaymentFrequency {
   monthly
 }
 
+//Standard product segments linked to major ecommerce and advertising platfroms
 model ProductSegment {
-  id              BigInt                       @id @default(autoincrement())
-  name            String
-  path            String // 🔥 Remove @unique, Postgres index limitation exceeded
-  gcc             String? //Google category code
-  acc             String? //Amazon category code
-  scc             String? //Shopify category code
-  ecc             String? //eBay category code
-  parent          ProductSegment?              @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  parentId        BigInt?
-  children        ProductSegment[]             @relation("ParentChild")
-  imageUrl        String? // 🔥 Optional category icon/image for UI
-  createdAt       DateTime                     @default(now())
-  updatedAt       DateTime                     @default(now()) @updatedAt
-  translations    ProductSegmentTranslations[]
-  storeCategories StoreCategory[]
-  properties      ProductSegmentProperty[]
-  products        Product[]
+  id                 BigInt                       @id @default(autoincrement())
+  name               String
+  path               String // 🔥 Remove @unique, Postgres index limitation exceeded
+  gcc                String? //Google category code
+  acc                String? //Amazon category code
+  scc                String? //Shopify category code
+  ecc                String? //eBay category code
+  parent             ProductSegment?              @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId           BigInt?
+  children           ProductSegment[]             @relation("ParentChild")
+  imageUrl           String? // 🔥 Optional category icon/image for UI
+  standardTemplate   StandardTemplate?            @relation(fields: [standardTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  standardTemplateId BigInt?
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @default(now()) @updatedAt
+  translations       ProductSegmentTranslations[]
+  storeCategories    StoreCategory[]
+  products           Product[]
+  storefronts        StorefrontProductSegment[]
 
   @@index([parentId]) // 🔥 Index for faster hierarchical queries
   @@index([path], type: Hash) // ✅ Use a Hash index to prevent size limit errors
 }
 
-model ProductSegmentProperty {
-  id               BigInt           @id @default(autoincrement())
-  property         StandardProperty @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  propertyId       BigInt
-  productSegment   ProductSegment   @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productSegmentId BigInt
-  require          Boolean          @default(false)
-
-  @@unique([propertyId, productSegmentId])
-}
-
+//Translations of standard product segments
 model ProductSegmentTranslations {
   id               BigInt         @id @default(autoincrement())
   name             String
@@ -253,163 +263,176 @@ model ProductSegmentTranslations {
   @@unique([localeId, slug]) // 🔥 Ensures a unique slug per language
 }
 
+//Custom and standard product categories that a store services. This will be used to build custom navigation schemas while maintaining the link to standard categories
 model StoreCategory {
-  id               BigInt           @id @default(autoincrement())
-  externalId       String?
-  name             String
-  productSegment   ProductSegment   @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productSegmentId BigInt
-  storefront       Storefront       @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId     BigInt
-  parent           StoreCategory?   @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  parentId         BigInt?
-  children         StoreCategory[]  @relation("ParentChild")
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @default(now()) @updatedAt
-  translations     Json?
-  products         Product[]
-  properties       CustomProperty[]
-  tags             CategoryTags[]
+  id                         BigInt                   @id @default(autoincrement())
+  externalId                 String?
+  key                        String?
+  name                       String
+  description                String?
+  path                       String
+  productSegment             ProductSegment?          @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId           BigInt?
+  storefront                 Storefront               @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId               BigInt
+  storefrontProductSegment   StorefrontProductSegment @relation(fields: [storefrontProductSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontProductSegmentId BigInt
+  parent                     StoreCategory?           @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId                   BigInt?
+  children                   StoreCategory[]          @relation("ParentChild")
+  custom                     Boolean                  @default(false)
+  archive                    Boolean                  @default(false)
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @default(now()) @updatedAt
+  translations               Json?
+  products                   Product[]
 
   @@index([productSegmentId]) //  Queries filtering by product segment
-  @@index([storefrontId]) //  Queries filtering by storefront
+  @@index([storefrontId]) //  Queries filtering by product segment
   @@index([parentId]) //  Speeds up hierarchical queries
   @@index([name]) //  Useful for searching categories by name
 }
 
-model StoreTags {
-  id                BigInt     @id @default(autoincrement())
-  key               String
-  label             String
-  labelTranslations Json?
-  description       String
-  values            Json?
-  storefront        Storefront @relation(fields: [storefrontId], references: [id])
-  storefrontId      BigInt
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @default(now()) @updatedAt
-
-  @@index([key])
-}
-
-model CategoryTags {
-  id                   BigInt        @id @default(autoincrement())
-  key                  String
-  label                String
-  labelTranslations    Json?
-  description          String
-  values               Json?
-  storefrontCategory   StoreCategory @relation(fields: [storefrontCategoryId], references: [id])
-  storefrontCategoryId BigInt
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @default(now()) @updatedAt
-}
-
-//Standard product properties that are assigned at the product segment level. Used across stores for indexing and filtering products
-model StandardProperty {
-  id              BigInt                    @id @default(autoincrement())
-  name            String                    @unique
-  description     String
-  productSegments ProductSegmentProperty[]
-  options         StandardPropertyOption[]
-  products        StandardProductProperty[]
-  translations    Json?
-}
-
-model StandardPropertyOption {
-  id            BigInt                    @id @default(autoincrement())
-  property      StandardProperty          @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  propertyId    BigInt
-  value         String
-  translations  Json?
-  productGroups StandardProductProperty[]
-
-  @@unique([propertyId, value])
-}
-
-model StandardProductProperty {
-  id                       BigInt                 @id @default(autoincrement())
-  product                  Product                @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId                BigInt
-  standardProperty         StandardProperty       @relation(fields: [standardPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  standardPropertyId       BigInt
-  standardPropertyOption   StandardPropertyOption @relation(fields: [standardPropertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  standardPropertyOptionId BigInt
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @default(now()) @updatedAt
-
-  @@unique([productId, standardPropertyId, standardPropertyOptionId])
-}
-
-model CustomProperty {
-  id              BigInt                  @id @default(autoincrement())
-  externalId      String?
-  name            String
-  description     String
-  require         Boolean                 @default(false)
-  storeCategory   StoreCategory           @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storeCategoryId BigInt
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @default(now()) @updatedAt
-  products        CustomProductProperty[]
-  options         CustomPropertyOption[]
-  translations    Json?
-}
-
-model CustomPropertyOption {
-  id               BigInt                  @id @default(autoincrement())
-  externalId       String?
-  customProperty   CustomProperty          @relation(fields: [customPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  customPropertyId BigInt
-  value            String
-  translations     Json?
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @default(now()) @updatedAt
-  products         CustomProductProperty[]
-
-  @@unique([customPropertyId, value])
-}
-
-model CustomProductProperty {
-  id                     BigInt               @id @default(autoincrement())
-  product                Product              @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId              BigInt
-  customProperty         CustomProperty       @relation(fields: [customPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  customPropertyId       BigInt
-  customPropertyOption   CustomPropertyOption @relation(fields: [customPropertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  customPropertyOptionId BigInt
-  createdAt              DateTime             @default(now())
-  updatedAt              DateTime             @default(now()) @updatedAt
-
-  @@unique([productId, customPropertyId, customPropertyOptionId])
-}
-
 model Product {
-  id                  BigInt                    @id @default(autoincrement())
-  reference           String
-  name                String
-  description         String
-  thumbnailImage      String
-  images              String[]
-  gender              Gender?
-  ageGroup            AgeGroup?
-  productSegment      ProductSegment            @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productSegmentId    BigInt
-  storeCategory       StoreCategory             @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storeCategoryId     BigInt
-  storefront          Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId        BigInt
-  storeTags           String[]
-  categoryTags        String[]
-  productTemplateData Json? // ✅ Stores the applied template fields
-  createdAt           DateTime                  @default(now())
-  updatedAt           DateTime                  @default(now()) @updatedAt
-  variants            ProductVariant[]
-  standardProperties  StandardProductProperty[]
-  customProperties    CustomProductProperty[]
-  translations        ProductTranslation[]
+  id               BigInt               @id @default(autoincrement())
+  reference        String
+  name             String
+  description      String
+  thumbnailImage   String
+  images           String[]
+  gender           Gender?
+  ageGroup         AgeGroup?
+  productSegment   ProductSegment       @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId BigInt
+  storeCategory    StoreCategory        @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeCategoryId  BigInt
+  storefront       Storefront           @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId     BigInt
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @default(now()) @updatedAt
+  variants         ProductVariant[]
+  translations     ProductTranslation[]
+  properties       ProductProperties[]
 
   @@unique([reference, storefrontId])
+}
+
+model ProductProperties {
+  id         BigInt    @id @default(autoincrement())
+  field      Field     @relation(fields: [fieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fieldId    BigInt
+  template   Template? @relation(fields: [templateId], references: [id])
+  templateId BigInt?
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId  BigInt
+  value      Json
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+}
+
+model Template {
+  id           BigInt              @id @default(autoincrement())
+  key          String
+  name         String              @default("STANDARD")
+  description  String
+  storefront   Storefront          @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId BigInt
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now()) @updatedAt
+  customFields TemplateField[]
+  products     ProductProperties[]
+}
+
+model Field {
+  id              BigInt              @id @default(autoincrement())
+  key             String
+  name            String
+  description     String
+  translations    Json?
+  options         Json?
+  index           Boolean             @default(false)
+  type            FieldType
+  format          FieldFormat         @default(text)
+  storefront      Storefront          @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId    BigInt
+  standardField   StandardField?      @relation(fields: [standardFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  standardFieldId BigInt?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+  templates       TemplateField[]
+  products        ProductProperties[]
+
+  @@unique([key, storefrontId])
+}
+
+model TemplateField {
+  id         BigInt   @id @default(autoincrement())
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  templateId BigInt
+  field      Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fieldId    BigInt
+  required   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+//Standard data fields that wwould be used to describe a product such as color, materials, etc. Stand alone fields not related to any product segment
+model StandardField {
+  id           BigInt                  @id @default(autoincrement())
+  key          String                  @unique
+  name         String
+  description  String
+  translations Json?
+  index        Boolean                 @default(false)
+  type         FieldType
+  format       FieldFormat             @default(text)
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @default(now()) @updatedAt
+  templates    StandardTemplateField[]
+  fields       Field[]
+}
+
+model StandardTemplate {
+  id              BigInt                  @id @default(autoincrement())
+  key             String
+  name            String                  @default("STANDARD")
+  description     String
+  parent          StandardTemplate?       @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId        BigInt?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @default(now()) @updatedAt
+  fields          StandardTemplateField[]
+  productSegments ProductSegment[]
+  children        StandardTemplate[]      @relation("ParentChild")
+}
+
+model StandardTemplateField {
+  id                 BigInt           @id @default(autoincrement())
+  standardTemplate   StandardTemplate @relation(fields: [standardTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  standardField      StandardField    @relation(fields: [standardFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  order              Int
+  options            Json?
+  required           Boolean          @default(true)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @default(now()) @updatedAt
+  standardTemplateId BigInt
+  standardFieldId    BigInt
+}
+
+enum FieldFormat {
+  text
+  longText
+  list
+  link
+  date
+  image
+  color
+}
+
+enum FieldType {
+  property
+  variant
+  other
 }
 
 model ProductTranslation {
@@ -635,6 +658,7 @@ model Locale {
   storefronts      StorefrontLocale[]
   productSegments  ProductSegmentTranslations[]
   products         ProductTranslation[]
+  StorefrontRegion StorefrontRegion[]
 }
 
 model Category {

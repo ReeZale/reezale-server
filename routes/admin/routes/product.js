@@ -19,16 +19,15 @@ router.get("/", async (req, res) => {
         storefrontId: storefront.id,
       },
       include: {
-        variants: true,
-        storeCategory: true,
         productSegment: true,
-        standardProperties: true,
-        customProperties: true,
+        storeCategory: true,
+        variants: true,
         translations: true,
       },
     });
     return res.status(200).json({ products });
   } catch (error) {
+    console.log("Error", error);
     res
       .status(500)
       .json({ error: "Failed to fetch products", details: error.message });
@@ -50,10 +49,10 @@ router.get("/:id", async (req, res) => {
     const product = await prisma.product.findUnique({
       where: { id: req.params.id, storefrontId: storefront.id },
       include: {
+        storeCategory: true,
         variants: true,
-        standardProperties: true,
-        customProperties: true,
         translations: true,
+        properties: true,
       },
     });
     if (!product) return res.status(404).json({ error: "Product not found" });
@@ -85,11 +84,7 @@ router.post("/", async (req, res) => {
       images,
       gender,
       ageGroup,
-      productSegmentId,
       storeCategoryId,
-      standardProperties,
-      customProperties,
-      translations,
     } = req.body;
 
     const storeCategory = await prisma.storeCategory.findFirst({
@@ -110,20 +105,18 @@ router.post("/", async (req, res) => {
         productSegmentId: storeCategory.productSegmentId,
         storeCategoryId,
         storefrontId: storefront.id,
-        standardProperties: { create: standardProperties || [] },
-        customProperties: { create: customProperties || [] },
-        translations: { create: translations || [] },
       },
       include: {
-        standardProperties: true,
-        customProperties: true,
-        translations: true,
+        variants: true,
+        storeCategory: true,
+        productSegment: true,
       },
     });
 
     return res.status(201).json({ product: newProduct });
   } catch (error) {
-    res
+    console.log("Error create product", error);
+    return res
       .status(500)
       .json({ error: "Failed to create product", details: error.message });
   }
@@ -150,11 +143,7 @@ router.put("/:id", async (req, res) => {
       images,
       gender,
       ageGroup,
-      productSegmentId,
       storeCategoryId,
-      standardProperties,
-      customProperties,
-      translations,
     } = req.body;
 
     const storeCategory = await prisma.storeCategory.findFirst({
@@ -164,7 +153,7 @@ router.put("/:id", async (req, res) => {
     });
 
     const updatedProduct = await prisma.product.update({
-      where: { id: parseInt(id) },
+      where: { id: id },
       data: {
         reference,
         name,
@@ -176,16 +165,11 @@ router.put("/:id", async (req, res) => {
         productSegmentId: storeCategory.productSegmentId,
         storeCategoryId,
         storefrontId: storefront.id,
-        standardProperties: {
-          deleteMany: {},
-          create: standardProperties || [],
-        },
-        customProperties: { deleteMany: {}, create: customProperties || [] },
-        translations: { deleteMany: {}, create: translations || [] },
       },
       include: {
-        standardProperties: true,
-        customProperties: true,
+        variants: true,
+        storeCategory: true,
+        productSegment: true,
         translations: true,
       },
     });

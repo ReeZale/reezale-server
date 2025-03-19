@@ -8,14 +8,26 @@ const storefrontRegionsRouter = require("./routes/storefront-locale");
 const storeCategoryRouter = require("./routes/store-categories");
 const paymentAccountRouter = require("./routes/payment-accounts");
 const productsRouter = require("./routes/product");
+const templateRouter = require("./routes/templates");
+const templateFieldsRouter = require("./routes/template-fields");
+const storefrontProductSegmentRouter = require("./routes/storefront-product-segment");
+const storefrontTemplateRouter = require("./routes/storefront-templates");
+const storefrontTemplateFieldsRouter = require("./routes/storefront-template-fields");
+const storefrontFieldsRouter = require("./routes/storefront-fields");
 
 router.use("/accounts", accountRouter);
 router.use("/users", userRouter);
 router.use("/organizations", organizationRouter);
 router.use("/storefront", storefrontRouter);
 router.use("/storefront-regions", storefrontRegionsRouter);
+router.use("/storefront-product-segments", storefrontProductSegmentRouter);
+router.use("/storefront-templates", storefrontTemplateRouter);
+router.use("/storefront-fields", storefrontFieldsRouter);
+router.use("/storefront-template-fields", storefrontTemplateFieldsRouter);
 router.use("/store-categories", storeCategoryRouter);
 router.use("/payment-accounts", paymentAccountRouter);
 router.use("/products", productsRouter);
+router.use("/templates", templateRouter);
+router.use("/template-fields", templateFieldsRouter);
 
 module.exports = router;

@@ -1,9 +1,10 @@
 const express = require("express");
 const prisma = require("../config/prisma");
 const { hashPassword, comparePassword } = require("../helpers/bcrypt");
-const { createToken } = require("../helpers/jwt");
+const { createAccessToken, createRefreshToken } = require("../helpers/jwt");
 const router = express.Router();
 
+// Login Route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -12,7 +13,6 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    // Find user by email
     const user = await prisma.user.findUnique({
       where: { email },
       include: { account: true },
@@ -22,23 +22,35 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ error: "User does not exist" });
     }
 
-    // Compare password with hashed password from DB
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = createToken({ userId: user.id, accountId: user.account.id });
+    const payload = { userId: user.id, accountId: user.account.id };
+    const accessToken = createAccessToken(payload);
+    const refreshToken = createRefreshToken(payload);
 
-    // Set token in HTTP-Only cookie
-    res.cookie("reezale_auth", token, {
-      httpOnly: true, // Prevents access via JavaScript (XSS protection)
-      secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
-      sameSite: "Strict", // CSRF protection
-      maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    await prisma.authToken.create({
+      data: {
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiry
+      },
     });
 
-    // Successful login response
+    res.cookie("reezale_auth", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
+    res.cookie("reezale_refresh", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
     return res.status(200).json({ user });
   } catch (error) {
     console.error("Login Error:", error);
@@ -46,6 +58,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Register Route
 router.post("/register", async (req, res) => {
   const { companyName, userName, email, password } = req.body;
 
@@ -54,57 +67,77 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
+    const existingUser = await prisma.user.findFirst({ where: { email } });
 
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
     const hashedPassword = await hashPassword(password);
-
     const account = await prisma.account.create({
-      data: {
-        name: companyName,
-      },
+      data: { name: companyName },
     });
-
     const user = await prisma.user.create({
       data: {
         name: userName,
-        email: email,
+        email,
         password: hashedPassword,
         accountId: account.id,
-        archive: false,
       },
     });
 
-    const token = createToken({ userId: user.id, accountId: account.id });
+    const payload = { userId: user.id, accountId: account.id };
+    const accessToken = createAccessToken(payload);
+    const refreshToken = createRefreshToken(payload);
 
-    // Set token in HTTP-Only cookie
-    res.cookie("reezale_auth", token, {
-      httpOnly: true, // Prevents access via JavaScript (XSS protection)
-      secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
-      sameSite: "Strict", // CSRF protection
-      maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    await prisma.authToken.create({
+      data: {
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    res.cookie("reezale_auth", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
+    res.cookie("reezale_refresh", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
     });
 
     return res.status(201).json({ user });
   } catch (error) {
-    console.log("Error", error);
+    console.error("Register Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post("/logout", (req, res) => {
+// Logout Route
+router.post("/logout", async (req, res) => {
+  const refreshToken = req.cookies.reezale_refresh;
+  if (refreshToken) {
+    await prisma.authToken.updateMany({
+      where: { token: refreshToken },
+      data: { isValid: false },
+    });
+  }
+
   res.clearCookie("reezale_auth", {
     httpOnly: true,
     secure: true,
     sameSite: "Strict",
   });
+  res.clearCookie("reezale_refresh", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  });
+
   return res.status(200).json({ message: "Logged out successfully" });
 });
 
