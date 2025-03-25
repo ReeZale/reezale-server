@@ -22,4 +22,19 @@ router.get("/locales", async (req, res) => {
   }
 });
 
+router.get("/countries", async (req, res) => {
+  try {
+    const countries = await prisma.country.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return res.status(200).json({ countries });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

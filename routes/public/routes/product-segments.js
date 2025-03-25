@@ -3,6 +3,32 @@ const Fuse = require("fuse.js"); // ✅ Import fuzzy search library
 const prisma = require("../../../config/prisma");
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const data = await prisma.productSegment.findMany({
+      where: {
+        active: true,
+      },
+      orderBy: {
+        path: "asc",
+      },
+    });
+
+    const productSegments = data.map((item) => ({
+      id: item.id,
+      name: item.translation[req.localeCode].name,
+      path: item.translation[req.localeCode].path,
+    }));
+
+    return res.status(200).json({
+      productSegments,
+    });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 router.get("/search", async (req, res) => {
   try {
     const { page = 1, limit = 25, search = "", parentPath = null } = req.query;
@@ -76,6 +102,59 @@ router.get("/sub-categories", async (req, res) => {
     });
 
     return res.status(200).json({ productSegments });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/properties/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const segment = await prisma.productSegment.findUnique({
+      where: { id: id },
+    });
+
+    if (!segment) {
+      return res.status(404).json({ error: "Product segment not found" });
+    }
+
+    const segmentProperties = await prisma.segmentProperty.findMany({
+      where: {
+        productSegmentId: id,
+      },
+      include: {
+        property: true,
+      },
+    });
+
+    let groupProperties = [];
+    if (segment.propertyGroupId) {
+      groupProperties = await prisma.propertyGroupProperty.findMany({
+        where: {
+          propertyGroupId: segment.propertyGroupId,
+        },
+        include: {
+          property: true,
+        },
+      });
+    }
+    console.log("Segment Properties", segmentProperties);
+    console.log("Group Properties", groupProperties);
+
+    const merged = [...segmentProperties, ...groupProperties];
+
+    // Extract just the property objects
+    const propertiesOnly = merged.map((item) => item.property);
+
+    // Sort the extracted properties by key
+    propertiesOnly.sort((a, b) => (a.key > b.key ? 1 : -1));
+
+    console.log("Properties only", propertiesOnly);
+
+    // Return only the properties
+    return res.status(200).json({ properties: propertiesOnly });
   } catch (error) {
     console.log("Error", error);
     return res.status(500).json({ error: error.message });

@@ -14,8 +14,13 @@ const storefrontProductSegmentRouter = require("./routes/storefront-product-segm
 const storefrontTemplateRouter = require("./routes/storefront-templates");
 const storefrontTemplateFieldsRouter = require("./routes/storefront-template-fields");
 const storefrontFieldsRouter = require("./routes/storefront-fields");
+const brandsRouter = require("./routes/brands");
+const storefrontBrandsRouter = require("./routes/storefront-brands");
+const productPropertiesRouter = require("./routes/product-properties");
+const productVariantsRouter = require("./routes/product-variants");
 
 router.use("/accounts", accountRouter);
+router.use("/brands", brandsRouter);
 router.use("/users", userRouter);
 router.use("/organizations", organizationRouter);
 router.use("/storefront", storefrontRouter);
@@ -24,9 +29,12 @@ router.use("/storefront-product-segments", storefrontProductSegmentRouter);
 router.use("/storefront-templates", storefrontTemplateRouter);
 router.use("/storefront-fields", storefrontFieldsRouter);
 router.use("/storefront-template-fields", storefrontTemplateFieldsRouter);
+router.use("/storefront-brands", storefrontBrandsRouter);
 router.use("/store-categories", storeCategoryRouter);
 router.use("/payment-accounts", paymentAccountRouter);
 router.use("/products", productsRouter);
+router.use("/product-properties", productPropertiesRouter);
+router.use("/product-variants", productVariantsRouter);
 router.use("/templates", templateRouter);
 router.use("/template-fields", templateFieldsRouter);
 

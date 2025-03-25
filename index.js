@@ -4,13 +4,6 @@ const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
-const ginaTricot = require("./data/store/gina-tricot");
-const {
-  processCategories,
-  processCategoryTranslations,
-  updateProductCategories,
-} = require("./data/temp");
-const { uploadStandardFields } = require("./data/uploads/standardFields");
 
 const app = express();
 
@@ -47,12 +40,7 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-(async () => {
-  //await processCategories("./data/google-categories.txt");
-  //await processCategoryTranslations("data/gc-se-sv.txt", 1);
-  //await uploadStandardFields();
-  //await updateProductCategories();
-})();
+(async () => {})();
 
 // Use the centralized router
 app.use("/api/v1", router);

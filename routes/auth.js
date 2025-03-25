@@ -27,7 +27,11 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const payload = { userId: user.id, accountId: user.account.id };
+    const payload = {
+      userId: user.id,
+      accountId: user.account.id,
+      localeId: user.preferredLocalId,
+    };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
 
@@ -43,12 +47,14 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 60 minutes
     });
 
     res.cookie("reezale_refresh", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(200).json({ user });
@@ -60,7 +66,7 @@ router.post("/login", async (req, res) => {
 
 // Register Route
 router.post("/register", async (req, res) => {
-  const { companyName, userName, email, password } = req.body;
+  const { companyName, userName, email, password, localeId } = req.body;
 
   if (!companyName || !userName || !email || !password) {
     return res.status(400).json({ error: "Missing required information" });
@@ -83,10 +89,15 @@ router.post("/register", async (req, res) => {
         email,
         password: hashedPassword,
         accountId: account.id,
+        preferredLocalId: localeId ?? 2,
       },
     });
 
-    const payload = { userId: user.id, accountId: account.id };
+    const payload = {
+      userId: user.id,
+      accountId: account.id,
+      localeId: user.preferredLocalId,
+    };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
 
@@ -102,12 +113,14 @@ router.post("/register", async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 60 minutes
     });
 
     res.cookie("reezale_refresh", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(201).json({ user });

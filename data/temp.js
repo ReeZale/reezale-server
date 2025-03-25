@@ -148,21 +148,86 @@ async function processCategoryTranslations(filePath, localeId) {
 }
 
 async function updateProductCategories() {
-  const productSegments = await prisma.productSegment.updateMany({
+  const productSegments = await prisma.productSegment.updateManyAndReturn({
     where: {
       path: {
-        startsWith: "Apparel",
+        startsWith:
+          "Apparel & Accessories > Clothing Accessories > Traditional Clothing Accessories",
       },
-      standardTemplateId: null,
     },
     data: {
-      standardTemplateId: 1,
+      active: false,
     },
   });
+
+  console.log("Product segments", productSegments);
 }
+
+const updateProductGroupProperties = async () => {
+  const updateProductGroup = await prisma.productSegment.updateManyAndReturn({
+    where: {
+      path: {
+        startsWith: "Apparel & Accessories > Clothing >",
+      },
+    },
+    data: {
+      propertyGroupId: 1,
+    },
+  });
+
+  console.log("UpdatedGroups", updateProductGroup);
+};
+
+const migrateProductSegmentTranslations = async () => {
+  const segments = await prisma.productSegment.findMany({
+    include: {
+      translations: {
+        include: {
+          locale: true,
+        },
+      },
+    },
+  });
+
+  for (const segment of segments) {
+    const translationsObj = {};
+
+    // Add en-gb generated from the segment itself
+    translationsObj["en-gb"] = {
+      name: segment.name,
+      description: null,
+      slug: segment.name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-"),
+      path: segment.path,
+    };
+
+    for (const translation of segment.translations) {
+      translationsObj[translation.locale.code] = {
+        name: translation.name,
+        description: translation.description || null,
+        slug: translation.slug,
+        path: translation.path,
+      };
+    }
+
+    await prisma.productSegment.update({
+      where: { id: segment.id },
+      data: {
+        translation: translationsObj,
+      },
+    });
+  }
+
+  console.log("Product segment translations migrated to JSON");
+};
 
 module.exports = {
   processCategories,
   processCategoryTranslations,
   updateProductCategories,
+  updateProductGroupProperties,
+  migrateProductSegmentTranslations,
 };

@@ -13,7 +13,12 @@ router.get("/", async (req, res) => {
           id: accountId,
         },
       },
-      include: { locales: true }, // Include localized storefront settings
+      include: {
+        locales: true,
+        country: {
+          include: { currency: true },
+        },
+      }, // Include localized storefront settings
     });
 
     if (!storefront) {
@@ -52,6 +57,7 @@ router.post("/", async (req, res) => {
       buttonTextColor,
       fontFamily,
       borderRadius,
+      countryId,
     } = req.body;
 
     // Upsert (Update if exists, Create if not)
@@ -82,6 +88,7 @@ router.post("/", async (req, res) => {
             id: accountId,
           },
         },
+        countryId: countryId,
       },
       create: {
         name,
@@ -109,6 +116,7 @@ router.post("/", async (req, res) => {
             id: accountId,
           },
         },
+        countryId: countryId,
       },
     });
 

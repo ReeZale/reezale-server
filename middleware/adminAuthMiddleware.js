@@ -29,6 +29,8 @@ const adminAuthMiddleware = async (req, res, next) => {
   if (decodedAccess && decodedAccess.userId) {
     req.userId = decodedAccess.userId;
     req.accountId = decodedAccess.accountId;
+    req.localeId = decodedAccess.localeId;
+    req.localeCode = req.cookies.i18next.toLowerCase();
     return next();
   }
 
@@ -63,11 +65,13 @@ const adminAuthMiddleware = async (req, res, next) => {
     const newAccessToken = createAccessToken({
       userId: decodedRefresh.userId,
       accountId: decodedRefresh.accountId,
+      localeId: decodedRefresh.localeId,
     });
 
     const newRefreshToken = createRefreshToken({
       userId: decodedRefresh.userId,
       accountId: decodedRefresh.accountId,
+      localeId: decodedRefresh.localeId,
     });
 
     await prisma.authToken.update({
@@ -75,18 +79,24 @@ const adminAuthMiddleware = async (req, res, next) => {
       data: { token: newRefreshToken, updatedAt: new Date() },
     });
 
-    // Send back new tokens
     res.cookie("reezale_auth", newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 60 minutes
     });
+
     res.cookie("reezale_refresh", newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     req.userId = decodedRefresh.userId;
     req.accountId = decodedRefresh.accountId;
+    req.localeCode = req.cookies.i18next.toLowerCase();
+
     return next();
   } catch (refreshError) {
     console.error("Refresh flow error:", refreshError);

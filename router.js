@@ -18,9 +18,10 @@ const publicRouter = require("./routes/public/router");
 const authenticateSeller = require("./middleware/authenticateSeller");
 const shopMiddleware = require("./middleware/shopMiddleware");
 const adminAuthMiddleware = require("./middleware/adminAuthMiddleware");
+const publicMiddleware = require("./middleware/publicMiddleware");
 
 router.use("/auth", authRouter);
-router.use("/public", publicRouter);
+router.use("/public", publicMiddleware, publicRouter);
 router.use("/admin", adminAuthMiddleware, adminRouter);
 router.use("/feeds", feedRouter);
 router.use("/offers", authenticateSeller, offerRouter);

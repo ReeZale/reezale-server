@@ -1,5 +1,6 @@
 const express = require("express");
 const prisma = require("../../../config/prisma");
+const { PropertyType } = require("@prisma/client");
 const router = express.Router();
 
 // 🚀 GET all products (with optional filtering by storefront)
@@ -22,7 +23,6 @@ router.get("/", async (req, res) => {
         productSegment: true,
         storeCategory: true,
         variants: true,
-        translations: true,
       },
     });
     return res.status(200).json({ products });
@@ -49,12 +49,18 @@ router.get("/:id", async (req, res) => {
     const product = await prisma.product.findUnique({
       where: { id: req.params.id, storefrontId: storefront.id },
       include: {
+        productSegment: true,
         storeCategory: true,
         variants: true,
-        translations: true,
-        properties: true,
+        properties: {
+          include: {
+            property: true,
+          },
+        },
+        brand: true,
       },
     });
+
     if (!product) return res.status(404).json({ error: "Product not found" });
     return res.status(200).json({ product });
   } catch (error) {
@@ -81,9 +87,12 @@ router.post("/", async (req, res) => {
       name,
       description,
       thumbnailImage,
+      productImage,
       images,
       gender,
       ageGroup,
+      brandId,
+      productSegmentId,
       storeCategoryId,
     } = req.body;
 
@@ -99,9 +108,11 @@ router.post("/", async (req, res) => {
         name,
         description,
         thumbnailImage,
+        productImage,
         images,
         gender,
         ageGroup,
+        brandId: brandId,
         productSegmentId: storeCategory.productSegmentId,
         storeCategoryId,
         storefrontId: storefront.id,
@@ -112,6 +123,43 @@ router.post("/", async (req, res) => {
         productSegment: true,
       },
     });
+
+    const productSegment = await prisma.productSegment.findUnique({
+      where: {
+        id: newProduct.productSegmentId,
+      },
+    });
+
+    const groupProperties = await prisma.propertyGroupProperty.findMany({
+      where: {
+        propertyGroupId: productSegment.propertyGroupId,
+      },
+    });
+
+    const segmentProperties = await prisma.segmentProperty.findMany({
+      where: {
+        productSegmentId: productSegment.id,
+      },
+    });
+
+    await prisma.$transaction([
+      prisma.productProperty.createMany({
+        data: groupProperties.map((item) => ({
+          productId: newProduct.id,
+          propertyId: item.propertyId,
+          type: "GROUP",
+          values: [],
+        })),
+      }),
+      prisma.productProperty.createMany({
+        data: segmentProperties.map((item) => ({
+          productId: newProduct.id,
+          propertyId: item.propertyId,
+          type: "SEGMENT",
+          values: [],
+        })),
+      }),
+    ]);
 
     return res.status(201).json({ product: newProduct });
   } catch (error) {
@@ -170,7 +218,6 @@ router.put("/:id", async (req, res) => {
         variants: true,
         storeCategory: true,
         productSegment: true,
-        translations: true,
       },
     });
 
