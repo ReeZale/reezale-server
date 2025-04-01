@@ -25,6 +25,7 @@ model Account {
   storefront      Storefront?      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storefrontId    BigInt?          @unique
   paymentAccounts PaymentAccount[]
+  media           Media[]
 }
 
 model User {
@@ -34,7 +35,7 @@ model User {
   password         String
   account          Account     @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId        BigInt
-  preferredLocale  Locale?     @relation(fields: [preferredLocalId], references: [id])
+  preferredLocale  Locale?     @relation(fields: [preferredLocalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   preferredLocalId BigInt?
   archive          Boolean     @default(false)
   createdAt        DateTime    @default(now())
@@ -118,6 +119,8 @@ model Storefront {
   regions         StorefrontRegion[]
   categories      StoreCategory[]
   brands          StoreBrand[]
+  collections     StoreCollection[]
+  navigation      StoreNavigation[]
 }
 
 //Standard produt segments that a store services
@@ -225,32 +228,48 @@ enum PaymentFrequency {
 
 //Standard product segments linked to major ecommerce and advertising platfroms
 model ProductSegment {
-  id                 BigInt                     @id @default(autoincrement())
-  name               String
-  path               String // 🔥 Remove @unique, Postgres index limitation exceeded
-  gcc                String? //Google category code
-  acc                String? //Amazon category code
-  scc                String? //Shopify category code
-  ecc                String? //eBay category code
-  translation        Json?
-  parent             ProductSegment?            @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  parentId           BigInt?
-  children           ProductSegment[]           @relation("ParentChild")
-  imageUrl           String? // 🔥 Optional category icon/image for UI
-  standardTemplate   StandardTemplate?          @relation(fields: [standardTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  standardTemplateId BigInt?
-  propertyGroupId    BigInt? // Inherits a group
-  propertyGroup      PropertyGroup?             @relation(fields: [propertyGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  active             Boolean                    @default(false)
-  createdAt          DateTime                   @default(now())
-  updatedAt          DateTime                   @default(now()) @updatedAt
-  storeCategories    StoreCategory[]
-  products           Product[]
-  storefronts        StorefrontProductSegment[]
-  properties         SegmentProperty[]
+  id                         BigInt                      @id @default(autoincrement())
+  name                       String
+  path                       String // 🔥 Remove @unique, Postgres index limitation exceeded
+  gcc                        String? //Google category code
+  acc                        String? //Amazon category code
+  scc                        String? //Shopify category code
+  ecc                        String? //eBay category code
+  translation                Json?
+  parent                     ProductSegment?             @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId                   BigInt?
+  children                   ProductSegment[]            @relation("ParentChild")
+  imageUrl                   String? // 🔥 Optional category icon/image for UI
+  standardTemplate           StandardTemplate?           @relation(fields: [standardTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  standardTemplateId         BigInt?
+  propertyGroupId            BigInt? // Inherits a group
+  propertyGroup              PropertyGroup?              @relation(fields: [propertyGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  active                     Boolean                     @default(false)
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @default(now()) @updatedAt
+  storeCategories            StoreCategory[]
+  products                   Product[]
+  storefronts                StorefrontProductSegment[]
+  properties                 SegmentProperty[]
+  productSegmentTranslations ProductSegmentTranslation[]
 
   @@index([parentId]) // 🔥 Index for faster hierarchical queries
   @@index([path], type: Hash) // ✅ Use a Hash index to prevent size limit errors
+}
+
+model ProductSegmentTranslation {
+  id               BigInt         @id @default(autoincrement())
+  name             String
+  path             String
+  productSegment   ProductSegment @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId BigInt
+  locale           Locale         @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId         BigInt
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+
+  @@unique([productSegmentId, localeId])
+  @@index([path])
 }
 
 model PropertyGroup {
@@ -276,16 +295,57 @@ model PropertyGroupProperty {
 }
 
 model Property {
-  id              BigInt                  @id @default(autoincrement())
-  key             String                  @unique
-  label           String
-  translations    Json // locale-code: translated label
-  options         Json[] // key, locale-code, translation
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @default(now()) @updatedAt
-  productSegments SegmentProperty[]
-  propertyGroups  PropertyGroupProperty[]
-  products        ProductProperty[]
+  id                   BigInt                  @id @default(autoincrement())
+  key                  String                  @unique
+  label                String
+  translations         Json // locale-code: translated label
+  options              Json[] // key, locale-code, translation
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @default(now()) @updatedAt
+  productSegments      SegmentProperty[]
+  propertyGroups       PropertyGroupProperty[]
+  products             ProductProperty[]
+  propertyTranslations PropertyTranslation[]
+  propertyOptions      PropertyOption[]
+}
+
+model PropertyOption {
+  id                        BigInt                      @id @default(autoincrement())
+  key                       String
+  property                  Property                    @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyId                BigInt
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @default(now()) @updatedAt
+  propertyOptionTranslation PropertyOptionTranslation[]
+  productPropertiesOptions  ProductPropertyOption[]
+}
+
+model PropertyTranslation {
+  id         BigInt   @id @default(autoincrement())
+  key        String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyId BigInt
+  locale     Locale   @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId   BigInt
+  label      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@unique([propertyId, localeId])
+}
+
+model PropertyOptionTranslation {
+  id               BigInt         @id @default(autoincrement())
+  key              String
+  popertyOption    PropertyOption @relation(fields: [propertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyOptionId BigInt
+  locale           Locale         @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId         BigInt
+  label            String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+
+  @@unique([propertyOptionId, localeId])
 }
 
 model SegmentProperty {
@@ -302,7 +362,7 @@ model SegmentProperty {
 }
 
 model Product {
-  id               BigInt            @id @default(autoincrement())
+  id               BigInt                    @id @default(autoincrement())
   reference        String
   name             String
   description      String
@@ -311,24 +371,177 @@ model Product {
   images           String[]
   gender           Gender?
   ageGroup         AgeGroup?
-  brand            Brand?            @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brand            Brand?                    @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   brandId          BigInt?
-  productSegment   ProductSegment    @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productSegmentId BigInt
-  storeCategory    StoreCategory?    @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegment   ProductSegment?           @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId BigInt?
+  storeCategory    StoreCategory?            @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storeCategoryId  BigInt?
-  storefront       Storefront        @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefront       Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storefrontId     BigInt
   url              String?
-  variantConfig    VariantConfig?    @relation(fields: [variantConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hasProperties    Boolean                   @default(false)
+  hasVariants      Boolean                   @default(false)
+  variantConfig    VariantConfig?            @relation(fields: [variantConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantConfigId  BigInt?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @default(now()) @updatedAt
   variants         ProductVariant[]
   properties       ProductProperty[]
+  productMedia     ProductMedia[]
+  storeCollections StoreCollectionProducts[] //The collections this product belongs to
 
   @@unique([reference, storefrontId])
   @@index([brandId, storefrontId])
+}
+
+enum ProductMediaType {
+  PRIMARY // Model / Hero
+  PRODUCT // Flat lay / clean
+  GALLERY
+  OTHER
+}
+
+model ProductMedia {
+  id        BigInt           @id @default(autoincrement())
+  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId BigInt
+  media     Media            @relation(fields: [mediaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mediaId   BigInt
+  mediaType ProductMediaType
+  order     Int?
+  alt       String //image caption
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @default(now()) @updatedAt
+
+  @@unique([productId, mediaId])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  OTHER
+}
+
+enum MediaSource {
+  UPLOADED
+  EXTERNAL
+}
+
+model Media {
+  id        BigInt         @id @default(autoincrement())
+  url       String
+  fileName  String?
+  fileSize  Int?
+  width     Int? // for images/videos
+  height    Int? // for images/videos
+  duration  Int? // in seconds (for videos/audio)
+  mimeType  String?
+  alt       String?
+  mediaType MediaType
+  source    MediaSource    @default(UPLOADED)
+  bucket    MediaBucket    @default(PRODUCTS)
+  account   Account        @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId BigInt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @default(now()) @updatedAt
+  products  ProductMedia[]
+
+  @@unique([url, accountId])
+  @@index([mediaType])
+}
+
+enum MediaBucket {
+  PRODUCTS
+  CAMPAIGNS
+  BANNER
+  LOGO
+  CATEGORIES
+  COLLECTIONS
+  PROFILE
+  DOCUMENTS
+}
+
+model Collection {
+  id             String                  @id @default(uuid())
+  key            String                  @unique
+  collectionType CollectionType
+  parent         Collection?             @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId       String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @default(now()) @updatedAt
+  translations   CollectionTranslation[]
+  storefronts    StoreCollection[]
+  children       Collection[]            @relation("ParentChild")
+}
+
+model CollectionTranslation {
+  id           BigInt     @id @default(autoincrement())
+  label        String
+  path         String?
+  slug         String
+  locale       Locale     @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId     BigInt
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  @@unique([localeId, collectionId])
+}
+
+enum CollectionType {
+  GENDER
+  AGEGROUP
+  SEASON
+  OCCASION
+  HOLIDAY
+  MATERIAL // e.g., leather, wood, metal
+  STYLE // e.g., modern, vintage, minimalist
+  BRAND // for grouping by manufacturer
+  TREND // e.g., trending, new arrivals
+  COLOR // useful for visual filters
+  FUNCTION // e.g., travel, home use, office
+  FEATURE // e.g., waterproof, eco-friendly, smart-enabled
+  ROOM // e.g., kitchen, living room (for home goods)
+  DEVICE // e.g., compatible with iOS, Android
+  CATEGORY // e.g., electronics, furniture, etc.
+}
+
+model StoreCollection {
+  id           BigInt                    @id @default(autoincrement())
+  storefront   Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId BigInt
+  collection   Collection                @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId String
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @default(now()) @updatedAt
+  products     StoreCollectionProducts[]
+
+  @@unique([storefrontId, collectionId])
+}
+
+model StoreCollectionProducts {
+  id                BigInt          @id @default(autoincrement())
+  product           Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId         BigInt
+  storeCollection   StoreCollection @relation(fields: [storeCollectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeCollectionId BigInt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @default(now()) @updatedAt
+
+  @@unique([productId, storeCollectionId])
+}
+
+model StoreNavigation {
+  id           BigInt     @id @default(autoincrement())
+  storefront   Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId BigInt
+  slug         String
+  createdAt    DateTime
+  updatedAt    DateTime
 }
 
 model VariantConfig {
@@ -387,11 +600,48 @@ model ProductVariant {
   sku                      String
   gtin                     String?
   mpn                      String?
+  name                     String?
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @default(now()) @updatedAt
   productVariantProperties ProductVariantProperty[]
+  listPrices               ListPrice[]
 
   @@unique([productId, sku])
+}
+
+model ListPrice {
+  id               BigInt         @id @default(autoincrement())
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productVariantId BigInt
+  condition        Condition
+  currrency        Currency       @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId       BigInt
+  country          Country        @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId        BigInt
+  amount           Decimal        @db.Decimal(10, 2)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+  offers           Offer[]
+
+  @@unique([productVariantId, countryId, currencyId, condition])
+}
+
+model Offer {
+  id          BigInt    @id @default(autoincrement())
+  listPrice   ListPrice @relation(fields: [listPriceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  listPriceId BigInt
+  amount      Decimal   @db.Decimal(10, 2) // discounted price
+  available   Boolean   @default(true)
+  validUntil  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+}
+
+enum Condition {
+  NEW
+  USED
+  REFURBISHED
+  RETURN
 }
 
 model Brand {
@@ -402,7 +652,6 @@ model Brand {
   description String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
-  itemGroups  ItemGroup[]
   products    Product[]
   storefronts StoreBrand[]
 }
@@ -422,17 +671,30 @@ model StoreBrand {
 }
 
 model ProductProperty {
-  id         BigInt        @id @default(autoincrement())
-  product    Product       @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId  BigInt
-  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  propertyId BigInt
-  type       PropertyType?
-  values     Json[] // Storing option keys or values here
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @default(now()) @updatedAt
+  id                     BigInt                  @id @default(autoincrement())
+  product                Product                 @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId              BigInt
+  property               Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyId             BigInt
+  type                   PropertyType?
+  values                 Json[] // Storing option keys or values here
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @default(now()) @updatedAt
+  productPropertyOptions ProductPropertyOption[]
 
   @@unique([productId, propertyId])
+}
+
+model ProductPropertyOption {
+  id                BigInt          @id @default(autoincrement())
+  productProperty   ProductProperty @relation(fields: [productPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productPropertyId BigInt
+  propertyOption    PropertyOption  @relation(fields: [propertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyOptionId  BigInt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @default(now()) @updatedAt
+
+  @@unique([productPropertyId, propertyOptionId])
 }
 
 enum PropertyType {
@@ -585,20 +847,15 @@ model Seller {
   updatedAt     DateTime            @default(now()) @updatedAt
   discountRules DiscountRule[]
   productFeeds  ProductFeed[]
-  offers        Offer[]
   categories    Category[]
   credentials   SellerCredentials[]
-  itemGroups    ItemGroup[]
   items         Item[]
   pageConfigs   PageConfig[]
-  images        Image[]
   notifications OfferNotification[]
 }
 
 model PageConfig {
   id        BigInt   @id @default(autoincrement())
-  image     Image    @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  imageId   BigInt
   tagline   String?
   locale    Locale   @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   localeId  BigInt
@@ -619,16 +876,6 @@ model SellerCredentials {
   isValid        Boolean  @default(true)
   createdAt      DateTime @default(now())
   updateAt       DateTime @default(now()) @updatedAt
-}
-
-model Image {
-  id          BigInt       @id @default(autoincrement())
-  seller      Seller       @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sellerId    BigInt
-  url         String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
-  pageConfigs PageConfig[]
 }
 
 model DiscountRule {
@@ -654,7 +901,6 @@ model CategoryDiscountRule {
   updatedAt      DateTime     @default(now()) @updatedAt
   category       Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId     BigInt
-  offers         Offer[]
 
   @@index([discountRuleId, categoryId])
 }
@@ -673,19 +919,19 @@ model ProductFeed {
 }
 
 model Locale {
-  id               BigInt              @id @default(autoincrement())
-  code             String
+  id               BigInt                      @id @default(autoincrement())
+  code             String                      @unique
   label            String?
-  country          Country?            @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country          Country?                    @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   countryId        BigInt?
-  language         Language?           @relation(fields: [languageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  language         Language?                   @relation(fields: [languageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   languageId       BigInt?
-  currency         String
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  currency         Currency?                   @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId       BigInt?
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
   discounts        DiscountRule[]
   productFeeds     ProductFeed[]
-  offers           Offer[]
   categories       Category[]
   itemDescriptions ItemDescription[]
   itemSizes        ItemSize[]
@@ -694,6 +940,10 @@ model Locale {
   storefronts      StorefrontLocale[]
   storefrontRegion StorefrontRegion[]
   users            User[]
+  properties       PropertyTranslation[]
+  propertyOptions  PropertyOptionTranslation[]
+  productSegments  ProductSegmentTranslation[]
+  collections      CollectionTranslation[]
 }
 
 model Category {
@@ -717,28 +967,6 @@ model Category {
   @@index([sellerId, localeId])
 }
 
-model ItemGroup {
-  id              BigInt              @id @default(autoincrement())
-  sku             String
-  brand           Brand               @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  name            String
-  gender          Gender
-  ageGroup        AgeGroup
-  sizeType        SizeType
-  image           String
-  images          String[]
-  seller          Seller?             @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sellerId        BigInt?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  itemDescription ItemDescription[]
-  brandId         BigInt
-  items           Item[]
-  notifications   OfferNotification[]
-
-  @@unique([brandId, sku])
-  @@index([brandId, sku, gender, ageGroup, sizeType])
-}
 
 enum Gender {
   male
@@ -763,8 +991,6 @@ enum SizeType {
 
 model Item {
   id          BigInt      @id @default(autoincrement())
-  itemGroup   ItemGroup   @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  itemGroupId BigInt
   sku         String
   gtin        String?
   mpn         String?
@@ -777,10 +1003,9 @@ model Item {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   sizes       ItemSize[]
-  offers      Offer[]
   inventory   Inventory[]
 
-  @@unique([itemGroupId, sku])
+  @@unique([, sku])
 }
 
 model ItemSize {
@@ -807,65 +1032,6 @@ model SizeOption {
   @@unique([sizeSystem, sizeType, size])
 }
 
-model ItemDescription {
-  id          BigInt    @id @default(autoincrement())
-  itemGroup   ItemGroup @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  title       String
-  description String
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryId  BigInt
-  color       String
-  material    String
-  pattern     String
-  price       Decimal
-  salePrice   Decimal
-  currency    String
-  link        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  itemGroupId BigInt
-  locale      Locale    @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  localeId    BigInt
-
-  @@unique([itemGroupId, localeId])
-}
-
-model Offer {
-  id                BigInt                @id @default(autoincrement())
-  seller            Seller                @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sellerId          BigInt
-  sender            Json? //sender information, address
-  member            Member?               @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  memberId          BigInt?
-  offerType         OfferType             @default(business)
-  reference         String
-  condition         Condition?
-  availableDate     DateTime              @default(now())
-  expirationDate    DateTime
-  item              Item                  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  itemId            BigInt
-  inventory         Inventory?            @relation(fields: [inventoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  inventoryId       BigInt?
-  appliedDiscount   CategoryDiscountRule? @relation(fields: [appliedDiscountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  appliedDiscountId BigInt?
-  price             Decimal
-  currency          String?
-  locale            Locale                @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  localeId          BigInt
-  country           Country?              @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  countryId         BigInt?
-  shipAddress       String? //Depricate and replace with seller profile whcih contains the information necessary to create a transport order. Can provide anonimity to the seller in case of a return
-  quantity          Int                   @default(1)
-  archived          Boolean               @default(false)
-  status            OfferStatus           @default(available)
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  notifications     OfferNotification[]
-  allocations       InventoryAllocation[]
-
-  @@unique([reference, sellerId, itemId])
-  @@index([sellerId, localeId, itemId])
-}
 
 enum OfferStatus {
   available // The offer is available for purchase
@@ -890,8 +1056,6 @@ model OfferNotification {
   seller           Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   notified         Boolean   @default(false)
   notificationDate DateTime?
-  offer            Offer?    @relation(fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  offerId          BigInt?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   sellerId         BigInt
@@ -902,12 +1066,6 @@ model OfferNotification {
 enum OfferType {
   private
   business
-}
-
-enum Condition {
-  new
-  used
-  refurbished
 }
 
 model Order {
@@ -964,13 +1122,11 @@ model Inventory {
   currency   String
   countryId  BigInt
   price      Decimal
-  condition  Condition   @default(new)
   available  Int         @default(0)
   allocated  Int         @default(0)
   reserved   Int         @default(0)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  offers     Offer[]
   orderItems OrderItem[]
 }
 
@@ -978,8 +1134,6 @@ model InventoryAllocation {
   id                 BigInt            @id @default(autoincrement())
   orderItem          OrderItem         @relation(fields: [orderItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   orderItemId        BigInt
-  offer              Offer             @relation(fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  offerId            BigInt
   transportRequest   TransportRequest? @relation(fields: [transportRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   transportRequestId BigInt?
   createdAt          DateTime          @default(now())
@@ -996,7 +1150,6 @@ model Member {
   updatedAt DateTime  @updatedAt
   addresses Address[]
   orders    Order[]
-  offers    Offer[]
 }
 
 model Address {
@@ -1109,13 +1262,15 @@ model Country {
   name        String
   currency    Currency?    @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   currencyId  BigInt?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
   partners    Partner[]
   addresses   Address[]
   inventory   Inventory[]
-  offers      Offer[]
   orders      Order[]
   locales     Locale[]
   storefronts Storefront[]
+  listPrices  ListPrice[]
 }
 
 model Currency {
@@ -1126,6 +1281,8 @@ model Currency {
   updatedAt       DateTime         @updatedAt
   country         Country[]
   paymentAccounts PaymentAccount[]
+  locales         Locale[]
+  listPrices      ListPrice[]
 }
 
 model Language {

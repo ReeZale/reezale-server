@@ -37,4 +37,19 @@ router.get("/countries", async (req, res) => {
   }
 });
 
+router.get("/currencies", async (req, res) => {
+  try {
+    const currencies = await prisma.currency.findMany({
+      orderBy: {
+        code: "asc",
+      },
+    });
+
+    return res.status(200).json({ currencies });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

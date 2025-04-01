@@ -34,6 +34,7 @@ router.get("/", async (req, res) => {
       sku: data.sku,
       mpn: data.mpn,
       gtin: data.gtin,
+      name: data.name,
       productId: data.productId,
       productName: data.product.name,
       createdAt: data.createdAt,
@@ -50,12 +51,59 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const accountId = req.accountId;
+  const { id } = req.params;
+
+  try {
+    const storefront = await prisma.storefront.findFirst({
+      where: {
+        account: {
+          id: accountId,
+        },
+      },
+    });
+
+    const data = await prisma.productVariant.findFirst({
+      where: {
+        id: id,
+        product: {
+          storefrontId: storefront.id,
+        },
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    const productVariant = {
+      id: data.id,
+      sku: data.sku,
+      mpn: data.mpn,
+      gtin: data.gtin,
+      name: data.name,
+      productId: data.productId,
+      productName: data.product.name,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    };
+
+    return res.status(200).json({ productVariant });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({
+      error: "Failed to fetch product variants",
+      details: error.message,
+    });
+  }
+});
+
 // 🚀 POST - Create a new product
 router.post("/", async (req, res) => {
   const accountId = req.accountId;
-  const { sku, mpn, gtin, productId } = req.body;
+  const { sku, mpn, gtin, productId, name } = req.body;
 
-  if (!sku || !productId) {
+  if (!sku || !productId || !name) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -84,15 +132,16 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ error: "Product variant already exists" });
     }
 
-    const productProperty = await prisma.productVariant.create({
+    const productVariant = await prisma.productVariant.create({
       data: {
         sku,
         mpn: mpn ?? undefined,
         gtin: gtin ?? undefined,
+        name,
         productId,
       },
     });
-    return res.status(201).json({ productProperty });
+    return res.status(201).json({ productVariant });
   } catch (error) {
     res
       .status(500)
@@ -104,7 +153,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const accountId = req.accountId;
   const { id } = req.params;
-  const { sku, mpn, gtin, productId } = req.body;
+  const { sku, mpn, gtin, productId, name } = req.body;
 
   if (!id || !sku || !productId) {
     return res
@@ -146,6 +195,7 @@ router.put("/:id", async (req, res) => {
         mpn: mpn ?? undefined,
         gtin: gtin ?? undefined,
         productId,
+        name,
       },
     });
 

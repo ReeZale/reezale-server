@@ -20,52 +20,44 @@ const blobServiceClient =
  * @param {string} bucket - The container to upload to.
  * @returns {Promise<string>} - The uploaded file URL.
  */
-async function uploadFile(fileBuffer, originalName, mimeType, bucket) {
+async function uploadFile(
+  fileBuffer,
+  originalName,
+  mimeType,
+  bucket,
+  accountId
+) {
   try {
-    if (!fileBuffer || !originalName || !bucket) {
+    if (!fileBuffer || !originalName || !bucket || !accountId) {
       throw new Error("❌ Missing required parameters");
     }
 
-    // ✅ Define allowed containers
-    let containerName;
-    switch (bucket) {
-      case "images":
-        containerName = "images";
-        break;
-      case "product-feeds":
-        containerName = "product-feeds";
-        break;
-      default:
-        throw new Error(`❌ Invalid container: ${bucket}`);
-    }
+    // ✅ Dynamically generate container name
+    const containerName = `account-${accountId}`;
 
-    // ✅ Get the container client
+    // ✅ Get container client
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    // ✅ Ensure the container exists
-    if (!(await containerClient.exists())) {
-      console.warn(`⚠️ Container '${containerName}' not found. Creating...`);
-      await containerClient.create();
-    }
+    // ✅ Create container if it doesn't exist
+    await containerClient.createIfNotExists({
+      access: "blob", // optional: make files publicly accessible
+    });
 
-    // ✅ Generate a unique file name
-    const fileName = `${Date.now()}-${path.basename(originalName)}`;
-    const blockBlobClient = containerClient.getBlockBlobClient(fileName);
+    // ✅ Optionally structure files inside virtual directories
+    const virtualPath = `${bucket}/${Date.now()}-${path.basename(
+      originalName
+    )}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(virtualPath);
 
-    console.log(`🔵 Uploading file to '${containerName}': ${fileName}`);
+    console.log(`🔵 Uploading to: ${containerName}/${virtualPath}`);
 
-    // ✅ Upload file
     await blockBlobClient.uploadData(fileBuffer, {
       blobHTTPHeaders: {
         blobContentType: mimeType || "application/octet-stream",
       },
     });
 
-    // ✅ Generate the file URL
-    const fileUrl = blockBlobClient.url; // ✅ Corrected file URL
-
-    console.log(`✅ File uploaded successfully: ${fileUrl}`);
-    return fileUrl;
+    return blockBlobClient.url;
   } catch (error) {
     console.error("❌ Upload Error:", error);
     throw new Error("Upload failed");

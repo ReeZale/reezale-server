@@ -25,32 +25,51 @@ router.get("/", async (req, res) => {
 
     const productProperties = await prisma.productProperty.findMany({
       where: whereCondition,
-      orderBy: [{ type: "asc" }, { property: { key: "asc" } }],
-
       include: {
-        property: true,
+        property: {
+          include: {
+            propertyTranslations: {
+              where: {
+                locale: {
+                  code: localeCode,
+                },
+              },
+            },
+          },
+        },
+        productPropertyOptions: {
+          include: {
+            propertyOption: {
+              include: {
+                propertyOptionTranslation: {
+                  where: {
+                    locale: {
+                      code: localeCode,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
+
     const formattedResponse = productProperties.map((item) => ({
       id: item.id,
-      type: item.type,
+      propertyId: item.property.id,
       propertyKey: item.property.key,
-      propertyLabel: item.property.translations[localeCode],
-      productValues:
-        Array.isArray(item.values) && item.values.length > 0
-          ? item.values.map((value) => ({
-              key: value.key,
-              label: value.translations[localeCode],
-            }))
-          : [],
-      propertyOptions: item.property.options.map((option) => ({
-        key: option.key,
-        label: option.translations[localeCode],
+      propertyLabel: item.property.propertyTranslations[0].label,
+      propertyOptions: item.productPropertyOptions.map((option) => ({
+        id: option.id,
+        key: option.propertyOption.key,
+        label: option.propertyOption.propertyOptionTranslation[0].label,
       })),
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     }));
+
 
     return res.status(200).json({ productProperties: formattedResponse });
   } catch (error) {
@@ -64,9 +83,9 @@ router.get("/", async (req, res) => {
 // 🚀 POST - Create a new product
 router.post("/", async (req, res) => {
   const accountId = req.accountId;
-  const { productId, propertyId, type, values } = req.body;
+  const { productId, propertyId } = req.body;
 
-  if (!key || !name || !description) {
+  if (!productId || !propertyId) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -79,7 +98,7 @@ router.post("/", async (req, res) => {
       },
     });
 
-    const existingProductProperty = await prisma.productProperty.findUnique({
+    const productProperty = await prisma.productProperty.upsert({
       where: {
         productId_propertyId: {
           productId: productId,
@@ -89,19 +108,15 @@ router.post("/", async (req, res) => {
           storefrontId: storefront.id,
         },
       },
+      create: {
+        productId: productId,
+        propertyId: propertyId,
+        type: "SEGMENT",
+      },
+      update: {},
     });
 
-    if (!existingProductProperty) {
-      const productProperty = await prisma.productProperty.create({
-        data: {
-          productId: productId,
-          propertyId: propertyId,
-          values: values,
-          type: type,
-        },
-      });
-      return res.status(201).json({ productProperty });
-    }
+    return res.status(201).json({ productProperty });
   } catch (error) {
     res
       .status(500)

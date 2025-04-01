@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "MediaBucket" AS ENUM ('PRODUCTS', 'CAMPAIGNS', 'BANNER', 'LOGO', 'CATEGORIES', 'COLLECTIONS', 'PROFILE', 'DOCUMENTS');
+
+-- AlterTable
+ALTER TABLE "Media" ADD COLUMN     "bucket" "MediaBucket" NOT NULL DEFAULT 'PRODUCTS';

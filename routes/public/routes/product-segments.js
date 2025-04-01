@@ -4,10 +4,14 @@ const prisma = require("../../../config/prisma");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  const localeCode = req.localeCode;
+
   try {
-    const data = await prisma.productSegment.findMany({
+    const data = await prisma.productSegmentTranslation.findMany({
       where: {
-        active: true,
+        locale: {
+          code: localeCode,
+        },
       },
       orderBy: {
         path: "asc",
@@ -15,9 +19,9 @@ router.get("/", async (req, res) => {
     });
 
     const productSegments = data.map((item) => ({
-      id: item.id,
-      name: item.translation[req.localeCode].name,
-      path: item.translation[req.localeCode].path,
+      id: item.productSegmentId,
+      name: item.name,
+      path: item.path,
     }));
 
     return res.status(200).json({
@@ -109,6 +113,7 @@ router.get("/sub-categories", async (req, res) => {
 });
 
 router.get("/properties/:id", async (req, res) => {
+  const localeCode = req.localeCode;
   const { id } = req.params;
 
   try {
@@ -140,8 +145,6 @@ router.get("/properties/:id", async (req, res) => {
         },
       });
     }
-    console.log("Segment Properties", segmentProperties);
-    console.log("Group Properties", groupProperties);
 
     const merged = [...segmentProperties, ...groupProperties];
 

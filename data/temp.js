@@ -27,7 +27,8 @@ function readFileWithEncoding(filePath) {
  * ✅ Processes Google Categories and inserts them into `ProductCategory`
  * @param {string} filePath - Path to the category file
  */
-async function processCategories(filePath) {
+async function processCategories() {
+  const filePath = "./data/google-categories.txt";
   try {
     const lines = readFileWithEncoding(filePath);
     console.log(`✅ Processing ${lines.length} categories from ${filePath}`);
@@ -112,33 +113,14 @@ async function processCategoryTranslations(filePath, localeId) {
         .replace(/\s+/g, "-")
         .replace(/[^\w-]/g, "");
 
-      const existingTranslation =
-        await prisma.productSegmentTranslations.findFirst({
-          where: { localeId, slug },
-        });
-
-      if (existingTranslation) {
-        await prisma.productSegmentTranslations.update({
-          where: { id: existingTranslation.id },
-          data: {
-            name: translatedName,
-            slug,
-            path: pathText,
-            localeId,
-            productSegmentId: category.id,
-          },
-        });
-      } else {
-        await prisma.productSegmentTranslations.create({
-          data: {
-            name: translatedName,
-            slug,
-            path: pathText,
-            localeId,
-            productSegmentId: category.id,
-          },
-        });
-      }
+      await prisma.productSegmentTranslation.create({
+        data: {
+          name: translatedName,
+          path: pathText,
+          localeId,
+          productSegmentId: category.id,
+        },
+      });
     }
 
     console.log("✅ Translations imported successfully!");
@@ -224,10 +206,120 @@ const migrateProductSegmentTranslations = async () => {
   console.log("Product segment translations migrated to JSON");
 };
 
+const normalizePropertyTranslations = async () => {
+  try {
+    const locales = await prisma.locale.findMany(); // must include .id and .code
+    const properties = await prisma.property.findMany(); // must include .id and .translations
+
+    const translationsToInsert = [];
+
+    for (const property of properties) {
+      const translations = property.translations; // assumed to be a JSON object
+
+      if (!translations || typeof translations !== "object") continue;
+
+      for (const [code, label] of Object.entries(translations)) {
+        const locale = locales.find(
+          (l) => l.code.toLowerCase() === code.toLowerCase()
+        );
+
+        if (!locale || !label) continue;
+
+        translationsToInsert.push({
+          key: property.key,
+          label: label,
+          propertyId: property.id,
+          localeId: locale.id,
+        });
+      }
+    }
+
+    if (translationsToInsert.length > 0) {
+      await prisma.propertyTranslation.createMany({
+        data: translationsToInsert,
+        skipDuplicates: true, // will skip if propertyId + localeId already exists
+      });
+      console.log(
+        `Inserted ${translationsToInsert.length} property translations`
+      );
+    } else {
+      console.log("No translations to insert.");
+    }
+  } catch (error) {
+    console.error("Error normalizing property translations:", error);
+  }
+};
+
+const generateNormalizedOptions = async () => {
+  try {
+    const locales = await prisma.locale.findMany(); // must include .id and .code
+    const properties = await prisma.property.findMany();
+
+    for (const property of properties) {
+      const options = property.options;
+
+      if (!Array.isArray(options)) continue;
+
+      for (const option of options) {
+        if (!option?.key || !option?.translations) continue;
+
+        // Create the PropertyOption
+        const newProductOption = await prisma.propertyOption.create({
+          data: {
+            key: option.key,
+            propertyId: property.id,
+          },
+        });
+
+        const translationsToInsert = [];
+
+        for (const [code, label] of Object.entries(option.translations)) {
+          const locale = locales.find(
+            (l) => l.code.toLowerCase() === code.toLowerCase()
+          );
+
+          if (!locale || !label) continue;
+
+          translationsToInsert.push({
+            key: option.key,
+            label: label,
+            propertyOptionId: newProductOption.id,
+            localeId: locale.id,
+          });
+        }
+
+        if (translationsToInsert.length > 0) {
+          await prisma.propertyOptionTranslation.createMany({
+            data: translationsToInsert,
+            skipDuplicates: true,
+          });
+        }
+      }
+    }
+
+    console.log("Option normalization completed.");
+  } catch (error) {
+    console.log("Error in generateNormalizedOptions:", error);
+  }
+};
+
+const resetNormalization = async () => {
+  try {
+    await prisma.propertyOptionTranslation.deleteMany({});
+    await prisma.propertyTranslation.deleteMany({});
+    await prisma.propertyOption.deleteMany({});
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
 module.exports = {
   processCategories,
   processCategoryTranslations,
   updateProductCategories,
   updateProductGroupProperties,
   migrateProductSegmentTranslations,
+  normalizePropertyTranslations,
+  generateNormalizedOptions,
+  resetNormalization,
 };

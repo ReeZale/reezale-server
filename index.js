@@ -4,6 +4,39 @@ const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
+const {
+  normalizePropertyTranslations,
+  generateNormalizedOptions,
+  resetNormalization,
+  processCategories,
+  processCategoryTranslations,
+} = require("./data/temp");
+const {
+  uploadColors,
+  uploadMaterials,
+  uploadFits,
+  uploadSleeveLengths,
+  uploadNecklines,
+  uploadWaistRise,
+  uploadInseam,
+  uploadStretch,
+  uploadPattern,
+  uploadKnitTypes,
+  uploadClosureTypes,
+  uploadCollarTypes,
+  uploadHemStyles,
+  uploadWeights,
+  uploadSeasons,
+  uploadOccasions,
+  uploadDressLength,
+  uploadSilhouette,
+  uploadSleeveTypes,
+  uploadPockets,
+  uploadCuffType,
+  uploadInsulationType,
+  uploadHoodType,
+  updateShoeProperties,
+} = require("./data/properties");
 
 const app = express();
 
@@ -40,7 +73,11 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-(async () => {})();
+(async () => {
+  //await processCategoryTranslations("./data/gc-en-gb.txt", 2);
+  //await processCategoryTranslations("./data/gc-se-sv.txt", 1);
+  //await resetNormalization();
+})();
 
 // Use the centralized router
 app.use("/api/v1", router);

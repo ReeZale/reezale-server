@@ -3,9 +3,12 @@ const prisma = require("../../../config/prisma");
 const { PropertyType } = require("@prisma/client");
 const router = express.Router();
 
-// 🚀 GET all products (with optional filtering by storefront)
 router.get("/", async (req, res) => {
   const accountId = req.accountId;
+  const localeCode = req.localeCode;
+  const { brandId } = req.query;
+
+  console.log("Locale code", localeCode);
 
   try {
     const storefront = await prisma.storefront.findFirst({
@@ -15,16 +18,51 @@ router.get("/", async (req, res) => {
         },
       },
     });
-    const products = await prisma.product.findMany({
-      where: {
-        storefrontId: storefront.id,
-      },
+
+    const whereCondition = {
+      storefrontId: storefront.id,
+    };
+
+    if (brandId) {
+      whereCondition.brandId = brandId;
+    }
+
+    const data = await prisma.product.findMany({
+      where: whereCondition,
       include: {
-        productSegment: true,
+        productSegment: {
+          include: {
+            productSegmentTranslations: {
+              where: {
+                locale: {
+                  code: localeCode,
+                },
+              },
+            },
+          },
+        },
         storeCategory: true,
         variants: true,
       },
+      orderBy: {
+        reference: "asc",
+      },
     });
+
+    const products = data.map((product) => ({
+      id: product.id,
+      reference: product.reference,
+      name: product.name,
+      description: product.description,
+      productSegmentId: product.productSegmentId,
+      productSegmentName:
+        product.productSegment.productSegmentTranslations[0].name,
+      productSegmentPath:
+        product.productSegment.productSegmentTranslations[0].path,
+      createdAt: product.createdAt,
+      updatedAt: product.createdAt,
+    }));
+
     return res.status(200).json({ products });
   } catch (error) {
     console.log("Error", error);
@@ -86,80 +124,30 @@ router.post("/", async (req, res) => {
       reference,
       name,
       description,
-      thumbnailImage,
-      productImage,
-      images,
-      gender,
-      ageGroup,
-      brandId,
       productSegmentId,
-      storeCategoryId,
+      brandId,
+      url,
+      thumbnailImage,
     } = req.body;
-
-    const storeCategory = await prisma.storeCategory.findFirst({
-      where: {
-        id: storeCategoryId,
-      },
-    });
 
     const newProduct = await prisma.product.create({
       data: {
+        thumbnailImage,
         reference,
         name,
         description,
-        thumbnailImage,
-        productImage,
-        images,
-        gender,
-        ageGroup,
-        brandId: brandId,
-        productSegmentId: storeCategory.productSegmentId,
-        storeCategoryId,
+        productSegmentId,
+        brandId,
+        url,
         storefrontId: storefront.id,
       },
       include: {
         variants: true,
         storeCategory: true,
         productSegment: true,
+        brand: true,
       },
     });
-
-    const productSegment = await prisma.productSegment.findUnique({
-      where: {
-        id: newProduct.productSegmentId,
-      },
-    });
-
-    const groupProperties = await prisma.propertyGroupProperty.findMany({
-      where: {
-        propertyGroupId: productSegment.propertyGroupId,
-      },
-    });
-
-    const segmentProperties = await prisma.segmentProperty.findMany({
-      where: {
-        productSegmentId: productSegment.id,
-      },
-    });
-
-    await prisma.$transaction([
-      prisma.productProperty.createMany({
-        data: groupProperties.map((item) => ({
-          productId: newProduct.id,
-          propertyId: item.propertyId,
-          type: "GROUP",
-          values: [],
-        })),
-      }),
-      prisma.productProperty.createMany({
-        data: segmentProperties.map((item) => ({
-          productId: newProduct.id,
-          propertyId: item.propertyId,
-          type: "SEGMENT",
-          values: [],
-        })),
-      }),
-    ]);
 
     return res.status(201).json({ product: newProduct });
   } catch (error) {

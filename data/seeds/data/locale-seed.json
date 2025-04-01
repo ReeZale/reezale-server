@@ -1,0 +1,14 @@
+[
+  {
+    "code": "en-gb",
+    "label": "English (United Kingdom)",
+    "countryCode": "gb",
+    "languageCode": "en"
+  },
+  {
+    "code": "sv-se",
+    "label": "Svenska (Sverige)",
+    "countryCode": "se",
+    "languageCode": "sv"
+  }
+]
