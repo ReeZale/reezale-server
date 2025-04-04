@@ -4,49 +4,27 @@ const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
-const {
-  normalizePropertyTranslations,
-  generateNormalizedOptions,
-  resetNormalization,
-  processCategories,
-  processCategoryTranslations,
-} = require("./data/temp");
-const {
-  uploadColors,
-  uploadMaterials,
-  uploadFits,
-  uploadSleeveLengths,
-  uploadNecklines,
-  uploadWaistRise,
-  uploadInseam,
-  uploadStretch,
-  uploadPattern,
-  uploadKnitTypes,
-  uploadClosureTypes,
-  uploadCollarTypes,
-  uploadHemStyles,
-  uploadWeights,
-  uploadSeasons,
-  uploadOccasions,
-  uploadDressLength,
-  uploadSilhouette,
-  uploadSleeveTypes,
-  uploadPockets,
-  uploadCuffType,
-  uploadInsulationType,
-  uploadHoodType,
-  updateShoeProperties,
-} = require("./data/properties");
+const { getTimezone, getPostalCode } = require("./services/locationServices");
 
 const app = express();
 
 // Enable CORS for all routes
 app.use(
   cors({
-    origin: process.env.ALLOWED_ORIGIN, // ✅ Use a specific origin
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Allow server-to-server / tools
+      const hostname = new URL(origin).hostname;
+      if (
+        hostname === process.env.ALLOWED_HOST ||
+        hostname.endsWith(`.${process.env.ALLOWED_HOST}`)
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -73,16 +51,16 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-(async () => {
-  //await processCategoryTranslations("./data/gc-en-gb.txt", 2);
-  //await processCategoryTranslations("./data/gc-se-sv.txt", 1);
-  //await resetNormalization();
-})();
+(async () => {})();
 
 // Use the centralized router
 app.use("/api/v1", router);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const ENV = process.env.NODE_ENV;
+
+const HOST = ENV === "development" ? "localhost" : "0.0.0.0";
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });

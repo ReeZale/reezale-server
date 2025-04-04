@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const accountRouter = require("./routes/account");
 const userRouter = require("./routes/user");
 const organizationRouter = require("./routes/organization");
@@ -8,8 +9,6 @@ const storefrontRegionsRouter = require("./routes/storefront-locale");
 const storeCategoryRouter = require("./routes/store-categories");
 const paymentAccountRouter = require("./routes/payment-accounts");
 const productsRouter = require("./routes/product");
-const templateRouter = require("./routes/templates");
-const templateFieldsRouter = require("./routes/template-fields");
 const storefrontProductSegmentRouter = require("./routes/storefront-product-segment");
 const storefrontTemplateRouter = require("./routes/storefront-templates");
 const storefrontTemplateFieldsRouter = require("./routes/storefront-template-fields");
@@ -25,6 +24,7 @@ const storeCollectionsRouter = require("./routes/storefront-collections");
 const storefrontCollectionProducts = require("./routes/storefront-collection-products");
 const listPriceRouter = require("./routes/list-prices");
 const offersRouter = require("./routes/offers");
+const inventoryLocationsRouter = require("./routes/inventory-locations");
 
 router.use("/accounts", accountRouter);
 router.use("/brands", brandsRouter);
@@ -49,7 +49,6 @@ router.use("/product-media", productMediaRouter);
 router.use("/list-prices", listPriceRouter);
 router.use("/offers", offersRouter);
 router.use("/media", mediaRouter);
-router.use("/templates", templateRouter);
-router.use("/template-fields", templateFieldsRouter);
+router.use("/inventory-locations", inventoryLocationsRouter);
 
 module.exports = router;

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx prisma generate",
     "start": "node index.js",
-    "migrate:deploy": "npx prisma migrate deploy"
+    "migrate:deploy": "npx prisma migrate deploy",
+    "seed": "npx prisma db seed"
   },
   "prisma": {
     "seed": "node prisma/seed/index.js"

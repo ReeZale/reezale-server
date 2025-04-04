@@ -14,18 +14,21 @@ datasource db {
 }
 
 model Account {
-  id              BigInt           @id @default(autoincrement())
-  name            String
-  organization    Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  organizationId  BigInt?          @unique
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @default(now()) @updatedAt
-  sellers         Seller[]
-  users           User[]
-  storefront      Storefront?      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId    BigInt?          @unique
-  paymentAccounts PaymentAccount[]
-  media           Media[]
+  id                             BigInt                           @id @default(autoincrement())
+  name                           String
+  organization                   Organization?                    @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organizationId                 BigInt?                          @unique
+  createdAt                      DateTime                         @default(now())
+  updatedAt                      DateTime                         @default(now()) @updatedAt
+  sellers                        Seller[]
+  users                          User[]
+  storefront                     Storefront?                      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId                   BigInt?                          @unique
+  paymentAccounts                PaymentAccount[]
+  media                          Media[]
+  inventoryLocations             InventoryLocation[]
+  inventoryLocationFunctions     InventoryLocationFunction[]
+  inventoryLocationFunctionHours InventoryLocationFunctionHours[]
 }
 
 model User {
@@ -702,6 +705,128 @@ enum PropertyType {
   SEGMENT
 }
 
+model TimeZone {
+  id            String         @id // e.g., "Europe/Stockholm"
+  label         String // Optional: "Central European Time"
+  offset        String // Optional: e.g. "+01:00"
+  locationZones LocationZone[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+}
+
+model LocationZone {
+  id                   String              @id
+  key                  String              @unique
+  country              Country             @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId            BigInt
+  postalCode           String
+  displayPostalCode    String
+  placeName            String
+  adminName1           String?
+  adminCode1           String?
+  adminName2           String?
+  adminCode2           String?
+  latitude             Float?
+  longitude            Float?
+  viewportNortheastLat Float?
+  viewportNortheastLng Float?
+  viewportSouthwestLat Float?
+  viewportSouthwestLng Float?
+  timeZone             TimeZone            @relation(fields: [timeZoneId], references: [id])
+  timeZoneId           String
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now()) @updatedAt
+  inventoryLocations   InventoryLocation[]
+
+  @@unique([countryId, postalCode])
+  @@index([latitude, longitude])
+  @@index([timeZoneId])
+}
+
+model InventoryLocation {
+  id             String                      @id
+  name           String
+  displayAddress String
+  unit           String
+  streetNumber   String
+  street         String
+  city           String
+  locationType   InventoryLocationType
+  locationZone   LocationZone                @relation(fields: [locationZoneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationZoneId String
+  latitude       Float?
+  longitude      Float?
+  priority       Int? // Lower = higher preference in fulfillment
+  capacity       Int? // Max items this location can hold (optional)
+  contactEmail   String
+  contactPhone   String
+  account        Account                     @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId      BigInt
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @default(now()) @updatedAt
+  functions      InventoryLocationFunction[]
+
+  @@index([accountId])
+}
+
+enum InventoryLocationType {
+  STORE
+  WAREHOUSE
+  LOCKER
+  VIRTUAL
+}
+
+model InventoryLocationFunction {
+  id               String                           @id @default(uuid())
+  key              String
+  name             String
+  location         InventoryLocation                @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  locationId       String
+  function         InventoryFunctionType
+  contactEmail     String?
+  contactPhone     String?
+  account          Account                          @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId        BigInt
+  createdAt        DateTime                         @default(now())
+  updatedAt        DateTime                         @default(now()) @updatedAt
+  hoursOfOperation InventoryLocationFunctionHours[]
+
+  @@index([accountId])
+}
+
+model InventoryLocationFunctionHours {
+  id                          String                    @id @default(uuid())
+  inventoryLocationFunction   InventoryLocationFunction @relation(fields: [inventoryLocationFunctionId], references: [id])
+  inventoryLocationFunctionId String
+  day                         Weekday
+  startTime                   String // use "HH:MM" 24-hour format
+  endTime                     String
+  account                     Account                   @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId                   BigInt
+  createdAt                   DateTime                  @default(now())
+  updatedAt                   DateTime                  @default(now()) @updatedAt
+
+  @@unique([inventoryLocationFunctionId, day])
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum InventoryFunctionType {
+  FULFILLMENT
+  RECEIVING
+  RETURNS
+  DROPOFF
+  STORAGE
+}
+
 //Custom and standard product categories that a store services. This will be used to build custom navigation schemas while maintaining the link to standard categories
 model StoreCategory {
   id                         BigInt                   @id @default(autoincrement())
@@ -849,7 +974,6 @@ model Seller {
   productFeeds  ProductFeed[]
   categories    Category[]
   credentials   SellerCredentials[]
-  items         Item[]
   pageConfigs   PageConfig[]
   notifications OfferNotification[]
 }
@@ -933,8 +1057,6 @@ model Locale {
   discounts        DiscountRule[]
   productFeeds     ProductFeed[]
   categories       Category[]
-  itemDescriptions ItemDescription[]
-  itemSizes        ItemSize[]
   pageConfigs      PageConfig[]
   notifications    OfferNotification[]
   storefronts      StorefrontLocale[]
@@ -960,13 +1082,11 @@ model Category {
   updatedAt     DateTime               @updatedAt
   discountRules CategoryDiscountRule[]
   children      Category[]             @relation("ParentChild")
-  items         ItemDescription[]
   sellerId      BigInt
   localeId      BigInt
 
   @@index([sellerId, localeId])
 }
-
 
 enum Gender {
   male
@@ -989,50 +1109,6 @@ enum SizeType {
   tall
 }
 
-model Item {
-  id          BigInt      @id @default(autoincrement())
-  sku         String
-  gtin        String?
-  mpn         String?
-  seller      Seller?     @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sellerId    BigInt?
-  shipWeight  String?
-  shipLength  String?
-  shipWidth   String?
-  shipHeight  String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  sizes       ItemSize[]
-  inventory   Inventory[]
-
-  @@unique([, sku])
-}
-
-model ItemSize {
-  id           BigInt     @id @default(autoincrement())
-  sizeOption   SizeOption @relation(fields: [sizeOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sizeOptionId BigInt
-  item         Item       @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  itemId       BigInt
-  locale       Locale     @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  localeId     BigInt
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@unique([itemId, sizeOptionId, localeId])
-}
-
-model SizeOption {
-  id         BigInt     @id @default(autoincrement())
-  sizeSystem String
-  sizeType   SizeType   @default(regular)
-  size       String
-  items      ItemSize[]
-
-  @@unique([sizeSystem, sizeType, size])
-}
-
-
 enum OfferStatus {
   available // The offer is available for purchase
   reserved // Reserved but not yet allocated to an order
@@ -1049,8 +1125,6 @@ model OfferNotification {
   id               BigInt    @id @default(autoincrement())
   email            String
   sku              String
-  itemGroup        ItemGroup @relation(fields: [itemGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  itemGroupId      BigInt
   locale           Locale    @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   localeId         BigInt
   seller           Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -1116,8 +1190,6 @@ model OrderItem {
 
 model Inventory {
   id         BigInt      @id @default(autoincrement())
-  item       Item        @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  itemId     BigInt
   country    Country     @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   currency   String
   countryId  BigInt
@@ -1257,20 +1329,21 @@ model Service {
 }
 
 model Country {
-  id          BigInt       @id @default(autoincrement())
-  code        String       @unique
-  name        String
-  currency    Currency?    @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  currencyId  BigInt?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
-  partners    Partner[]
-  addresses   Address[]
-  inventory   Inventory[]
-  orders      Order[]
-  locales     Locale[]
-  storefronts Storefront[]
-  listPrices  ListPrice[]
+  id            BigInt         @id @default(autoincrement())
+  code          String         @unique
+  name          String
+  currency      Currency?      @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId    BigInt?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  partners      Partner[]
+  addresses     Address[]
+  inventory     Inventory[]
+  orders        Order[]
+  locales       Locale[]
+  storefronts   Storefront[]
+  listPrices    ListPrice[]
+  locationZones LocationZone[]
 }
 
 model Currency {
