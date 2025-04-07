@@ -29,6 +29,7 @@ const adminAuthMiddleware = async (req, res, next) => {
   if (decodedAccess && decodedAccess.userId) {
     req.userId = decodedAccess.userId;
     req.accountId = decodedAccess.accountId;
+    req.storefrontId = decodedAccess.storefrontId;
     req.localeId = decodedAccess.localeId;
     req.localeCode = req.cookies.i18next.toLowerCase();
     return next();
@@ -66,12 +67,14 @@ const adminAuthMiddleware = async (req, res, next) => {
       userId: decodedRefresh.userId,
       accountId: decodedRefresh.accountId,
       localeId: decodedRefresh.localeId,
+      storefrontId: decodedRefresh.storefrontId,
     });
 
     const newRefreshToken = createRefreshToken({
       userId: decodedRefresh.userId,
       accountId: decodedRefresh.accountId,
       localeId: decodedRefresh.localeId,
+      storefrontId: decodedRefresh.storefrontId,
     });
 
     await prisma.authToken.update({

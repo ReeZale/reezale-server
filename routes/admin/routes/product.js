@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
             },
           },
         },
-        storeCategory: true,
+
         variants: true,
       },
       orderBy: {
@@ -88,7 +88,7 @@ router.get("/:id", async (req, res) => {
       where: { id: req.params.id, storefrontId: storefront.id },
       include: {
         productSegment: true,
-        storeCategory: true,
+
         variants: true,
         properties: {
           include: {
@@ -143,7 +143,7 @@ router.post("/", async (req, res) => {
       },
       include: {
         variants: true,
-        storeCategory: true,
+
         productSegment: true,
         brand: true,
       },
@@ -204,7 +204,7 @@ router.put("/:id", async (req, res) => {
       },
       include: {
         variants: true,
-        storeCategory: true,
+
         productSegment: true,
       },
     });

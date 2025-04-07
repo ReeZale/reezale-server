@@ -29,6 +29,7 @@ model Account {
   inventoryLocations             InventoryLocation[]
   inventoryLocationFunctions     InventoryLocationFunction[]
   inventoryLocationFunctionHours InventoryLocationFunctionHours[]
+  storefrontThemes               StorefrontTheme[]
 }
 
 model User {
@@ -124,6 +125,49 @@ model Storefront {
   brands          StoreBrand[]
   collections     StoreCollection[]
   navigation      StoreNavigation[]
+  storeProperties StoreProperty[]
+  themes          StorefrontTheme[]
+}
+
+model StorefrontTheme {
+  id                 String        @id
+  storefront         Storefront    @relation(fields: [storefrontId], references: [id], onDelete: Cascade)
+  storefrontId       BigInt
+  name               String
+  description        String
+  publishStatus      PublishStatus @default(DRAFT)
+  isActive           Boolean       @default(false)
+  effectiveAt        DateTime? // Optional: for scheduling
+  // Color Tokens
+  colorPrimary       String        @default("#5A643E")
+  colorSecondary     String        @default("#7F8D58")
+  colorBackground    String        @default("#F4F4F4")
+  colorSurface       String        @default("#FFFFFF")
+  colorTextPrimary   String        @default("#333333")
+  colorTextSecondary String        @default("#666666")
+  colorLink          String        @default("#5A643E")
+  colorError         String        @default("#D32F2F")
+  // Typography
+  fontFamily         String        @default("Inter, sans-serif")
+  fontSizeBase       Int           @default(16)
+  fontSizeScale      Float         @default(1.0)
+  // Layout
+  borderRadius       Int           @default(8)
+  spacingUnit        Int           @default(8)
+  account            Account       @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId          BigInt
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @default(now()) @updatedAt
+
+  @@unique([storefrontId, name])
+  @@index([storefrontId, isActive])
+  @@index([accountId])
+}
+
+enum PublishStatus {
+  DRAFT
+  ACTIVE
+  SCHEDULED
 }
 
 //Standard produt segments that a store services
@@ -310,6 +354,7 @@ model Property {
   products             ProductProperty[]
   propertyTranslations PropertyTranslation[]
   propertyOptions      PropertyOption[]
+  storeProperties      StoreProperty[]
 }
 
 model PropertyOption {
@@ -321,6 +366,7 @@ model PropertyOption {
   updatedAt                 DateTime                    @default(now()) @updatedAt
   propertyOptionTranslation PropertyOptionTranslation[]
   productPropertiesOptions  ProductPropertyOption[]
+  storePropertyOptions      StorePropertyOption[]
 }
 
 model PropertyTranslation {
@@ -365,34 +411,33 @@ model SegmentProperty {
 }
 
 model Product {
-  id               BigInt                    @id @default(autoincrement())
-  reference        String
-  name             String
-  description      String
-  thumbnailImage   String
-  productImage     String? //product focus image
-  images           String[]
-  gender           Gender?
-  ageGroup         AgeGroup?
-  brand            Brand?                    @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  brandId          BigInt?
-  productSegment   ProductSegment?           @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productSegmentId BigInt?
-  storeCategory    StoreCategory?            @relation(fields: [storeCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storeCategoryId  BigInt?
-  storefront       Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId     BigInt
-  url              String?
-  hasProperties    Boolean                   @default(false)
-  hasVariants      Boolean                   @default(false)
-  variantConfig    VariantConfig?            @relation(fields: [variantConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantConfigId  BigInt?
-  createdAt        DateTime                  @default(now())
-  updatedAt        DateTime                  @default(now()) @updatedAt
-  variants         ProductVariant[]
-  properties       ProductProperty[]
-  productMedia     ProductMedia[]
-  storeCollections StoreCollectionProducts[] //The collections this product belongs to
+  id                     BigInt                    @id @default(autoincrement())
+  reference              String
+  name                   String
+  description            String
+  thumbnailImage         String
+  productImage           String? //product focus image
+  images                 String[]
+  gender                 Gender?
+  ageGroup               AgeGroup?
+  brand                  Brand?                    @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId                BigInt?
+  productSegment         ProductSegment?           @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productSegmentId       BigInt?
+  storefront             Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId           BigInt
+  url                    String?
+  hasProperties          Boolean                   @default(false)
+  hasVariants            Boolean                   @default(false)
+  variantConfig          VariantConfig?            @relation(fields: [variantConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantConfigId        BigInt?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @default(now()) @updatedAt
+  variants               ProductVariant[]
+  properties             ProductProperty[]
+  productMedia           ProductMedia[]
+  storeCollections       StoreCollectionProducts[] //The collections this product belongs to
+  storeProductProperties StoreProductProperty[]
 
   @@unique([reference, storefrontId])
   @@index([brandId, storefrontId])
@@ -407,7 +452,7 @@ enum ProductMediaType {
 
 model ProductMedia {
   id        BigInt           @id @default(autoincrement())
-  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId BigInt
   media     Media            @relation(fields: [mediaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   mediaId   BigInt
@@ -522,6 +567,7 @@ model StoreCollection {
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @default(now()) @updatedAt
   products     StoreCollectionProducts[]
+  navigation   StoreNavigation[]
 
   @@unique([storefrontId, collectionId])
 }
@@ -538,13 +584,63 @@ model StoreCollectionProducts {
   @@unique([productId, storeCollectionId])
 }
 
+model StoreProperty {
+  id                      String                  @id
+  storefront              Storefront              @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId            BigInt
+  property                Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyId              BigInt
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @default(now()) @updatedAt
+  storeNavigationFilters  StoreNavigationFilter[]
+  storeProductsProperties StoreProductProperty[]
+  storePropertyOptions    StorePropertyOption[]
+
+  @@unique([storefrontId, propertyId])
+}
+
+model StorePropertyOption {
+  id                          String                       @id
+  storeProperty               StoreProperty                @relation(fields: [storePropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storePropertyId             String
+  propertyOption              PropertyOption               @relation(fields: [propertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  propertyOptionId            BigInt
+  position                    Int                          @default(0) // Optional for ordering in UI
+  display                     Boolean                      @default(true)
+  labelOverride               String? // Optional for store-specific label (e.g., "Crimson" instead of "Red")
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @default(now()) @updatedAt
+  storeProductPropertyOptions StoreProductPropertyOption[]
+
+  @@unique([storePropertyId, propertyOptionId])
+}
+
 model StoreNavigation {
-  id           BigInt     @id @default(autoincrement())
-  storefront   Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId BigInt
-  slug         String
-  createdAt    DateTime
-  updatedAt    DateTime
+  id                     String                  @id
+  storefront             Storefront              @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId           BigInt
+  storeCollection        StoreCollection         @relation(fields: [storeCollectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeCollectionId      BigInt
+  isPrimary              Boolean                 @default(false)
+  parent                 StoreNavigation         @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId               String
+  order                  Int
+  slug                   String
+  createdAt              DateTime
+  updatedAt              DateTime
+  children               StoreNavigation[]       @relation("ParentChild")
+  storeNavigationFilters StoreNavigationFilter[]
+}
+
+model StoreNavigationFilter {
+  id                String          @id
+  storeNavigation   StoreNavigation @relation(fields: [storeNavigationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeNavigationId String
+  storeProperty     StoreProperty   @relation(fields: [storePropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storePropertyId   String
+  order             Int
+  createdAt         DateTime
+  updatedAt         DateTime
 }
 
 model VariantConfig {
@@ -570,7 +666,7 @@ model VariantProperty {
 model VariantConfigField {
   id                       BigInt                   @id @default(autoincrement())
   key                      String
-  variantConfig            VariantConfig            @relation(fields: [variantConfigId], references: [id], onDelete: Cascade)
+  variantConfig            VariantConfig            @relation(fields: [variantConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantConfigId          BigInt
   variantProperty          VariantProperty          @relation(fields: [variantPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantPropertyId        BigInt
@@ -598,7 +694,7 @@ model ProductVariantProperty {
 
 model ProductVariant {
   id                       BigInt                   @id @default(autoincrement())
-  product                  Product                  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product                  Product                  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId                BigInt
   sku                      String
   gtin                     String?
@@ -673,6 +769,30 @@ model StoreBrand {
   @@unique([storefrontId, brandId])
 }
 
+model StoreProductProperty {
+  id                         String                       @id
+  product                    Product                      @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId                  BigInt
+  storeProperty              StoreProperty                @relation(fields: [storePropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storePropertyId            String
+  values                     Json[] // Storing option keys or values here
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @default(now()) @updatedAt
+  StoreProductPropertyOption StoreProductPropertyOption[]
+
+  @@unique([productId, storePropertyId])
+}
+
+model StoreProductPropertyOption {
+  id                         String               @id
+  storeProductProperty       StoreProductProperty @relation(fields: [storeProductPropertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeProductPropertyOption StorePropertyOption  @relation(fields: [storePropertyOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeProductPropertyId     String
+  storePropertyOptionId      String
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @default(now()) @updatedAt
+}
+
 model ProductProperty {
   id                     BigInt                  @id @default(autoincrement())
   product                Product                 @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -732,7 +852,7 @@ model LocationZone {
   viewportNortheastLng Float?
   viewportSouthwestLat Float?
   viewportSouthwestLng Float?
-  timeZone             TimeZone            @relation(fields: [timeZoneId], references: [id])
+  timeZone             TimeZone            @relation(fields: [timeZoneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   timeZoneId           String
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @default(now()) @updatedAt
@@ -780,7 +900,7 @@ model InventoryLocationFunction {
   id               String                           @id @default(uuid())
   key              String
   name             String
-  location         InventoryLocation                @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  location         InventoryLocation                @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId       String
   function         InventoryFunctionType
   contactEmail     String?
@@ -796,7 +916,7 @@ model InventoryLocationFunction {
 
 model InventoryLocationFunctionHours {
   id                          String                    @id @default(uuid())
-  inventoryLocationFunction   InventoryLocationFunction @relation(fields: [inventoryLocationFunctionId], references: [id])
+  inventoryLocationFunction   InventoryLocationFunction @relation(fields: [inventoryLocationFunctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   inventoryLocationFunctionId String
   day                         Weekday
   startTime                   String // use "HH:MM" 24-hour format
@@ -849,7 +969,6 @@ model StoreCategory {
   createdAt                  DateTime                 @default(now())
   updatedAt                  DateTime                 @default(now()) @updatedAt
   translations               Json?
-  products                   Product[]
 
   @@index([productSegmentId]) //  Queries filtering by product segment
   @@index([storefrontId]) //  Queries filtering by product segment

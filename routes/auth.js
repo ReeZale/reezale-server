@@ -15,7 +15,13 @@ router.post("/login", async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { account: true },
+      include: {
+        account: {
+          include: {
+            storefront: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -31,6 +37,7 @@ router.post("/login", async (req, res) => {
       userId: user.id,
       accountId: user.account.id,
       localeId: user.preferredLocalId,
+      storefrontId: user.account.storefrontId,
     };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
@@ -91,12 +98,18 @@ router.post("/register", async (req, res) => {
         accountId: account.id,
         preferredLocalId: localeId ?? 2,
       },
+      account: {
+        include: {
+          storefront: true,
+        },
+      },
     });
 
     const payload = {
       userId: user.id,
       accountId: account.id,
       localeId: user.preferredLocalId,
+      storefrontId: user.account.storefrontId,
     };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
