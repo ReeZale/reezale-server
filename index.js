@@ -15,40 +15,42 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
 
 const allowedBaseDomain = process.env.ALLOWED_BASE_DOMAIN; // e.g., "reezale.com"
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+app.use(cors());
 
-      try {
-        const { hostname } = new URL(origin);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
 
-        // Allow if exact origin match
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        }
+//       try {
+//         const { hostname } = new URL(origin);
 
-        // Allow if hostname is *.reezale.com
-        if (
-          allowedBaseDomain &&
-          (hostname === allowedBaseDomain ||
-            hostname.endsWith(`.${allowedBaseDomain}`))
-        ) {
-          return callback(null, true);
-        }
+//         // Allow if exact origin match
+//         if (allowedOrigins.includes(origin)) {
+//           return callback(null, true);
+//         }
 
-        console.error(`❌ Blocked CORS request from origin: ${origin}`);
-        return callback(new Error("Not allowed by CORS"));
-      } catch (err) {
-        console.error(`❌ CORS origin parsing error: ${origin}`);
-        return callback(new Error("Invalid origin"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+//         // Allow if hostname is *.reezale.com
+//         if (
+//           allowedBaseDomain &&
+//           (hostname === allowedBaseDomain ||
+//             hostname.endsWith(`.${allowedBaseDomain}`))
+//         ) {
+//           return callback(null, true);
+//         }
+
+//         console.error(`❌ Blocked CORS request from origin: ${origin}`);
+//         return callback(new Error("Not allowed by CORS"));
+//       } catch (err) {
+//         console.error(`❌ CORS origin parsing error: ${origin}`);
+//         return callback(new Error("Invalid origin"));
+//       }
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 // Middleware to parse JSON and URL-encoded request bodies
 app.use(express.json());
