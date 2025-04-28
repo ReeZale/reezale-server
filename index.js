@@ -8,19 +8,41 @@ const prismaDirectory = require("./config/prismaDirectory");
 
 const app = express();
 
-// Enable CORS for all routes
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter((origin) => origin.length > 0);
+
+const allowedBaseDomain = process.env.ALLOWED_BASE_DOMAIN; // e.g., "reezale.com"
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // Allow server-to-server / tools
-      const hostname = new URL(origin).hostname;
-      if (
-        hostname === process.env.ALLOWED_HOST ||
-        hostname.endsWith(`.${process.env.ALLOWED_HOST}`)
-      ) {
-        return callback(null, true);
+      if (!origin) return callback(null, true);
+
+      try {
+        const { hostname } = new URL(origin);
+
+        // Allow if exact origin match
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        // Allow if hostname is *.reezale.com
+        if (
+          allowedBaseDomain &&
+          (hostname === allowedBaseDomain ||
+            hostname.endsWith(`.${allowedBaseDomain}`))
+        ) {
+          return callback(null, true);
+        }
+
+        console.error(`❌ Blocked CORS request from origin: ${origin}`);
+        return callback(new Error("Not allowed by CORS"));
+      } catch (err) {
+        console.error(`❌ CORS origin parsing error: ${origin}`);
+        return callback(new Error("Invalid origin"));
       }
-      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
