@@ -3,9 +3,9 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/main"
 }
 
 datasource db {
@@ -30,6 +30,14 @@ model Account {
   inventoryLocationFunctions     InventoryLocationFunction[]
   inventoryLocationFunctionHours InventoryLocationFunctionHours[]
   storefrontThemes               StorefrontTheme[]
+  storefrontBranding             StorefrontBranding[]
+  storefrontPages                StorefrontPage[]
+  storefrontContacts             StorefrontContact[]
+  storefrontLocales              StorefrontLocale[]
+  storefrontCountries            StorefrontCountry[]
+  storefrontCurrencies           StorefrontCurrency[]
+  storefrontNavigation           StorefrontNavigation[]
+  storefrontConfigurations       StorefrontConfiguration[]
 }
 
 model User {
@@ -87,51 +95,162 @@ model Organization {
 }
 
 model Storefront {
-  id              BigInt                     @id @default(autoincrement())
-  name            String // Storefront brand name
-  logo            String? // Shared logo
-  bannerImage     String? // Shared banner
-  domain          String                     @unique // Primary domain (e.g., "brand.com")
-  refundPolicy    String?
-  termsOfService  String?
-  privacyPolicy   String?
-  facebook        String?
-  twitter         String?
-  instagram       String?
-  linkedin        String?
-  tiktok          String?
-  primaryColor    String                     @default("#5A643E") // Primary brand color (hex code)
-  secondaryColor  String                     @default("#7F8D58") // Secondary brand color
-  backgroundColor String                     @default("#F4F4F4") // Background color
-  textColor       String                     @default("#333333") // Default text color
-  buttonColor     String                     @default("#5A643E") // Button color
-  buttonTextColor String                     @default("#FFFFFF") // Button text color
-  fontFamily      String                     @default("Inter, sans-serif") // Custom font family
-  borderRadius    Int                        @default(8) // Border radius for UI elements (e.g., buttons, cards)
-  locales         StorefrontLocale[]
-  country         Country?                   @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  countryId       BigInt?
-  createdAt       DateTime                   @default(now())
-  updatedAt       DateTime                   @default(now()) @updatedAt
-  account         Account?
-  paymentAccounts PaymentAccount[]
-  products        Product[]
-  templates       Template[]
-  fields          Field[]
-  productSegments StorefrontProductSegment[]
-  marketSegments  StorefrontMarketSegment[]
-  regions         StorefrontRegion[]
-  categories      StoreCategory[]
-  brands          StoreBrand[]
-  collections     StoreCollection[]
-  navigation      StoreNavigation[]
-  storeProperties StoreProperty[]
-  themes          StorefrontTheme[]
+  id                       BigInt                     @id @default(autoincrement())
+  name                     String // Storefront brand name
+  logo                     String? // Shared logo
+  bannerImage              String? // Shared banner
+  domain                   String                     @unique // Primary domain (e.g., "brand.com")
+  refundPolicy             String?
+  termsOfService           String?
+  privacyPolicy            String?
+  facebook                 String?
+  twitter                  String?
+  instagram                String?
+  linkedin                 String?
+  tiktok                   String?
+  primaryColor             String                     @default("#5A643E") // Primary brand color (hex code)
+  secondaryColor           String                     @default("#7F8D58") // Secondary brand color
+  backgroundColor          String                     @default("#F4F4F4") // Background color
+  textColor                String                     @default("#333333") // Default text color
+  buttonColor              String                     @default("#5A643E") // Button color
+  buttonTextColor          String                     @default("#FFFFFF") // Button text color
+  fontFamily               String                     @default("Inter, sans-serif") // Custom font family
+  borderRadius             Int                        @default(8) // Border radius for UI elements (e.g., buttons, cards)
+  country                  Country?                   @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId                BigInt?
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @default(now()) @updatedAt
+  account                  Account?
+  paymentAccounts          PaymentAccount[]
+  products                 Product[]
+  templates                Template[]
+  fields                   Field[]
+  productSegments          StorefrontProductSegment[]
+  marketSegments           StorefrontMarketSegment[]
+  regions                  StorefrontRegion[]
+  categories               StoreCategory[]
+  brands                   StoreBrand[]
+  collections              StoreCollection[]
+  navigation               StoreNavigation[]
+  storeProperties          StoreProperty[]
+  themes                   StorefrontTheme[]
+  branding                 StorefrontBranding?
+  pages                    StorefrontPage[]
+  countries                StorefrontCountry[]
+  currencies               StorefrontCurrency[]
+  locales                  StorefrontLocale[]
+  identity                 StorefrontIdentity?
+  contacts                 StorefrontContact[]
+  storefrontNavigations    StorefrontNavigation[]
+  storefrontConfigurations StorefrontConfiguration[]
+}
+
+model StorefrontIdentity {
+  id            String     @id
+  storefront    Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId  BigInt     @unique
+  externalUrl   String? //existing website
+  slug          String
+  canonicalLink String
+  icon          Media      @relation("IconMedia", fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  iconId        BigInt
+  image         Media      @relation("ImageMedia", fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  imageId       BigInt
+  //socialmedia links
+  facebookLink  String?
+  instagramLink String?
+  twitterLink   String?
+  linkedin      String?
+  youtubeLink   String?
+  tiktokLink    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model StorefrontContact {
+  id               String              @id
+  name             String
+  email            String
+  telephone        String
+  formattedAddress String?
+  lat              Float
+  lon              Float
+  weekdays         Weekday[]
+  startTime        String
+  endTime          String
+  placeId          String?
+  country          Country             @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId        BigInt
+  isDefault        Boolean             @default(true)
+  storefront       Storefront          @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId     BigInt
+  account          Account             @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId        BigInt
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now()) @updatedAt
+  countries        StorefrontCountry[]
+
+  @@index([accountId])
+}
+
+model StorefrontLocale {
+  id               String          @id
+  storefront       Storefront      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId     BigInt
+  locale           Locale          @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade) // e.g., "en-US", "fr-FR", "de-DE"
+  localeId         BigInt
+  metaTitle        String? // SEO title for the storefront
+  metaDescription  String? // SEO description
+  ogTitle          String? // OpenGraph title (for social media)
+  ogDescription    String? // OpenGraph description
+  paymentAccount   PaymentAccount? @relation(fields: [paymentAccountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  paymentAccountId BigInt?
+  account          Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId        BigInt?
+  isDefault        Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+
+  @@unique([storefrontId, localeId]) // Ensure uniqueness per storefront
+  @@index([accountId])
+}
+
+model StorefrontCountry {
+  id                  String            @id
+  storefront          Storefront        @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId        BigInt
+  country             Country           @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId           BigInt
+  storefrontContact   StorefrontContact @relation(fields: [storefrontContactId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontContactId String
+  account             Account           @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId           BigInt
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now()) @updatedAt
+
+  @@unique([storefrontId, countryId])
+  @@index([accountId])
+}
+
+model StorefrontCurrency {
+  id           String     @id
+  storefront   Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId BigInt
+  currency     Currency   @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId   BigInt
+  account      Account    @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId    BigInt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  @@unique([storefrontId, currencyId])
+  @@index([accountId])
 }
 
 model StorefrontTheme {
   id                 String        @id
-  storefront         Storefront    @relation(fields: [storefrontId], references: [id], onDelete: Cascade)
+  storefront         Storefront    @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storefrontId       BigInt
   name               String
   description        String
@@ -170,9 +289,248 @@ enum PublishStatus {
   SCHEDULED
 }
 
+model StorefrontBranding {
+  id            String     @id @default(cuid())
+  storefront    Storefront @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId  BigInt     @unique
+  account       Account    @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId     BigInt
+  brandName     String?
+  description   String?
+  slogan        String?
+  logoUrl       String?
+  imageUrl      String? // optional visual representation like a hero image
+  url           String? // canonical brand URL
+  facebookLink  String?
+  instagramLink String?
+  twitterLink   String?
+  linkedin      String?
+  pinterestLink String?
+  youtubeLink   String?
+  tiktokLink    String?
+  snapchatLink  String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model StorefrontConfiguration {
+  id                           String                 @id
+  name                         String                 @default("Default Storefront Configuration")
+  storefront                   Storefront             @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId                 BigInt
+  account                      Account                @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId                    BigInt
+  mainImage                    Media                  @relation(fields: [mainImageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mainImageId                  BigInt
+  mainImageBrightness          Int                    @default(70)
+  collectionPreviewBrightness  Int                    @default(80)
+  hasPromotedCollection        Boolean                @default(false)
+  promotedStoreCollectionTitle String?
+  promotedStoreCollection      StoreCollection?       @relation(fields: [storeCollectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeCollectionId            BigInt?
+  about                        String
+  isPublished                  Boolean                @default(false)
+  isActive                     Boolean                @default(false)
+  createdAt                    DateTime               @default(now())
+  updatedAt                    DateTime               @updatedAt
+  navigationItems              StorefrontNavigation[]
+
+  @@index([accountId, storefrontId, id])
+}
+
+model StorefrontNavigation {
+  id                        String                  @id
+  name                      String                  @default("Default Storefront Navigation")
+  storefrontConfiguration   StorefrontConfiguration @relation(fields: [storefrontConfigurationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontConfigurationId String
+  storefrontCollection      StoreCollection         @relation(fields: [storeCollectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storeCollectionId         BigInt
+  storefront                Storefront              @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId              BigInt
+  account                   Account                 @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId                 BigInt
+  parent                    StorefrontNavigation?   @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId                  String?
+  children                  StorefrontNavigation[]  @relation("ParentChild")
+  isActive                  Boolean                 @default(true)
+  level                     Int                     @default(0)
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
+
+  @@index([id, storefrontId, accountId])
+  @@index([parentId])
+}
+
+enum SocialPlatform {
+  FACEBOOK
+  INSTAGRAM
+  TWITTER
+  LINKEDIN
+  PINTEREST
+  YOUTUBE
+  TIKTOK
+  SNAPCHAT
+}
+
+model StorefrontPage {
+  id            String        @id
+  key           String
+  storefront    Storefront    @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId  BigInt
+  account       Account       @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId     BigInt
+  page          Page          @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId        String
+  content       Json
+  isPublished   Boolean       @default(false)
+  publishStatus PublishStatus
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Page {
+  id                String             @id
+  key               String             @unique
+  pageType          PageType
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  staticPageFields  StaticPageField[]
+  dynamicPageFields DynamicPageField[]
+  translations      PageTranslation[]
+  storefronts       StorefrontPage[]
+}
+
+enum PageType {
+  STATIC // e.g. About, Contact, FAQ
+  PRODUCT // Individual product pages
+  COLLECTION // Product listings by category/tag
+  BLOG // Individual blog articles
+  BLOG_LIST // List of all blog articles or by tag/category
+  SEARCH // Search results
+  LANDING // Custom landing pages (e.g. campaigns)
+  CART // Cart view
+  CHECKOUT // Checkout flow
+  ACCOUNT // User account/profile pages
+  ORDER_HISTORY // List of past orders
+  CUSTOM // Catch-all for anything unique or experimental
+}
+
+model PageTranslation {
+  id          String   @id
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId      String
+  locale      Locale   @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId    BigInt
+  slug        String
+  label       String
+  description String
+  index       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([pageId, localeId])
+}
+
+model StaticField {
+  id               String                   @id
+  key              String                   @unique
+  pageFieldType    PageFieldType
+  dataSource       String?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime
+  translations     StaticFieldTranslation[]
+  staticPageFields StaticPageField[]
+}
+
+model StaticFieldTranslation {
+  id            String      @id
+  staticField   StaticField @relation(fields: [staticFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  staticFieldId String
+  locale        Locale      @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId      BigInt
+  label         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([staticFieldId, localeId])
+}
+
+enum PageFieldType {
+  SHORT_TEXT // 1-line input (e.g., title)
+  LONG_TEXT // Multiline content (e.g., bio, description)
+  RICH_TEXT // HTML/Markdown content
+  SLUG // URL-safe version of a name/title
+  NUMBER // Any numeric value
+  BOOLEAN // True/False toggle
+  DATE // Date only
+  DATETIME // Date + time
+  URL // Link to external/internal page
+  EMAIL // Email address
+  PHONE // Phone number
+  PRICE // Monetary value
+  IMAGE // Single image upload
+  FILE // General file upload
+  COLOR // Hex or RGBA color
+  VIDEO_URL // YouTube, Vimeo, etc.
+  SELECT // Single dropdown option (requires predefined values)
+  MULTISELECT // Multiple dropdown options
+  LIST // Repeating list of values (text or object)
+  OBJECT // Nested structured content (e.g., address, contact block)
+  REFERENCE // Relation to another model (product, collection, etc.)
+}
+
+model DynamicField {
+  id                    String                    @id
+  key                   String                    @unique
+  pageFieldType         PageFieldType
+  databaseObjectField   DatabaseObjectField       @relation(fields: [databaseObjectFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  databaseObjectFieldId String
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime
+  tranlations           DynamicFieldTranslation[]
+  dynamicPageFields     DynamicPageField[]
+}
+
+model DynamicFieldTranslation {
+  id             String       @id
+  dynamicField   DynamicField @relation(fields: [dynamicFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dynamicFieldId String
+  locale         Locale       @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId       BigInt
+  label          String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([dynamicFieldId, localeId])
+}
+
+model StaticPageField {
+  id            String      @id
+  page          Page        @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId        String
+  staticField   StaticField @relation(fields: [staticFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  staticFieldId String
+  required      Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([pageId, staticFieldId])
+}
+
+model DynamicPageField {
+  id             String       @id
+  page           Page         @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId         String
+  dynamicField   DynamicField @relation(fields: [dynamicFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dynamicFieldId String
+  required       Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
 //Standard produt segments that a store services
 model StorefrontProductSegment {
-  id               BigInt          @id @default(autoincrement())
+  id               BigInt          @id
   storefront       Storefront      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   storefrontId     BigInt
   productSegment   ProductSegment  @relation(fields: [productSegmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -207,32 +565,6 @@ model StorefrontRegion {
   primary      Boolean
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @default(now()) @updatedAt
-}
-
-model StorefrontLocale {
-  id                   BigInt          @id @default(autoincrement())
-  storefrontId         BigInt
-  locale               Locale          @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade) // e.g., "en-US", "fr-FR", "de-DE"
-  localeId             BigInt
-  timezone             String // e.g., "America/New_York", "Europe/Paris"
-  useStorefrontContact Boolean         @default(true)
-  contactEmail         String?
-  contactPhone         String?
-  address              String? // Locale-specific address
-  domain               String?         @unique // e.g., "us.brand.com", "fr.brand.com"
-  metaTitle            String? // SEO title for the storefront
-  metaDescription      String? // SEO description
-  metaKeywords         String? // SEO keywords (comma-separated)
-  ogTitle              String? // OpenGraph title (for social media)
-  ogDescription        String? // OpenGraph description
-  ogImage              String? // URL to OpenGraph image (for previews)
-  storefront           Storefront      @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  paymentAccount       PaymentAccount? @relation(fields: [paymentAccountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  paymentAccountId     BigInt?
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @default(now()) @updatedAt
-
-  @@unique([storefrontId, localeId]) // Ensure uniqueness per storefront
 }
 
 model PaymentAccount {
@@ -479,23 +811,26 @@ enum MediaSource {
 }
 
 model Media {
-  id        BigInt         @id @default(autoincrement())
-  url       String
-  fileName  String?
-  fileSize  Int?
-  width     Int? // for images/videos
-  height    Int? // for images/videos
-  duration  Int? // in seconds (for videos/audio)
-  mimeType  String?
-  alt       String?
-  mediaType MediaType
-  source    MediaSource    @default(UPLOADED)
-  bucket    MediaBucket    @default(PRODUCTS)
-  account   Account        @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  accountId BigInt
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
-  products  ProductMedia[]
+  id                       BigInt                    @id @default(autoincrement())
+  url                      String
+  fileName                 String?
+  fileSize                 Int?
+  width                    Int? // for images/videos
+  height                   Int? // for images/videos
+  duration                 Int? // in seconds (for videos/audio)
+  mimeType                 String?
+  alt                      String?
+  mediaType                MediaType
+  source                   MediaSource               @default(UPLOADED)
+  bucket                   MediaBucket               @default(PRODUCTS)
+  account                  Account                   @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId                BigInt
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @default(now()) @updatedAt
+  products                 ProductMedia[]
+  storefrontIcon           StorefrontIdentity[]      @relation("IconMedia")
+  storefrontImage          StorefrontIdentity[]      @relation("ImageMedia")
+  storefrontConfigurations StorefrontConfiguration[]
 
   @@unique([url, accountId])
   @@index([mediaType])
@@ -559,15 +894,17 @@ enum CollectionType {
 }
 
 model StoreCollection {
-  id           BigInt                    @id @default(autoincrement())
-  storefront   Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  storefrontId BigInt
-  collection   Collection                @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  collectionId String
-  createdAt    DateTime                  @default(now())
-  updatedAt    DateTime                  @default(now()) @updatedAt
-  products     StoreCollectionProducts[]
-  navigation   StoreNavigation[]
+  id                            BigInt                    @id @default(autoincrement())
+  storefront                    Storefront                @relation(fields: [storefrontId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storefrontId                  BigInt
+  collection                    Collection                @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId                  String
+  createdAt                     DateTime                  @default(now())
+  updatedAt                     DateTime                  @default(now()) @updatedAt
+  products                      StoreCollectionProducts[]
+  navigation                    StoreNavigation[]
+  storefrontNavigation          StorefrontNavigation[]
+  promotedStorefrontCollections StorefrontConfiguration[]
 
   @@unique([storefrontId, collectionId])
 }
@@ -1185,6 +1522,11 @@ model Locale {
   propertyOptions  PropertyOptionTranslation[]
   productSegments  ProductSegmentTranslation[]
   collections      CollectionTranslation[]
+  pages            PageTranslation[]
+  staticFields     StaticFieldTranslation[]
+  dynamicFields    DynamicFieldTranslation[]
+  databaseObjects  DatabaseObjectTranslation[]
+  databaseFields   DatabseFieldTranslation[]
 }
 
 model Category {
@@ -1415,7 +1757,7 @@ model Payment {
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Order     Order[]
+  orders    Order[]
 }
 
 model Partner {
@@ -1448,33 +1790,36 @@ model Service {
 }
 
 model Country {
-  id            BigInt         @id @default(autoincrement())
-  code          String         @unique
-  name          String
-  currency      Currency?      @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  currencyId    BigInt?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now()) @updatedAt
-  partners      Partner[]
-  addresses     Address[]
-  inventory     Inventory[]
-  orders        Order[]
-  locales       Locale[]
-  storefronts   Storefront[]
-  listPrices    ListPrice[]
-  locationZones LocationZone[]
+  id                   BigInt              @id @default(autoincrement())
+  code                 String              @unique
+  name                 String
+  currency             Currency?           @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId           BigInt?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now()) @updatedAt
+  partners             Partner[]
+  addresses            Address[]
+  inventory            Inventory[]
+  orders               Order[]
+  locales              Locale[]
+  storefronts          Storefront[]
+  listPrices           ListPrice[]
+  locationZones        LocationZone[]
+  availableStorefronts StorefrontCountry[]
+  storefrontContacts   StorefrontContact[]
 }
 
 model Currency {
-  id              BigInt           @id @default(autoincrement())
-  code            String           @unique
+  id              BigInt               @id @default(autoincrement())
+  code            String               @unique
   name            String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
   country         Country[]
   paymentAccounts PaymentAccount[]
   locales         Locale[]
   listPrices      ListPrice[]
+  storefronts     StorefrontCurrency[]
 }
 
 model Language {
@@ -1484,4 +1829,63 @@ model Language {
   locales   Locale[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+//Database Schema
+model DatabaseObject {
+  id                  String                      @id
+  key                 String                      @unique
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
+  translations        DatabaseObjectTranslation[]
+  DatabaseObjectField DatabaseObjectField[]
+}
+
+model DatabaseObjectTranslation {
+  id               String         @id
+  databaseObject   DatabaseObject @relation(fields: [databaseObjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  databaseObjectId String
+  locale           Locale         @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId         BigInt
+  label            String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([databaseObjectId, localeId])
+}
+
+model DatabaseField {
+  id              String                    @id
+  key             String                    @unique
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  translations    DatabseFieldTranslation[]
+  databaseObjects DatabaseObjectField[]
+}
+
+model DatabseFieldTranslation {
+  id              String        @id
+  databaseField   DatabaseField @relation(fields: [databaseFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  databaseFieldId String
+  locale          Locale        @relation(fields: [localeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  localeId        BigInt
+  label           String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([databaseFieldId, localeId])
+}
+
+model DatabaseObjectField {
+  id               String         @id
+  key              String         @unique
+  databaseObject   DatabaseObject @relation(fields: [databaseObjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  databaseObjectId String
+  databaseField    DatabaseField  @relation(fields: [databaseFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  databaseFieldId  String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  DynamicField     DynamicField[]
+
+  @@unique([databaseObjectId, databaseFieldId])
 }

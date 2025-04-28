@@ -1,10 +1,9 @@
 const express = require("express");
-const prisma = require("../../../config/prisma");
-const { generateId } = require("../../../helpers/generateId");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const accountId = req.accountId;
+  const storefrontId = req.storefrontId;
   const localeCode = req.localeCode;
   const {} = req.query;
 
@@ -18,6 +17,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const accountId = req.accountId;
+  const storefrontId = req.storefrontId;
   const localeCode = req.localeCode;
   const { id } = req.params;
 
@@ -31,7 +31,22 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const accountId = req.accountId;
+  const storefrontId = req.storefrontId;
   const localeCode = req.localeCode;
+  const {} = req.body; //data
+
+  try {
+    return res.status(201).json({});
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+router.put("/:id", async (req, res) => {
+  const accountId = req.accountId;
+  const storefrontId = req.storefrontId;
+  const localeCode = req.localeCode;
+  const { id } = req.params;
   const {} = req.body; //data
 
   try {
@@ -44,6 +59,7 @@ router.post("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const accountId = req.accountId;
+  const storefrontId = req.storefrontId;
   const { id } = req.params;
 
   try {

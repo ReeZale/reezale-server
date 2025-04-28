@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/directory"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECTORY_DATABASE_URL")
+}
+
+model Partner {
+  id                String                   @id
+  name              String
+  url               String
+  logo              String
+  tagline           String
+  description       String
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  productCategories PartnerProductCategory[]
+  locations         PartnerLocation[]
+  channels          PartnerChannel[]
+  roleAssignments   PartnerRoleAssignment[]
+}
+
+model PartnerRole {
+  id        String                  @id
+  key       String                  @unique // e.g. BRAND, STORE, RESELL_PLATFORM
+  label     String
+  partners  PartnerRoleAssignment[]
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+}
+
+model PartnerRoleAssignment {
+  id        String      @id
+  partner   Partner     @relation(fields: [partnerId], references: [id])
+  partnerId String
+  role      PartnerRole @relation(fields: [roleId], references: [id])
+  roleId    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([partnerId, roleId])
+}
+
+model PartnerChannel {
+  id        String                  @id
+  partner   Partner                 @relation(fields: [partnerId], references: [id])
+  partnerId String
+  type      ChannelType // ECOMMERCE, APP, KIOSK, etc.
+  url       String?
+  services  PartnerServiceProfile[]
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+}
+
+enum ChannelType {
+  ECOMMERCE
+  APP
+  KIOSK
+  OTHER
+}
+
+model PartnerLocation {
+  id               String                  @id
+  partner          Partner                 @relation(fields: [partnerId], references: [id])
+  partnerId        String
+  name             String
+  formattedAddress String
+  lat              Float
+  lng              Float
+  country          Country                 @relation(fields: [countryCode], references: [code])
+  countryCode      String
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  services         PartnerServiceProfile[]
+
+  @@index([countryCode])
+  @@index([lat, lng])
+}
+
+model PartnerServiceProfile {
+  id            String           @id
+  channel       PartnerChannel?  @relation(fields: [channelId], references: [id])
+  channelId     String?
+  location      PartnerLocation? @relation(fields: [locationId], references: [id])
+  locationId    String?
+  serviceType   ServiceType      @relation(fields: [serviceTypeId], references: [id])
+  serviceTypeId String
+  available     Boolean          @default(true)
+  notes         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@unique([channelId, locationId, serviceTypeId])
+}
+
+model ServiceType {
+  id        String                  @id
+  key       String                  @unique // e.g. "pickup", "dropoff", "delivery"
+  label     String
+  icon      String?
+  services  PartnerServiceProfile[]
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+}
+
+model ProductCategory {
+  id              String                   @id
+  key             String                   @unique
+  label           String
+  partners        PartnerProductCategory[]
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  resellPlatforms ResellPlatformCategory[]
+}
+
+model PartnerProductCategory {
+  id                String          @id
+  partner           Partner         @relation(fields: [partnerId], references: [id])
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  partnerId         String
+  productCategoryId String
+
+  @@unique([partnerId, productCategoryId])
+}
+
+model ResellPlatform {
+  id                String                   @id
+  name              String
+  url               String                   @unique
+  logo              String?
+  canSell           Boolean                  @default(true)
+  tagline           String
+  altTagline        String?
+  description       String
+  platformType      ResellPlatformType
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  productCategories ResellPlatformCategory[]
+  countries         ResellPlatformCountry[]
+}
+
+model ResellPlatformCategory {
+  id                String          @id
+  resellPlatform    ResellPlatform  @relation(fields: [resellPlatformId], references: [id])
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+  resellPlatformId  String
+  productCategoryId String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([resellPlatformId, productCategoryId])
+}
+
+enum ResellPlatformType {
+  B2C
+  C2C
+  B2B
+}
+
+model ResellPlatformCountry {
+  id               String         @id
+  resellPlatform   ResellPlatform @relation(fields: [resellPlatformId], references: [id])
+  country          Country        @relation(fields: [countryCode], references: [code])
+  countryCode      String
+  resellPlatformId String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([resellPlatformId, countryCode])
+}
+
+model Country {
+  code            String                  @id // ISO 3166-1 alpha-2, e.g., "US", "SE"
+  name            String
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  resellPlatforms ResellPlatformCountry[]
+  partners        PartnerLocation[]
+}

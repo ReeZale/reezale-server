@@ -4,9 +4,9 @@
   "description": "custome data scraper",
   "main": "index.js",
   "scripts": {
-    "build": "npx prisma generate",
+    "build": "npx prisma generate && npx prisma generate --schema=directory-prisma/schema.prisma",
     "start": "node index.js",
-    "migrate:deploy": "npx prisma migrate deploy",
+    "migrate:deploy": "npx prisma migrate deploy --schema=prisma/schema.prisma && npx prisma migrate deploy --schema=directory-prisma/schema.prisma",
     "seed": "npx prisma db seed"
   },
   "prisma": {
@@ -27,7 +27,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fast-xml-parser": "^4.5.1",
-    "file-type": "^20.4.1",
+    "file-type": "^16.5.4",
     "fs": "^0.0.1-security",
     "fuse.js": "^7.1.0",
     "he": "^1.2.0",

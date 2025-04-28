@@ -4,7 +4,7 @@ const prisma = require("./config/prisma");
 const cors = require("cors"); // Import the CORS middleware
 const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
 const router = require("./router");
-const { getTimezone, getPostalCode } = require("./services/locationServices");
+const prismaDirectory = require("./config/prismaDirectory");
 
 const app = express();
 
@@ -42,6 +42,19 @@ process.on("SIGINT", async () => {
 
 process.on("SIGTERM", async () => {
   await prisma.$disconnect();
+  console.log("🔌 Prisma disconnected.");
+  process.exit(0);
+});
+
+// ✅ Gracefully disconnect Prisma on shutdown
+process.on("SIGINT", async () => {
+  await prismaDirectory.$disconnect();
+  console.log("🔌 Prisma disconnected.");
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prismaDirectory.$disconnect();
   console.log("🔌 Prisma disconnected.");
   process.exit(0);
 });

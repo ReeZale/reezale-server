@@ -14,6 +14,7 @@ const orderRouter = require("./routes/order");
 const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin/router");
 const publicRouter = require("./routes/public/router");
+const directoryRouter = require("./routes/directory/router");
 
 const authenticateSeller = require("./middleware/authenticateSeller");
 const shopMiddleware = require("./middleware/shopMiddleware");
@@ -34,5 +35,6 @@ router.use("/profiles", profileRouter);
 router.use("/shipments", shipmentRouter);
 router.use("/payments", paymentRouter);
 router.use("/seller/:sellerKey", shopMiddleware, sellerRouter);
+router.use("/directory", directoryRouter);
 
 module.exports = router;
