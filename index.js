@@ -1,12 +1,16 @@
 const express = require("express");
-require("dotenv").config(); // Load environment variables
+require("dotenv").config();
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const prisma = require("./config/prisma");
-const cors = require("cors"); // Import the CORS middleware
-const cookieParser = require("cookie-parser"); // ✅ Import cookie-parser
-const router = require("./router");
 const prismaDirectory = require("./config/prismaDirectory");
+const router = require("./router");
 
 const app = express();
+
+// ------------------------
+// CORS Setup
+// ------------------------
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
@@ -15,89 +19,94 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
 
 const allowedBaseDomain = process.env.ALLOWED_BASE_DOMAIN; // e.g., "reezale.com"
 
-app.use(cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow server-to-server or Postman
 
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin) return callback(null, true);
+    try {
+      const { hostname } = new URL(origin);
 
-//       try {
-//         const { hostname } = new URL(origin);
+      // Allow if exact origin match
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-//         // Allow if exact origin match
-//         if (allowedOrigins.includes(origin)) {
-//           return callback(null, true);
-//         }
+      // Allow if hostname is *.reezale.com
+      if (
+        allowedBaseDomain &&
+        (hostname === allowedBaseDomain ||
+          hostname.endsWith(`.${allowedBaseDomain}`))
+      ) {
+        return callback(null, true);
+      }
 
-//         // Allow if hostname is *.reezale.com
-//         if (
-//           allowedBaseDomain &&
-//           (hostname === allowedBaseDomain ||
-//             hostname.endsWith(`.${allowedBaseDomain}`))
-//         ) {
-//           return callback(null, true);
-//         }
+      console.error(`❌ Blocked CORS request from origin: ${origin}`);
+      return callback(new Error("Not allowed by CORS"));
+    } catch (err) {
+      console.error(`❌ CORS origin parsing error: ${origin}`, err);
+      return callback(new Error("Invalid origin"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-//         console.error(`❌ Blocked CORS request from origin: ${origin}`);
-//         return callback(new Error("Not allowed by CORS"));
-//       } catch (err) {
-//         console.error(`❌ CORS origin parsing error: ${origin}`);
-//         return callback(new Error("Invalid origin"));
-//       }
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+app.use(cors(corsOptions));
 
-// Middleware to parse JSON and URL-encoded request bodies
+// Explicitly handle preflight requests for all routes
+app.options("*", cors(corsOptions));
+
+// ------------------------
+// Middleware
+// ------------------------
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Gracefully disconnect Prisma on shutdown
-process.on("SIGINT", async () => {
-  await prisma.$disconnect();
-  console.log("🔌 Prisma disconnected.");
-  process.exit(0);
-});
+// ------------------------
+// Routes
+// ------------------------
 
-process.on("SIGTERM", async () => {
-  await prisma.$disconnect();
-  console.log("🔌 Prisma disconnected.");
-  process.exit(0);
-});
+app.use("/api/v1", router);
 
-// ✅ Gracefully disconnect Prisma on shutdown
-process.on("SIGINT", async () => {
-  await prismaDirectory.$disconnect();
-  console.log("🔌 Prisma disconnected.");
-  process.exit(0);
-});
+// ------------------------
+// Global Helpers
+// ------------------------
 
-process.on("SIGTERM", async () => {
-  await prismaDirectory.$disconnect();
-  console.log("🔌 Prisma disconnected.");
-  process.exit(0);
-});
-
-// Globally handle BigInt serialization
+// Serialize BigInt in JSON responses
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-(async () => {})();
+// ------------------------
+// Graceful Shutdown
+// ------------------------
 
-// Use the centralized router
-app.use("/api/v1", router);
+async function gracefulShutdown(signal) {
+  console.log(`Received ${signal}. Closing database connections...`);
+  try {
+    await prisma.$disconnect();
+    await prismaDirectory.$disconnect();
+  } catch (err) {
+    console.error("Error during shutdown:", err);
+  } finally {
+    process.exit(0);
+  }
+}
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+// ------------------------
+// Start Server
+// ------------------------
 
 const PORT = process.env.PORT || 4000;
-const ENV = process.env.NODE_ENV;
-
+const ENV = process.env.NODE_ENV || "development";
 const HOST = ENV === "development" ? "localhost" : "0.0.0.0";
 
 app.listen(PORT, HOST, () => {
-  console.log(`Server is running on http://${HOST}:${PORT}`);
+  console.log(`🚀 Server is running at http://${HOST}:${PORT} in ${ENV} mode`);
 });
