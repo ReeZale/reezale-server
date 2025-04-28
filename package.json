@@ -4,10 +4,10 @@
   "description": "custome data scraper",
   "main": "index.js",
   "scripts": {
-    "build": "npx prisma generate && npx prisma generate --schema=directory-prisma/schema.prisma",
+    "build": "npx prisma generate && npx prisma generate --schema=prisma-directory/schema.prisma",
     "start": "node index.js",
     "start:prod": "npm run build && npm run migrate:deploy && node index.js",
-    "migrate:deploy": "npx prisma migrate deploy --schema=prisma/schema.prisma && npx prisma migrate deploy --schema=directory-prisma/schema.prisma",
+    "migrate:deploy": "npx prisma migrate deploy --schema=prisma/schema.prisma && npx prisma migrate deploy --schema=prisma-directory/schema.prisma",
     "seed": "npx prisma db seed"
   },
   "prisma": {
