@@ -9,6 +9,18 @@ const router = require("./router");
 const app = express();
 
 // ------------------------
+// Global Crash Handlers
+// ------------------------
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("🔥 Unhandled Rejection:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("🔥 Uncaught Exception:", error);
+});
+
+// ------------------------
 // CORS Setup
 // ------------------------
 
@@ -21,17 +33,15 @@ const allowedBaseDomain = process.env.ALLOWED_BASE_DOMAIN; // e.g., "reezale.com
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Allow server-to-server or Postman
+    if (!origin) return callback(null, true);
 
     try {
       const { hostname } = new URL(origin);
 
-      // Allow if exact origin match
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      // Allow if hostname is *.reezale.com
       if (
         allowedBaseDomain &&
         (hostname === allowedBaseDomain ||
@@ -53,8 +63,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Explicitly handle preflight requests for all routes
 app.options("*", cors(corsOptions));
 
 // ------------------------
@@ -75,7 +83,6 @@ app.use("/api/v1", router);
 // Global Helpers
 // ------------------------
 
-// Serialize BigInt in JSON responses
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -85,12 +92,12 @@ BigInt.prototype.toJSON = function () {
 // ------------------------
 
 async function gracefulShutdown(signal) {
-  console.log(`Received ${signal}. Closing database connections...`);
+  console.log(`📴 Received ${signal}. Closing database connections...`);
   try {
     await prisma.$disconnect();
     await prismaDirectory.$disconnect();
   } catch (err) {
-    console.error("Error during shutdown:", err);
+    console.error("⚠️ Error during shutdown:", err);
   } finally {
     process.exit(0);
   }
@@ -103,10 +110,24 @@ process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 // Start Server
 // ------------------------
 
-const PORT = process.env.PORT || 4000;
-const ENV = process.env.NODE_ENV || "development";
-const HOST = ENV === "development" ? "localhost" : "0.0.0.0";
+async function startServer() {
+  const PORT = process.env.PORT || 4000;
+  const ENV = process.env.NODE_ENV || "development";
+  const HOST = "0.0.0.0"; // Always use 0.0.0.0 for Azure
 
-app.listen(PORT, HOST, () => {
-  console.log(`🚀 Server is running at http://${HOST}:${PORT} in ${ENV} mode`);
-});
+  try {
+    // Optional: You can validate database connection before starting
+    await prisma.$connect();
+    await prismaDirectory.$connect();
+    console.log("✅ Databases connected.");
+
+    app.listen(PORT, HOST, () => {
+      console.log(`🚀 Server running at http://${HOST}:${PORT} in ${ENV} mode`);
+    });
+  } catch (err) {
+    console.error("❌ Server startup failed:", err);
+    process.exit(1); // Exit Azure container cleanly with failure
+  }
+}
+
+startServer();
