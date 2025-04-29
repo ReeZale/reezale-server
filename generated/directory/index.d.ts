@@ -1990,16 +1990,16 @@ export namespace Prisma {
    */
 
   export type PartnerCountOutputType = {
-    productCategories: number
-    locations: number
     channels: number
+    locations: number
+    productCategories: number
     roleAssignments: number
   }
 
   export type PartnerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    productCategories?: boolean | PartnerCountOutputTypeCountProductCategoriesArgs
-    locations?: boolean | PartnerCountOutputTypeCountLocationsArgs
     channels?: boolean | PartnerCountOutputTypeCountChannelsArgs
+    locations?: boolean | PartnerCountOutputTypeCountLocationsArgs
+    productCategories?: boolean | PartnerCountOutputTypeCountProductCategoriesArgs
     roleAssignments?: boolean | PartnerCountOutputTypeCountRoleAssignmentsArgs
   }
 
@@ -2017,8 +2017,8 @@ export namespace Prisma {
   /**
    * PartnerCountOutputType without action
    */
-  export type PartnerCountOutputTypeCountProductCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PartnerProductCategoryWhereInput
+  export type PartnerCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PartnerChannelWhereInput
   }
 
   /**
@@ -2031,8 +2031,8 @@ export namespace Prisma {
   /**
    * PartnerCountOutputType without action
    */
-  export type PartnerCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PartnerChannelWhereInput
+  export type PartnerCountOutputTypeCountProductCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PartnerProductCategoryWhereInput
   }
 
   /**
@@ -2252,13 +2252,13 @@ export namespace Prisma {
    */
 
   export type CountryCountOutputType = {
-    resellPlatforms: number
     partners: number
+    resellPlatforms: number
   }
 
   export type CountryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatforms?: boolean | CountryCountOutputTypeCountResellPlatformsArgs
     partners?: boolean | CountryCountOutputTypeCountPartnersArgs
+    resellPlatforms?: boolean | CountryCountOutputTypeCountResellPlatformsArgs
   }
 
   // Custom InputTypes
@@ -2275,15 +2275,15 @@ export namespace Prisma {
   /**
    * CountryCountOutputType without action
    */
-  export type CountryCountOutputTypeCountResellPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ResellPlatformCountryWhereInput
+  export type CountryCountOutputTypeCountPartnersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PartnerLocationWhereInput
   }
 
   /**
    * CountryCountOutputType without action
    */
-  export type CountryCountOutputTypeCountPartnersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PartnerLocationWhereInput
+  export type CountryCountOutputTypeCountResellPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ResellPlatformCountryWhereInput
   }
 
 
@@ -2479,9 +2479,9 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    productCategories?: boolean | Partner$productCategoriesArgs<ExtArgs>
-    locations?: boolean | Partner$locationsArgs<ExtArgs>
     channels?: boolean | Partner$channelsArgs<ExtArgs>
+    locations?: boolean | Partner$locationsArgs<ExtArgs>
+    productCategories?: boolean | Partner$productCategoriesArgs<ExtArgs>
     roleAssignments?: boolean | Partner$roleAssignmentsArgs<ExtArgs>
     _count?: boolean | PartnerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["partner"]>
@@ -2521,9 +2521,9 @@ export namespace Prisma {
 
   export type PartnerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "logo" | "tagline" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["partner"]>
   export type PartnerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    productCategories?: boolean | Partner$productCategoriesArgs<ExtArgs>
-    locations?: boolean | Partner$locationsArgs<ExtArgs>
     channels?: boolean | Partner$channelsArgs<ExtArgs>
+    locations?: boolean | Partner$locationsArgs<ExtArgs>
+    productCategories?: boolean | Partner$productCategoriesArgs<ExtArgs>
     roleAssignments?: boolean | Partner$roleAssignmentsArgs<ExtArgs>
     _count?: boolean | PartnerCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2533,9 +2533,9 @@ export namespace Prisma {
   export type $PartnerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Partner"
     objects: {
-      productCategories: Prisma.$PartnerProductCategoryPayload<ExtArgs>[]
-      locations: Prisma.$PartnerLocationPayload<ExtArgs>[]
       channels: Prisma.$PartnerChannelPayload<ExtArgs>[]
+      locations: Prisma.$PartnerLocationPayload<ExtArgs>[]
+      productCategories: Prisma.$PartnerProductCategoryPayload<ExtArgs>[]
       roleAssignments: Prisma.$PartnerRoleAssignmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2941,9 +2941,9 @@ export namespace Prisma {
    */
   export interface Prisma__PartnerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    productCategories<T extends Partner$productCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Partner$productCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerProductCategoryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
-    locations<T extends Partner$locationsArgs<ExtArgs> = {}>(args?: Subset<T, Partner$locationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerLocationPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     channels<T extends Partner$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Partner$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerChannelPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    locations<T extends Partner$locationsArgs<ExtArgs> = {}>(args?: Subset<T, Partner$locationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerLocationPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    productCategories<T extends Partner$productCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Partner$productCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerProductCategoryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     roleAssignments<T extends Partner$roleAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Partner$roleAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerRoleAssignmentPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3370,27 +3370,27 @@ export namespace Prisma {
   }
 
   /**
-   * Partner.productCategories
+   * Partner.channels
    */
-  export type Partner$productCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Partner$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the PartnerProductCategory
+     * Select specific fields to fetch from the PartnerChannel
      */
-    select?: PartnerProductCategorySelect<ExtArgs> | null
+    select?: PartnerChannelSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the PartnerProductCategory
+     * Omit specific fields from the PartnerChannel
      */
-    omit?: PartnerProductCategoryOmit<ExtArgs> | null
+    omit?: PartnerChannelOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PartnerProductCategoryInclude<ExtArgs> | null
-    where?: PartnerProductCategoryWhereInput
-    orderBy?: PartnerProductCategoryOrderByWithRelationInput | PartnerProductCategoryOrderByWithRelationInput[]
-    cursor?: PartnerProductCategoryWhereUniqueInput
+    include?: PartnerChannelInclude<ExtArgs> | null
+    where?: PartnerChannelWhereInput
+    orderBy?: PartnerChannelOrderByWithRelationInput | PartnerChannelOrderByWithRelationInput[]
+    cursor?: PartnerChannelWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: PartnerProductCategoryScalarFieldEnum | PartnerProductCategoryScalarFieldEnum[]
+    distinct?: PartnerChannelScalarFieldEnum | PartnerChannelScalarFieldEnum[]
   }
 
   /**
@@ -3418,27 +3418,27 @@ export namespace Prisma {
   }
 
   /**
-   * Partner.channels
+   * Partner.productCategories
    */
-  export type Partner$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Partner$productCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the PartnerChannel
+     * Select specific fields to fetch from the PartnerProductCategory
      */
-    select?: PartnerChannelSelect<ExtArgs> | null
+    select?: PartnerProductCategorySelect<ExtArgs> | null
     /**
-     * Omit specific fields from the PartnerChannel
+     * Omit specific fields from the PartnerProductCategory
      */
-    omit?: PartnerChannelOmit<ExtArgs> | null
+    omit?: PartnerProductCategoryOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PartnerChannelInclude<ExtArgs> | null
-    where?: PartnerChannelWhereInput
-    orderBy?: PartnerChannelOrderByWithRelationInput | PartnerChannelOrderByWithRelationInput[]
-    cursor?: PartnerChannelWhereUniqueInput
+    include?: PartnerProductCategoryInclude<ExtArgs> | null
+    where?: PartnerProductCategoryWhereInput
+    orderBy?: PartnerProductCategoryOrderByWithRelationInput | PartnerProductCategoryOrderByWithRelationInput[]
+    cursor?: PartnerProductCategoryWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: PartnerChannelScalarFieldEnum | PartnerChannelScalarFieldEnum[]
+    distinct?: PartnerProductCategoryScalarFieldEnum | PartnerProductCategoryScalarFieldEnum[]
   }
 
   /**
@@ -6955,8 +6955,8 @@ export namespace Prisma {
     countryCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     services?: boolean | PartnerLocation$servicesArgs<ExtArgs>
     _count?: boolean | PartnerLocationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["partnerLocation"]>
@@ -6971,8 +6971,8 @@ export namespace Prisma {
     countryCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["partnerLocation"]>
 
   export type PartnerLocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6985,8 +6985,8 @@ export namespace Prisma {
     countryCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["partnerLocation"]>
 
   export type PartnerLocationSelectScalar = {
@@ -7003,25 +7003,25 @@ export namespace Prisma {
 
   export type PartnerLocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "partnerId" | "name" | "formattedAddress" | "lat" | "lng" | "countryCode" | "createdAt" | "updatedAt", ExtArgs["result"]["partnerLocation"]>
   export type PartnerLocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     services?: boolean | PartnerLocation$servicesArgs<ExtArgs>
     _count?: boolean | PartnerLocationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PartnerLocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
   }
   export type PartnerLocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    partner?: boolean | PartnerDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    partner?: boolean | PartnerDefaultArgs<ExtArgs>
   }
 
   export type $PartnerLocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PartnerLocation"
     objects: {
-      partner: Prisma.$PartnerPayload<ExtArgs>
       country: Prisma.$CountryPayload<ExtArgs>
+      partner: Prisma.$PartnerPayload<ExtArgs>
       services: Prisma.$PartnerServiceProfilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7428,8 +7428,8 @@ export namespace Prisma {
    */
   export interface Prisma__PartnerLocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    partner<T extends PartnerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PartnerDefaultArgs<ExtArgs>>): Prisma__PartnerClient<$Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     country<T extends CountryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CountryDefaultArgs<ExtArgs>>): Prisma__CountryClient<$Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    partner<T extends PartnerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PartnerDefaultArgs<ExtArgs>>): Prisma__PartnerClient<$Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     services<T extends PartnerLocation$servicesArgs<ExtArgs> = {}>(args?: Subset<T, PartnerLocation$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerServiceProfilePayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -12320,13 +12320,13 @@ export namespace Prisma {
     name: string | null
     url: string | null
     logo: string | null
-    canSell: boolean | null
     tagline: string | null
-    altTagline: string | null
     description: string | null
     platformType: $Enums.ResellPlatformType | null
     createdAt: Date | null
     updatedAt: Date | null
+    altTagline: string | null
+    canSell: boolean | null
   }
 
   export type ResellPlatformMaxAggregateOutputType = {
@@ -12334,13 +12334,13 @@ export namespace Prisma {
     name: string | null
     url: string | null
     logo: string | null
-    canSell: boolean | null
     tagline: string | null
-    altTagline: string | null
     description: string | null
     platformType: $Enums.ResellPlatformType | null
     createdAt: Date | null
     updatedAt: Date | null
+    altTagline: string | null
+    canSell: boolean | null
   }
 
   export type ResellPlatformCountAggregateOutputType = {
@@ -12348,13 +12348,13 @@ export namespace Prisma {
     name: number
     url: number
     logo: number
-    canSell: number
     tagline: number
-    altTagline: number
     description: number
     platformType: number
     createdAt: number
     updatedAt: number
+    altTagline: number
+    canSell: number
     _all: number
   }
 
@@ -12364,13 +12364,13 @@ export namespace Prisma {
     name?: true
     url?: true
     logo?: true
-    canSell?: true
     tagline?: true
-    altTagline?: true
     description?: true
     platformType?: true
     createdAt?: true
     updatedAt?: true
+    altTagline?: true
+    canSell?: true
   }
 
   export type ResellPlatformMaxAggregateInputType = {
@@ -12378,13 +12378,13 @@ export namespace Prisma {
     name?: true
     url?: true
     logo?: true
-    canSell?: true
     tagline?: true
-    altTagline?: true
     description?: true
     platformType?: true
     createdAt?: true
     updatedAt?: true
+    altTagline?: true
+    canSell?: true
   }
 
   export type ResellPlatformCountAggregateInputType = {
@@ -12392,13 +12392,13 @@ export namespace Prisma {
     name?: true
     url?: true
     logo?: true
-    canSell?: true
     tagline?: true
-    altTagline?: true
     description?: true
     platformType?: true
     createdAt?: true
     updatedAt?: true
+    altTagline?: true
+    canSell?: true
     _all?: true
   }
 
@@ -12479,13 +12479,13 @@ export namespace Prisma {
     name: string
     url: string
     logo: string | null
-    canSell: boolean
     tagline: string
-    altTagline: string | null
     description: string
     platformType: $Enums.ResellPlatformType
     createdAt: Date
     updatedAt: Date
+    altTagline: string | null
+    canSell: boolean
     _count: ResellPlatformCountAggregateOutputType | null
     _min: ResellPlatformMinAggregateOutputType | null
     _max: ResellPlatformMaxAggregateOutputType | null
@@ -12510,13 +12510,13 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     logo?: boolean
-    canSell?: boolean
     tagline?: boolean
-    altTagline?: boolean
     description?: boolean
     platformType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    altTagline?: boolean
+    canSell?: boolean
     productCategories?: boolean | ResellPlatform$productCategoriesArgs<ExtArgs>
     countries?: boolean | ResellPlatform$countriesArgs<ExtArgs>
     _count?: boolean | ResellPlatformCountOutputTypeDefaultArgs<ExtArgs>
@@ -12527,13 +12527,13 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     logo?: boolean
-    canSell?: boolean
     tagline?: boolean
-    altTagline?: boolean
     description?: boolean
     platformType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    altTagline?: boolean
+    canSell?: boolean
   }, ExtArgs["result"]["resellPlatform"]>
 
   export type ResellPlatformSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12541,13 +12541,13 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     logo?: boolean
-    canSell?: boolean
     tagline?: boolean
-    altTagline?: boolean
     description?: boolean
     platformType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    altTagline?: boolean
+    canSell?: boolean
   }, ExtArgs["result"]["resellPlatform"]>
 
   export type ResellPlatformSelectScalar = {
@@ -12555,16 +12555,16 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     logo?: boolean
-    canSell?: boolean
     tagline?: boolean
-    altTagline?: boolean
     description?: boolean
     platformType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    altTagline?: boolean
+    canSell?: boolean
   }
 
-  export type ResellPlatformOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "logo" | "canSell" | "tagline" | "altTagline" | "description" | "platformType" | "createdAt" | "updatedAt", ExtArgs["result"]["resellPlatform"]>
+  export type ResellPlatformOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "logo" | "tagline" | "description" | "platformType" | "createdAt" | "updatedAt" | "altTagline" | "canSell", ExtArgs["result"]["resellPlatform"]>
   export type ResellPlatformInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     productCategories?: boolean | ResellPlatform$productCategoriesArgs<ExtArgs>
     countries?: boolean | ResellPlatform$countriesArgs<ExtArgs>
@@ -12584,13 +12584,13 @@ export namespace Prisma {
       name: string
       url: string
       logo: string | null
-      canSell: boolean
       tagline: string
-      altTagline: string | null
       description: string
       platformType: $Enums.ResellPlatformType
       createdAt: Date
       updatedAt: Date
+      altTagline: string | null
+      canSell: boolean
     }, ExtArgs["result"]["resellPlatform"]>
     composites: {}
   }
@@ -13020,13 +13020,13 @@ export namespace Prisma {
     readonly name: FieldRef<"ResellPlatform", 'String'>
     readonly url: FieldRef<"ResellPlatform", 'String'>
     readonly logo: FieldRef<"ResellPlatform", 'String'>
-    readonly canSell: FieldRef<"ResellPlatform", 'Boolean'>
     readonly tagline: FieldRef<"ResellPlatform", 'String'>
-    readonly altTagline: FieldRef<"ResellPlatform", 'String'>
     readonly description: FieldRef<"ResellPlatform", 'String'>
     readonly platformType: FieldRef<"ResellPlatform", 'ResellPlatformType'>
     readonly createdAt: FieldRef<"ResellPlatform", 'DateTime'>
     readonly updatedAt: FieldRef<"ResellPlatform", 'DateTime'>
+    readonly altTagline: FieldRef<"ResellPlatform", 'String'>
+    readonly canSell: FieldRef<"ResellPlatform", 'Boolean'>
   }
     
 
@@ -13645,8 +13645,8 @@ export namespace Prisma {
     productCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCategory"]>
 
   export type ResellPlatformCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13655,8 +13655,8 @@ export namespace Prisma {
     productCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCategory"]>
 
   export type ResellPlatformCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13665,8 +13665,8 @@ export namespace Prisma {
     productCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCategory"]>
 
   export type ResellPlatformCategorySelectScalar = {
@@ -13679,23 +13679,23 @@ export namespace Prisma {
 
   export type ResellPlatformCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resellPlatformId" | "productCategoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["resellPlatformCategory"]>
   export type ResellPlatformCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
   export type ResellPlatformCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
   export type ResellPlatformCategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     productCategory?: boolean | ProductCategoryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
 
   export type $ResellPlatformCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ResellPlatformCategory"
     objects: {
-      resellPlatform: Prisma.$ResellPlatformPayload<ExtArgs>
       productCategory: Prisma.$ProductCategoryPayload<ExtArgs>
+      resellPlatform: Prisma.$ResellPlatformPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14097,8 +14097,8 @@ export namespace Prisma {
    */
   export interface Prisma__ResellPlatformCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    resellPlatform<T extends ResellPlatformDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResellPlatformDefaultArgs<ExtArgs>>): Prisma__ResellPlatformClient<$Result.GetResult<Prisma.$ResellPlatformPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     productCategory<T extends ProductCategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductCategoryDefaultArgs<ExtArgs>>): Prisma__ProductCategoryClient<$Result.GetResult<Prisma.$ProductCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    resellPlatform<T extends ResellPlatformDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResellPlatformDefaultArgs<ExtArgs>>): Prisma__ResellPlatformClient<$Result.GetResult<Prisma.$ResellPlatformPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14711,8 +14711,8 @@ export namespace Prisma {
     resellPlatformId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCountry"]>
 
   export type ResellPlatformCountrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14721,8 +14721,8 @@ export namespace Prisma {
     resellPlatformId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCountry"]>
 
   export type ResellPlatformCountrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14731,8 +14731,8 @@ export namespace Prisma {
     resellPlatformId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resellPlatformCountry"]>
 
   export type ResellPlatformCountrySelectScalar = {
@@ -14745,23 +14745,23 @@ export namespace Prisma {
 
   export type ResellPlatformCountryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "countryCode" | "resellPlatformId" | "createdAt" | "updatedAt", ExtArgs["result"]["resellPlatformCountry"]>
   export type ResellPlatformCountryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
   export type ResellPlatformCountryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
   export type ResellPlatformCountryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
     country?: boolean | CountryDefaultArgs<ExtArgs>
+    resellPlatform?: boolean | ResellPlatformDefaultArgs<ExtArgs>
   }
 
   export type $ResellPlatformCountryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ResellPlatformCountry"
     objects: {
-      resellPlatform: Prisma.$ResellPlatformPayload<ExtArgs>
       country: Prisma.$CountryPayload<ExtArgs>
+      resellPlatform: Prisma.$ResellPlatformPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15163,8 +15163,8 @@ export namespace Prisma {
    */
   export interface Prisma__ResellPlatformCountryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    resellPlatform<T extends ResellPlatformDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResellPlatformDefaultArgs<ExtArgs>>): Prisma__ResellPlatformClient<$Result.GetResult<Prisma.$ResellPlatformPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     country<T extends CountryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CountryDefaultArgs<ExtArgs>>): Prisma__CountryClient<$Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    resellPlatform<T extends ResellPlatformDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResellPlatformDefaultArgs<ExtArgs>>): Prisma__ResellPlatformClient<$Result.GetResult<Prisma.$ResellPlatformPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15769,8 +15769,8 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    resellPlatforms?: boolean | Country$resellPlatformsArgs<ExtArgs>
     partners?: boolean | Country$partnersArgs<ExtArgs>
+    resellPlatforms?: boolean | Country$resellPlatformsArgs<ExtArgs>
     _count?: boolean | CountryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["country"]>
 
@@ -15797,8 +15797,8 @@ export namespace Prisma {
 
   export type CountryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"code" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["country"]>
   export type CountryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resellPlatforms?: boolean | Country$resellPlatformsArgs<ExtArgs>
     partners?: boolean | Country$partnersArgs<ExtArgs>
+    resellPlatforms?: boolean | Country$resellPlatformsArgs<ExtArgs>
     _count?: boolean | CountryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CountryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -15807,8 +15807,8 @@ export namespace Prisma {
   export type $CountryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Country"
     objects: {
-      resellPlatforms: Prisma.$ResellPlatformCountryPayload<ExtArgs>[]
       partners: Prisma.$PartnerLocationPayload<ExtArgs>[]
+      resellPlatforms: Prisma.$ResellPlatformCountryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       code: string
@@ -16209,8 +16209,8 @@ export namespace Prisma {
    */
   export interface Prisma__CountryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    resellPlatforms<T extends Country$resellPlatformsArgs<ExtArgs> = {}>(args?: Subset<T, Country$resellPlatformsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResellPlatformCountryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     partners<T extends Country$partnersArgs<ExtArgs> = {}>(args?: Subset<T, Country$partnersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartnerLocationPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    resellPlatforms<T extends Country$resellPlatformsArgs<ExtArgs> = {}>(args?: Subset<T, Country$resellPlatformsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResellPlatformCountryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16632,30 +16632,6 @@ export namespace Prisma {
   }
 
   /**
-   * Country.resellPlatforms
-   */
-  export type Country$resellPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ResellPlatformCountry
-     */
-    select?: ResellPlatformCountrySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ResellPlatformCountry
-     */
-    omit?: ResellPlatformCountryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ResellPlatformCountryInclude<ExtArgs> | null
-    where?: ResellPlatformCountryWhereInput
-    orderBy?: ResellPlatformCountryOrderByWithRelationInput | ResellPlatformCountryOrderByWithRelationInput[]
-    cursor?: ResellPlatformCountryWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ResellPlatformCountryScalarFieldEnum | ResellPlatformCountryScalarFieldEnum[]
-  }
-
-  /**
    * Country.partners
    */
   export type Country$partnersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16677,6 +16653,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PartnerLocationScalarFieldEnum | PartnerLocationScalarFieldEnum[]
+  }
+
+  /**
+   * Country.resellPlatforms
+   */
+  export type Country$resellPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResellPlatformCountry
+     */
+    select?: ResellPlatformCountrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResellPlatformCountry
+     */
+    omit?: ResellPlatformCountryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResellPlatformCountryInclude<ExtArgs> | null
+    where?: ResellPlatformCountryWhereInput
+    orderBy?: ResellPlatformCountryOrderByWithRelationInput | ResellPlatformCountryOrderByWithRelationInput[]
+    cursor?: ResellPlatformCountryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ResellPlatformCountryScalarFieldEnum | ResellPlatformCountryScalarFieldEnum[]
   }
 
   /**
@@ -16828,13 +16828,13 @@ export namespace Prisma {
     name: 'name',
     url: 'url',
     logo: 'logo',
-    canSell: 'canSell',
     tagline: 'tagline',
-    altTagline: 'altTagline',
     description: 'description',
     platformType: 'platformType',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    altTagline: 'altTagline',
+    canSell: 'canSell'
   };
 
   export type ResellPlatformScalarFieldEnum = (typeof ResellPlatformScalarFieldEnum)[keyof typeof ResellPlatformScalarFieldEnum]
@@ -17007,9 +17007,9 @@ export namespace Prisma {
     description?: StringFilter<"Partner"> | string
     createdAt?: DateTimeFilter<"Partner"> | Date | string
     updatedAt?: DateTimeFilter<"Partner"> | Date | string
-    productCategories?: PartnerProductCategoryListRelationFilter
-    locations?: PartnerLocationListRelationFilter
     channels?: PartnerChannelListRelationFilter
+    locations?: PartnerLocationListRelationFilter
+    productCategories?: PartnerProductCategoryListRelationFilter
     roleAssignments?: PartnerRoleAssignmentListRelationFilter
   }
 
@@ -17022,9 +17022,9 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    productCategories?: PartnerProductCategoryOrderByRelationAggregateInput
-    locations?: PartnerLocationOrderByRelationAggregateInput
     channels?: PartnerChannelOrderByRelationAggregateInput
+    locations?: PartnerLocationOrderByRelationAggregateInput
+    productCategories?: PartnerProductCategoryOrderByRelationAggregateInput
     roleAssignments?: PartnerRoleAssignmentOrderByRelationAggregateInput
   }
 
@@ -17040,9 +17040,9 @@ export namespace Prisma {
     description?: StringFilter<"Partner"> | string
     createdAt?: DateTimeFilter<"Partner"> | Date | string
     updatedAt?: DateTimeFilter<"Partner"> | Date | string
-    productCategories?: PartnerProductCategoryListRelationFilter
-    locations?: PartnerLocationListRelationFilter
     channels?: PartnerChannelListRelationFilter
+    locations?: PartnerLocationListRelationFilter
+    productCategories?: PartnerProductCategoryListRelationFilter
     roleAssignments?: PartnerRoleAssignmentListRelationFilter
   }, "id">
 
@@ -17264,8 +17264,8 @@ export namespace Prisma {
     countryCode?: StringFilter<"PartnerLocation"> | string
     createdAt?: DateTimeFilter<"PartnerLocation"> | Date | string
     updatedAt?: DateTimeFilter<"PartnerLocation"> | Date | string
-    partner?: XOR<PartnerScalarRelationFilter, PartnerWhereInput>
     country?: XOR<CountryScalarRelationFilter, CountryWhereInput>
+    partner?: XOR<PartnerScalarRelationFilter, PartnerWhereInput>
     services?: PartnerServiceProfileListRelationFilter
   }
 
@@ -17279,8 +17279,8 @@ export namespace Prisma {
     countryCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    partner?: PartnerOrderByWithRelationInput
     country?: CountryOrderByWithRelationInput
+    partner?: PartnerOrderByWithRelationInput
     services?: PartnerServiceProfileOrderByRelationAggregateInput
   }
 
@@ -17297,8 +17297,8 @@ export namespace Prisma {
     countryCode?: StringFilter<"PartnerLocation"> | string
     createdAt?: DateTimeFilter<"PartnerLocation"> | Date | string
     updatedAt?: DateTimeFilter<"PartnerLocation"> | Date | string
-    partner?: XOR<PartnerScalarRelationFilter, PartnerWhereInput>
     country?: XOR<CountryScalarRelationFilter, CountryWhereInput>
+    partner?: XOR<PartnerScalarRelationFilter, PartnerWhereInput>
     services?: PartnerServiceProfileListRelationFilter
   }, "id">
 
@@ -17596,13 +17596,13 @@ export namespace Prisma {
     name?: StringFilter<"ResellPlatform"> | string
     url?: StringFilter<"ResellPlatform"> | string
     logo?: StringNullableFilter<"ResellPlatform"> | string | null
-    canSell?: BoolFilter<"ResellPlatform"> | boolean
     tagline?: StringFilter<"ResellPlatform"> | string
-    altTagline?: StringNullableFilter<"ResellPlatform"> | string | null
     description?: StringFilter<"ResellPlatform"> | string
     platformType?: EnumResellPlatformTypeFilter<"ResellPlatform"> | $Enums.ResellPlatformType
     createdAt?: DateTimeFilter<"ResellPlatform"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatform"> | Date | string
+    altTagline?: StringNullableFilter<"ResellPlatform"> | string | null
+    canSell?: BoolFilter<"ResellPlatform"> | boolean
     productCategories?: ResellPlatformCategoryListRelationFilter
     countries?: ResellPlatformCountryListRelationFilter
   }
@@ -17612,13 +17612,13 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     logo?: SortOrderInput | SortOrder
-    canSell?: SortOrder
     tagline?: SortOrder
-    altTagline?: SortOrderInput | SortOrder
     description?: SortOrder
     platformType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    altTagline?: SortOrderInput | SortOrder
+    canSell?: SortOrder
     productCategories?: ResellPlatformCategoryOrderByRelationAggregateInput
     countries?: ResellPlatformCountryOrderByRelationAggregateInput
   }
@@ -17631,13 +17631,13 @@ export namespace Prisma {
     NOT?: ResellPlatformWhereInput | ResellPlatformWhereInput[]
     name?: StringFilter<"ResellPlatform"> | string
     logo?: StringNullableFilter<"ResellPlatform"> | string | null
-    canSell?: BoolFilter<"ResellPlatform"> | boolean
     tagline?: StringFilter<"ResellPlatform"> | string
-    altTagline?: StringNullableFilter<"ResellPlatform"> | string | null
     description?: StringFilter<"ResellPlatform"> | string
     platformType?: EnumResellPlatformTypeFilter<"ResellPlatform"> | $Enums.ResellPlatformType
     createdAt?: DateTimeFilter<"ResellPlatform"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatform"> | Date | string
+    altTagline?: StringNullableFilter<"ResellPlatform"> | string | null
+    canSell?: BoolFilter<"ResellPlatform"> | boolean
     productCategories?: ResellPlatformCategoryListRelationFilter
     countries?: ResellPlatformCountryListRelationFilter
   }, "id" | "url">
@@ -17647,13 +17647,13 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     logo?: SortOrderInput | SortOrder
-    canSell?: SortOrder
     tagline?: SortOrder
-    altTagline?: SortOrderInput | SortOrder
     description?: SortOrder
     platformType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    altTagline?: SortOrderInput | SortOrder
+    canSell?: SortOrder
     _count?: ResellPlatformCountOrderByAggregateInput
     _max?: ResellPlatformMaxOrderByAggregateInput
     _min?: ResellPlatformMinOrderByAggregateInput
@@ -17667,13 +17667,13 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"ResellPlatform"> | string
     url?: StringWithAggregatesFilter<"ResellPlatform"> | string
     logo?: StringNullableWithAggregatesFilter<"ResellPlatform"> | string | null
-    canSell?: BoolWithAggregatesFilter<"ResellPlatform"> | boolean
     tagline?: StringWithAggregatesFilter<"ResellPlatform"> | string
-    altTagline?: StringNullableWithAggregatesFilter<"ResellPlatform"> | string | null
     description?: StringWithAggregatesFilter<"ResellPlatform"> | string
     platformType?: EnumResellPlatformTypeWithAggregatesFilter<"ResellPlatform"> | $Enums.ResellPlatformType
     createdAt?: DateTimeWithAggregatesFilter<"ResellPlatform"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ResellPlatform"> | Date | string
+    altTagline?: StringNullableWithAggregatesFilter<"ResellPlatform"> | string | null
+    canSell?: BoolWithAggregatesFilter<"ResellPlatform"> | boolean
   }
 
   export type ResellPlatformCategoryWhereInput = {
@@ -17685,8 +17685,8 @@ export namespace Prisma {
     productCategoryId?: StringFilter<"ResellPlatformCategory"> | string
     createdAt?: DateTimeFilter<"ResellPlatformCategory"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatformCategory"> | Date | string
-    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
     productCategory?: XOR<ProductCategoryScalarRelationFilter, ProductCategoryWhereInput>
+    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
   }
 
   export type ResellPlatformCategoryOrderByWithRelationInput = {
@@ -17695,8 +17695,8 @@ export namespace Prisma {
     productCategoryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    resellPlatform?: ResellPlatformOrderByWithRelationInput
     productCategory?: ProductCategoryOrderByWithRelationInput
+    resellPlatform?: ResellPlatformOrderByWithRelationInput
   }
 
   export type ResellPlatformCategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -17709,8 +17709,8 @@ export namespace Prisma {
     productCategoryId?: StringFilter<"ResellPlatformCategory"> | string
     createdAt?: DateTimeFilter<"ResellPlatformCategory"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatformCategory"> | Date | string
-    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
     productCategory?: XOR<ProductCategoryScalarRelationFilter, ProductCategoryWhereInput>
+    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
   }, "id" | "resellPlatformId_productCategoryId">
 
   export type ResellPlatformCategoryOrderByWithAggregationInput = {
@@ -17744,8 +17744,8 @@ export namespace Prisma {
     resellPlatformId?: StringFilter<"ResellPlatformCountry"> | string
     createdAt?: DateTimeFilter<"ResellPlatformCountry"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatformCountry"> | Date | string
-    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
     country?: XOR<CountryScalarRelationFilter, CountryWhereInput>
+    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
   }
 
   export type ResellPlatformCountryOrderByWithRelationInput = {
@@ -17754,8 +17754,8 @@ export namespace Prisma {
     resellPlatformId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    resellPlatform?: ResellPlatformOrderByWithRelationInput
     country?: CountryOrderByWithRelationInput
+    resellPlatform?: ResellPlatformOrderByWithRelationInput
   }
 
   export type ResellPlatformCountryWhereUniqueInput = Prisma.AtLeast<{
@@ -17768,8 +17768,8 @@ export namespace Prisma {
     resellPlatformId?: StringFilter<"ResellPlatformCountry"> | string
     createdAt?: DateTimeFilter<"ResellPlatformCountry"> | Date | string
     updatedAt?: DateTimeFilter<"ResellPlatformCountry"> | Date | string
-    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
     country?: XOR<CountryScalarRelationFilter, CountryWhereInput>
+    resellPlatform?: XOR<ResellPlatformScalarRelationFilter, ResellPlatformWhereInput>
   }, "id" | "resellPlatformId_countryCode">
 
   export type ResellPlatformCountryOrderByWithAggregationInput = {
@@ -17802,8 +17802,8 @@ export namespace Prisma {
     name?: StringFilter<"Country"> | string
     createdAt?: DateTimeFilter<"Country"> | Date | string
     updatedAt?: DateTimeFilter<"Country"> | Date | string
-    resellPlatforms?: ResellPlatformCountryListRelationFilter
     partners?: PartnerLocationListRelationFilter
+    resellPlatforms?: ResellPlatformCountryListRelationFilter
   }
 
   export type CountryOrderByWithRelationInput = {
@@ -17811,8 +17811,8 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    resellPlatforms?: ResellPlatformCountryOrderByRelationAggregateInput
     partners?: PartnerLocationOrderByRelationAggregateInput
+    resellPlatforms?: ResellPlatformCountryOrderByRelationAggregateInput
   }
 
   export type CountryWhereUniqueInput = Prisma.AtLeast<{
@@ -17823,8 +17823,8 @@ export namespace Prisma {
     name?: StringFilter<"Country"> | string
     createdAt?: DateTimeFilter<"Country"> | Date | string
     updatedAt?: DateTimeFilter<"Country"> | Date | string
-    resellPlatforms?: ResellPlatformCountryListRelationFilter
     partners?: PartnerLocationListRelationFilter
+    resellPlatforms?: ResellPlatformCountryListRelationFilter
   }, "code">
 
   export type CountryOrderByWithAggregationInput = {
@@ -17856,9 +17856,9 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
-    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput
   }
 
@@ -17871,9 +17871,9 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
-    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput
   }
 
@@ -17886,9 +17886,9 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
-    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput
   }
 
@@ -17901,9 +17901,9 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
-    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput
   }
 
@@ -18128,8 +18128,8 @@ export namespace Prisma {
     lng: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    partner: PartnerCreateNestedOneWithoutLocationsInput
     country: CountryCreateNestedOneWithoutPartnersInput
+    partner: PartnerCreateNestedOneWithoutLocationsInput
     services?: PartnerServiceProfileCreateNestedManyWithoutLocationInput
   }
 
@@ -18154,8 +18154,8 @@ export namespace Prisma {
     lng?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    partner?: PartnerUpdateOneRequiredWithoutLocationsNestedInput
     country?: CountryUpdateOneRequiredWithoutPartnersNestedInput
+    partner?: PartnerUpdateOneRequiredWithoutLocationsNestedInput
     services?: PartnerServiceProfileUpdateManyWithoutLocationNestedInput
   }
 
@@ -18470,13 +18470,13 @@ export namespace Prisma {
     name: string
     url: string
     logo?: string | null
-    canSell?: boolean
     tagline: string
-    altTagline?: string | null
     description: string
     platformType: $Enums.ResellPlatformType
     createdAt?: Date | string
     updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
     productCategories?: ResellPlatformCategoryCreateNestedManyWithoutResellPlatformInput
     countries?: ResellPlatformCountryCreateNestedManyWithoutResellPlatformInput
   }
@@ -18486,13 +18486,13 @@ export namespace Prisma {
     name: string
     url: string
     logo?: string | null
-    canSell?: boolean
     tagline: string
-    altTagline?: string | null
     description: string
     platformType: $Enums.ResellPlatformType
     createdAt?: Date | string
     updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
     productCategories?: ResellPlatformCategoryUncheckedCreateNestedManyWithoutResellPlatformInput
     countries?: ResellPlatformCountryUncheckedCreateNestedManyWithoutResellPlatformInput
   }
@@ -18502,13 +18502,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
     tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
     productCategories?: ResellPlatformCategoryUpdateManyWithoutResellPlatformNestedInput
     countries?: ResellPlatformCountryUpdateManyWithoutResellPlatformNestedInput
   }
@@ -18518,13 +18518,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
     tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
     productCategories?: ResellPlatformCategoryUncheckedUpdateManyWithoutResellPlatformNestedInput
     countries?: ResellPlatformCountryUncheckedUpdateManyWithoutResellPlatformNestedInput
   }
@@ -18534,13 +18534,13 @@ export namespace Prisma {
     name: string
     url: string
     logo?: string | null
-    canSell?: boolean
     tagline: string
-    altTagline?: string | null
     description: string
     platformType: $Enums.ResellPlatformType
     createdAt?: Date | string
     updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
   }
 
   export type ResellPlatformUpdateManyMutationInput = {
@@ -18548,13 +18548,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
     tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ResellPlatformUncheckedUpdateManyInput = {
@@ -18562,21 +18562,21 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
     tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ResellPlatformCategoryCreateInput = {
     id: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    resellPlatform: ResellPlatformCreateNestedOneWithoutProductCategoriesInput
     productCategory: ProductCategoryCreateNestedOneWithoutResellPlatformsInput
+    resellPlatform: ResellPlatformCreateNestedOneWithoutProductCategoriesInput
   }
 
   export type ResellPlatformCategoryUncheckedCreateInput = {
@@ -18591,8 +18591,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutProductCategoriesNestedInput
     productCategory?: ProductCategoryUpdateOneRequiredWithoutResellPlatformsNestedInput
+    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutProductCategoriesNestedInput
   }
 
   export type ResellPlatformCategoryUncheckedUpdateInput = {
@@ -18629,8 +18629,8 @@ export namespace Prisma {
     id: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    resellPlatform: ResellPlatformCreateNestedOneWithoutCountriesInput
     country: CountryCreateNestedOneWithoutResellPlatformsInput
+    resellPlatform: ResellPlatformCreateNestedOneWithoutCountriesInput
   }
 
   export type ResellPlatformCountryUncheckedCreateInput = {
@@ -18645,8 +18645,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput
     country?: CountryUpdateOneRequiredWithoutResellPlatformsNestedInput
+    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput
   }
 
   export type ResellPlatformCountryUncheckedUpdateInput = {
@@ -18684,8 +18684,8 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    resellPlatforms?: ResellPlatformCountryCreateNestedManyWithoutCountryInput
     partners?: PartnerLocationCreateNestedManyWithoutCountryInput
+    resellPlatforms?: ResellPlatformCountryCreateNestedManyWithoutCountryInput
   }
 
   export type CountryUncheckedCreateInput = {
@@ -18693,8 +18693,8 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    resellPlatforms?: ResellPlatformCountryUncheckedCreateNestedManyWithoutCountryInput
     partners?: PartnerLocationUncheckedCreateNestedManyWithoutCountryInput
+    resellPlatforms?: ResellPlatformCountryUncheckedCreateNestedManyWithoutCountryInput
   }
 
   export type CountryUpdateInput = {
@@ -18702,8 +18702,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    resellPlatforms?: ResellPlatformCountryUpdateManyWithoutCountryNestedInput
     partners?: PartnerLocationUpdateManyWithoutCountryNestedInput
+    resellPlatforms?: ResellPlatformCountryUpdateManyWithoutCountryNestedInput
   }
 
   export type CountryUncheckedUpdateInput = {
@@ -18711,8 +18711,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    resellPlatforms?: ResellPlatformCountryUncheckedUpdateManyWithoutCountryNestedInput
     partners?: PartnerLocationUncheckedUpdateManyWithoutCountryNestedInput
+    resellPlatforms?: ResellPlatformCountryUncheckedUpdateManyWithoutCountryNestedInput
   }
 
   export type CountryCreateManyInput = {
@@ -18762,10 +18762,10 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type PartnerProductCategoryListRelationFilter = {
-    every?: PartnerProductCategoryWhereInput
-    some?: PartnerProductCategoryWhereInput
-    none?: PartnerProductCategoryWhereInput
+  export type PartnerChannelListRelationFilter = {
+    every?: PartnerChannelWhereInput
+    some?: PartnerChannelWhereInput
+    none?: PartnerChannelWhereInput
   }
 
   export type PartnerLocationListRelationFilter = {
@@ -18774,10 +18774,10 @@ export namespace Prisma {
     none?: PartnerLocationWhereInput
   }
 
-  export type PartnerChannelListRelationFilter = {
-    every?: PartnerChannelWhereInput
-    some?: PartnerChannelWhereInput
-    none?: PartnerChannelWhereInput
+  export type PartnerProductCategoryListRelationFilter = {
+    every?: PartnerProductCategoryWhereInput
+    some?: PartnerProductCategoryWhereInput
+    none?: PartnerProductCategoryWhereInput
   }
 
   export type PartnerRoleAssignmentListRelationFilter = {
@@ -18786,7 +18786,7 @@ export namespace Prisma {
     none?: PartnerRoleAssignmentWhereInput
   }
 
-  export type PartnerProductCategoryOrderByRelationAggregateInput = {
+  export type PartnerChannelOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18794,7 +18794,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type PartnerChannelOrderByRelationAggregateInput = {
+  export type PartnerProductCategoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19284,13 +19284,13 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     logo?: SortOrder
-    canSell?: SortOrder
     tagline?: SortOrder
-    altTagline?: SortOrder
     description?: SortOrder
     platformType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    altTagline?: SortOrder
+    canSell?: SortOrder
   }
 
   export type ResellPlatformMaxOrderByAggregateInput = {
@@ -19298,13 +19298,13 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     logo?: SortOrder
-    canSell?: SortOrder
     tagline?: SortOrder
-    altTagline?: SortOrder
     description?: SortOrder
     platformType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    altTagline?: SortOrder
+    canSell?: SortOrder
   }
 
   export type ResellPlatformMinOrderByAggregateInput = {
@@ -19312,13 +19312,13 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     logo?: SortOrder
-    canSell?: SortOrder
     tagline?: SortOrder
-    altTagline?: SortOrder
     description?: SortOrder
     platformType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    altTagline?: SortOrder
+    canSell?: SortOrder
   }
 
   export type EnumResellPlatformTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -19415,11 +19415,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type PartnerProductCategoryCreateNestedManyWithoutPartnerInput = {
-    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
-    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
-    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+  export type PartnerChannelCreateNestedManyWithoutPartnerInput = {
+    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
+    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
+    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
   }
 
   export type PartnerLocationCreateNestedManyWithoutPartnerInput = {
@@ -19429,11 +19429,11 @@ export namespace Prisma {
     connect?: PartnerLocationWhereUniqueInput | PartnerLocationWhereUniqueInput[]
   }
 
-  export type PartnerChannelCreateNestedManyWithoutPartnerInput = {
-    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
-    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
-    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+  export type PartnerProductCategoryCreateNestedManyWithoutPartnerInput = {
+    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
+    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
+    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
   }
 
   export type PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput = {
@@ -19443,11 +19443,11 @@ export namespace Prisma {
     connect?: PartnerRoleAssignmentWhereUniqueInput | PartnerRoleAssignmentWhereUniqueInput[]
   }
 
-  export type PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput = {
-    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
-    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
-    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+  export type PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput = {
+    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
+    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
+    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
   }
 
   export type PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput = {
@@ -19457,11 +19457,11 @@ export namespace Prisma {
     connect?: PartnerLocationWhereUniqueInput | PartnerLocationWhereUniqueInput[]
   }
 
-  export type PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput = {
-    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
-    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
-    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+  export type PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput = {
+    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
+    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
+    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
   }
 
   export type PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput = {
@@ -19479,18 +19479,18 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type PartnerProductCategoryUpdateManyWithoutPartnerNestedInput = {
-    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
-    upsert?: PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput[]
-    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
-    set?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    disconnect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    delete?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    update?: PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput[]
-    updateMany?: PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput | PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput[]
-    deleteMany?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
+  export type PartnerChannelUpdateManyWithoutPartnerNestedInput = {
+    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
+    upsert?: PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput | PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput[]
+    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
+    set?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    disconnect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    delete?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    update?: PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput | PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput[]
+    updateMany?: PartnerChannelUpdateManyWithWhereWithoutPartnerInput | PartnerChannelUpdateManyWithWhereWithoutPartnerInput[]
+    deleteMany?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
   }
 
   export type PartnerLocationUpdateManyWithoutPartnerNestedInput = {
@@ -19507,18 +19507,18 @@ export namespace Prisma {
     deleteMany?: PartnerLocationScalarWhereInput | PartnerLocationScalarWhereInput[]
   }
 
-  export type PartnerChannelUpdateManyWithoutPartnerNestedInput = {
-    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
-    upsert?: PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput | PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput[]
-    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
-    set?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    disconnect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    delete?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    update?: PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput | PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput[]
-    updateMany?: PartnerChannelUpdateManyWithWhereWithoutPartnerInput | PartnerChannelUpdateManyWithWhereWithoutPartnerInput[]
-    deleteMany?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
+  export type PartnerProductCategoryUpdateManyWithoutPartnerNestedInput = {
+    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
+    upsert?: PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput[]
+    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
+    set?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    disconnect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    delete?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    update?: PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput[]
+    updateMany?: PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput | PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput[]
+    deleteMany?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
   }
 
   export type PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput = {
@@ -19535,18 +19535,18 @@ export namespace Prisma {
     deleteMany?: PartnerRoleAssignmentScalarWhereInput | PartnerRoleAssignmentScalarWhereInput[]
   }
 
-  export type PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput = {
-    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
-    upsert?: PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput[]
-    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
-    set?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    disconnect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    delete?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
-    update?: PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput[]
-    updateMany?: PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput | PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput[]
-    deleteMany?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
+  export type PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput = {
+    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
+    upsert?: PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput | PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput[]
+    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
+    set?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    disconnect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    delete?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
+    update?: PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput | PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput[]
+    updateMany?: PartnerChannelUpdateManyWithWhereWithoutPartnerInput | PartnerChannelUpdateManyWithWhereWithoutPartnerInput[]
+    deleteMany?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
   }
 
   export type PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput = {
@@ -19563,18 +19563,18 @@ export namespace Prisma {
     deleteMany?: PartnerLocationScalarWhereInput | PartnerLocationScalarWhereInput[]
   }
 
-  export type PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput = {
-    create?: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput> | PartnerChannelCreateWithoutPartnerInput[] | PartnerChannelUncheckedCreateWithoutPartnerInput[]
-    connectOrCreate?: PartnerChannelCreateOrConnectWithoutPartnerInput | PartnerChannelCreateOrConnectWithoutPartnerInput[]
-    upsert?: PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput | PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput[]
-    createMany?: PartnerChannelCreateManyPartnerInputEnvelope
-    set?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    disconnect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    delete?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    connect?: PartnerChannelWhereUniqueInput | PartnerChannelWhereUniqueInput[]
-    update?: PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput | PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput[]
-    updateMany?: PartnerChannelUpdateManyWithWhereWithoutPartnerInput | PartnerChannelUpdateManyWithWhereWithoutPartnerInput[]
-    deleteMany?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
+  export type PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput = {
+    create?: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput> | PartnerProductCategoryCreateWithoutPartnerInput[] | PartnerProductCategoryUncheckedCreateWithoutPartnerInput[]
+    connectOrCreate?: PartnerProductCategoryCreateOrConnectWithoutPartnerInput | PartnerProductCategoryCreateOrConnectWithoutPartnerInput[]
+    upsert?: PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput[]
+    createMany?: PartnerProductCategoryCreateManyPartnerInputEnvelope
+    set?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    disconnect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    delete?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    connect?: PartnerProductCategoryWhereUniqueInput | PartnerProductCategoryWhereUniqueInput[]
+    update?: PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput | PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput[]
+    updateMany?: PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput | PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput[]
+    deleteMany?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
   }
 
   export type PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput = {
@@ -19725,16 +19725,16 @@ export namespace Prisma {
     deleteMany?: PartnerServiceProfileScalarWhereInput | PartnerServiceProfileScalarWhereInput[]
   }
 
-  export type PartnerCreateNestedOneWithoutLocationsInput = {
-    create?: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
-    connectOrCreate?: PartnerCreateOrConnectWithoutLocationsInput
-    connect?: PartnerWhereUniqueInput
-  }
-
   export type CountryCreateNestedOneWithoutPartnersInput = {
     create?: XOR<CountryCreateWithoutPartnersInput, CountryUncheckedCreateWithoutPartnersInput>
     connectOrCreate?: CountryCreateOrConnectWithoutPartnersInput
     connect?: CountryWhereUniqueInput
+  }
+
+  export type PartnerCreateNestedOneWithoutLocationsInput = {
+    create?: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
+    connectOrCreate?: PartnerCreateOrConnectWithoutLocationsInput
+    connect?: PartnerWhereUniqueInput
   }
 
   export type PartnerServiceProfileCreateNestedManyWithoutLocationInput = {
@@ -19759,20 +19759,20 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type PartnerUpdateOneRequiredWithoutLocationsNestedInput = {
-    create?: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
-    connectOrCreate?: PartnerCreateOrConnectWithoutLocationsInput
-    upsert?: PartnerUpsertWithoutLocationsInput
-    connect?: PartnerWhereUniqueInput
-    update?: XOR<XOR<PartnerUpdateToOneWithWhereWithoutLocationsInput, PartnerUpdateWithoutLocationsInput>, PartnerUncheckedUpdateWithoutLocationsInput>
-  }
-
   export type CountryUpdateOneRequiredWithoutPartnersNestedInput = {
     create?: XOR<CountryCreateWithoutPartnersInput, CountryUncheckedCreateWithoutPartnersInput>
     connectOrCreate?: CountryCreateOrConnectWithoutPartnersInput
     upsert?: CountryUpsertWithoutPartnersInput
     connect?: CountryWhereUniqueInput
     update?: XOR<XOR<CountryUpdateToOneWithWhereWithoutPartnersInput, CountryUpdateWithoutPartnersInput>, CountryUncheckedUpdateWithoutPartnersInput>
+  }
+
+  export type PartnerUpdateOneRequiredWithoutLocationsNestedInput = {
+    create?: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
+    connectOrCreate?: PartnerCreateOrConnectWithoutLocationsInput
+    upsert?: PartnerUpsertWithoutLocationsInput
+    connect?: PartnerWhereUniqueInput
+    update?: XOR<XOR<PartnerUpdateToOneWithWhereWithoutLocationsInput, PartnerUpdateWithoutLocationsInput>, PartnerUncheckedUpdateWithoutLocationsInput>
   }
 
   export type PartnerServiceProfileUpdateManyWithoutLocationNestedInput = {
@@ -20095,24 +20095,16 @@ export namespace Prisma {
     deleteMany?: ResellPlatformCountryScalarWhereInput | ResellPlatformCountryScalarWhereInput[]
   }
 
-  export type ResellPlatformCreateNestedOneWithoutProductCategoriesInput = {
-    create?: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
-    connectOrCreate?: ResellPlatformCreateOrConnectWithoutProductCategoriesInput
-    connect?: ResellPlatformWhereUniqueInput
-  }
-
   export type ProductCategoryCreateNestedOneWithoutResellPlatformsInput = {
     create?: XOR<ProductCategoryCreateWithoutResellPlatformsInput, ProductCategoryUncheckedCreateWithoutResellPlatformsInput>
     connectOrCreate?: ProductCategoryCreateOrConnectWithoutResellPlatformsInput
     connect?: ProductCategoryWhereUniqueInput
   }
 
-  export type ResellPlatformUpdateOneRequiredWithoutProductCategoriesNestedInput = {
+  export type ResellPlatformCreateNestedOneWithoutProductCategoriesInput = {
     create?: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
     connectOrCreate?: ResellPlatformCreateOrConnectWithoutProductCategoriesInput
-    upsert?: ResellPlatformUpsertWithoutProductCategoriesInput
     connect?: ResellPlatformWhereUniqueInput
-    update?: XOR<XOR<ResellPlatformUpdateToOneWithWhereWithoutProductCategoriesInput, ResellPlatformUpdateWithoutProductCategoriesInput>, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
   }
 
   export type ProductCategoryUpdateOneRequiredWithoutResellPlatformsNestedInput = {
@@ -20123,10 +20115,12 @@ export namespace Prisma {
     update?: XOR<XOR<ProductCategoryUpdateToOneWithWhereWithoutResellPlatformsInput, ProductCategoryUpdateWithoutResellPlatformsInput>, ProductCategoryUncheckedUpdateWithoutResellPlatformsInput>
   }
 
-  export type ResellPlatformCreateNestedOneWithoutCountriesInput = {
-    create?: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
-    connectOrCreate?: ResellPlatformCreateOrConnectWithoutCountriesInput
+  export type ResellPlatformUpdateOneRequiredWithoutProductCategoriesNestedInput = {
+    create?: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
+    connectOrCreate?: ResellPlatformCreateOrConnectWithoutProductCategoriesInput
+    upsert?: ResellPlatformUpsertWithoutProductCategoriesInput
     connect?: ResellPlatformWhereUniqueInput
+    update?: XOR<XOR<ResellPlatformUpdateToOneWithWhereWithoutProductCategoriesInput, ResellPlatformUpdateWithoutProductCategoriesInput>, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
   }
 
   export type CountryCreateNestedOneWithoutResellPlatformsInput = {
@@ -20135,12 +20129,10 @@ export namespace Prisma {
     connect?: CountryWhereUniqueInput
   }
 
-  export type ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput = {
+  export type ResellPlatformCreateNestedOneWithoutCountriesInput = {
     create?: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
     connectOrCreate?: ResellPlatformCreateOrConnectWithoutCountriesInput
-    upsert?: ResellPlatformUpsertWithoutCountriesInput
     connect?: ResellPlatformWhereUniqueInput
-    update?: XOR<XOR<ResellPlatformUpdateToOneWithWhereWithoutCountriesInput, ResellPlatformUpdateWithoutCountriesInput>, ResellPlatformUncheckedUpdateWithoutCountriesInput>
   }
 
   export type CountryUpdateOneRequiredWithoutResellPlatformsNestedInput = {
@@ -20151,11 +20143,12 @@ export namespace Prisma {
     update?: XOR<XOR<CountryUpdateToOneWithWhereWithoutResellPlatformsInput, CountryUpdateWithoutResellPlatformsInput>, CountryUncheckedUpdateWithoutResellPlatformsInput>
   }
 
-  export type ResellPlatformCountryCreateNestedManyWithoutCountryInput = {
-    create?: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput> | ResellPlatformCountryCreateWithoutCountryInput[] | ResellPlatformCountryUncheckedCreateWithoutCountryInput[]
-    connectOrCreate?: ResellPlatformCountryCreateOrConnectWithoutCountryInput | ResellPlatformCountryCreateOrConnectWithoutCountryInput[]
-    createMany?: ResellPlatformCountryCreateManyCountryInputEnvelope
-    connect?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
+  export type ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput = {
+    create?: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
+    connectOrCreate?: ResellPlatformCreateOrConnectWithoutCountriesInput
+    upsert?: ResellPlatformUpsertWithoutCountriesInput
+    connect?: ResellPlatformWhereUniqueInput
+    update?: XOR<XOR<ResellPlatformUpdateToOneWithWhereWithoutCountriesInput, ResellPlatformUpdateWithoutCountriesInput>, ResellPlatformUncheckedUpdateWithoutCountriesInput>
   }
 
   export type PartnerLocationCreateNestedManyWithoutCountryInput = {
@@ -20165,7 +20158,7 @@ export namespace Prisma {
     connect?: PartnerLocationWhereUniqueInput | PartnerLocationWhereUniqueInput[]
   }
 
-  export type ResellPlatformCountryUncheckedCreateNestedManyWithoutCountryInput = {
+  export type ResellPlatformCountryCreateNestedManyWithoutCountryInput = {
     create?: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput> | ResellPlatformCountryCreateWithoutCountryInput[] | ResellPlatformCountryUncheckedCreateWithoutCountryInput[]
     connectOrCreate?: ResellPlatformCountryCreateOrConnectWithoutCountryInput | ResellPlatformCountryCreateOrConnectWithoutCountryInput[]
     createMany?: ResellPlatformCountryCreateManyCountryInputEnvelope
@@ -20179,18 +20172,11 @@ export namespace Prisma {
     connect?: PartnerLocationWhereUniqueInput | PartnerLocationWhereUniqueInput[]
   }
 
-  export type ResellPlatformCountryUpdateManyWithoutCountryNestedInput = {
+  export type ResellPlatformCountryUncheckedCreateNestedManyWithoutCountryInput = {
     create?: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput> | ResellPlatformCountryCreateWithoutCountryInput[] | ResellPlatformCountryUncheckedCreateWithoutCountryInput[]
     connectOrCreate?: ResellPlatformCountryCreateOrConnectWithoutCountryInput | ResellPlatformCountryCreateOrConnectWithoutCountryInput[]
-    upsert?: ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput | ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput[]
     createMany?: ResellPlatformCountryCreateManyCountryInputEnvelope
-    set?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
-    disconnect?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
-    delete?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
     connect?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
-    update?: ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput | ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput[]
-    updateMany?: ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput | ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput[]
-    deleteMany?: ResellPlatformCountryScalarWhereInput | ResellPlatformCountryScalarWhereInput[]
   }
 
   export type PartnerLocationUpdateManyWithoutCountryNestedInput = {
@@ -20207,7 +20193,7 @@ export namespace Prisma {
     deleteMany?: PartnerLocationScalarWhereInput | PartnerLocationScalarWhereInput[]
   }
 
-  export type ResellPlatformCountryUncheckedUpdateManyWithoutCountryNestedInput = {
+  export type ResellPlatformCountryUpdateManyWithoutCountryNestedInput = {
     create?: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput> | ResellPlatformCountryCreateWithoutCountryInput[] | ResellPlatformCountryUncheckedCreateWithoutCountryInput[]
     connectOrCreate?: ResellPlatformCountryCreateOrConnectWithoutCountryInput | ResellPlatformCountryCreateOrConnectWithoutCountryInput[]
     upsert?: ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput | ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput[]
@@ -20233,6 +20219,20 @@ export namespace Prisma {
     update?: PartnerLocationUpdateWithWhereUniqueWithoutCountryInput | PartnerLocationUpdateWithWhereUniqueWithoutCountryInput[]
     updateMany?: PartnerLocationUpdateManyWithWhereWithoutCountryInput | PartnerLocationUpdateManyWithWhereWithoutCountryInput[]
     deleteMany?: PartnerLocationScalarWhereInput | PartnerLocationScalarWhereInput[]
+  }
+
+  export type ResellPlatformCountryUncheckedUpdateManyWithoutCountryNestedInput = {
+    create?: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput> | ResellPlatformCountryCreateWithoutCountryInput[] | ResellPlatformCountryUncheckedCreateWithoutCountryInput[]
+    connectOrCreate?: ResellPlatformCountryCreateOrConnectWithoutCountryInput | ResellPlatformCountryCreateOrConnectWithoutCountryInput[]
+    upsert?: ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput | ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput[]
+    createMany?: ResellPlatformCountryCreateManyCountryInputEnvelope
+    set?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
+    disconnect?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
+    delete?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
+    connect?: ResellPlatformCountryWhereUniqueInput | ResellPlatformCountryWhereUniqueInput[]
+    update?: ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput | ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput[]
+    updateMany?: ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput | ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput[]
+    deleteMany?: ResellPlatformCountryScalarWhereInput | ResellPlatformCountryScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -20418,27 +20418,31 @@ export namespace Prisma {
     _max?: NestedEnumResellPlatformTypeFilter<$PrismaModel>
   }
 
-  export type PartnerProductCategoryCreateWithoutPartnerInput = {
+  export type PartnerChannelCreateWithoutPartnerInput = {
     id: string
+    type: $Enums.ChannelType
+    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategory: ProductCategoryCreateNestedOneWithoutPartnersInput
+    services?: PartnerServiceProfileCreateNestedManyWithoutChannelInput
   }
 
-  export type PartnerProductCategoryUncheckedCreateWithoutPartnerInput = {
+  export type PartnerChannelUncheckedCreateWithoutPartnerInput = {
     id: string
+    type: $Enums.ChannelType
+    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategoryId: string
+    services?: PartnerServiceProfileUncheckedCreateNestedManyWithoutChannelInput
   }
 
-  export type PartnerProductCategoryCreateOrConnectWithoutPartnerInput = {
-    where: PartnerProductCategoryWhereUniqueInput
-    create: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput>
+  export type PartnerChannelCreateOrConnectWithoutPartnerInput = {
+    where: PartnerChannelWhereUniqueInput
+    create: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput>
   }
 
-  export type PartnerProductCategoryCreateManyPartnerInputEnvelope = {
-    data: PartnerProductCategoryCreateManyPartnerInput | PartnerProductCategoryCreateManyPartnerInput[]
+  export type PartnerChannelCreateManyPartnerInputEnvelope = {
+    data: PartnerChannelCreateManyPartnerInput | PartnerChannelCreateManyPartnerInput[]
     skipDuplicates?: boolean
   }
 
@@ -20476,31 +20480,27 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type PartnerChannelCreateWithoutPartnerInput = {
+  export type PartnerProductCategoryCreateWithoutPartnerInput = {
     id: string
-    type: $Enums.ChannelType
-    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    services?: PartnerServiceProfileCreateNestedManyWithoutChannelInput
+    productCategory: ProductCategoryCreateNestedOneWithoutPartnersInput
   }
 
-  export type PartnerChannelUncheckedCreateWithoutPartnerInput = {
+  export type PartnerProductCategoryUncheckedCreateWithoutPartnerInput = {
     id: string
-    type: $Enums.ChannelType
-    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    services?: PartnerServiceProfileUncheckedCreateNestedManyWithoutChannelInput
+    productCategoryId: string
   }
 
-  export type PartnerChannelCreateOrConnectWithoutPartnerInput = {
-    where: PartnerChannelWhereUniqueInput
-    create: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput>
+  export type PartnerProductCategoryCreateOrConnectWithoutPartnerInput = {
+    where: PartnerProductCategoryWhereUniqueInput
+    create: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput>
   }
 
-  export type PartnerChannelCreateManyPartnerInputEnvelope = {
-    data: PartnerChannelCreateManyPartnerInput | PartnerChannelCreateManyPartnerInput[]
+  export type PartnerProductCategoryCreateManyPartnerInputEnvelope = {
+    data: PartnerProductCategoryCreateManyPartnerInput | PartnerProductCategoryCreateManyPartnerInput[]
     skipDuplicates?: boolean
   }
 
@@ -20528,31 +20528,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput = {
-    where: PartnerProductCategoryWhereUniqueInput
-    update: XOR<PartnerProductCategoryUpdateWithoutPartnerInput, PartnerProductCategoryUncheckedUpdateWithoutPartnerInput>
-    create: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput>
+  export type PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput = {
+    where: PartnerChannelWhereUniqueInput
+    update: XOR<PartnerChannelUpdateWithoutPartnerInput, PartnerChannelUncheckedUpdateWithoutPartnerInput>
+    create: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput>
   }
 
-  export type PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput = {
-    where: PartnerProductCategoryWhereUniqueInput
-    data: XOR<PartnerProductCategoryUpdateWithoutPartnerInput, PartnerProductCategoryUncheckedUpdateWithoutPartnerInput>
+  export type PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput = {
+    where: PartnerChannelWhereUniqueInput
+    data: XOR<PartnerChannelUpdateWithoutPartnerInput, PartnerChannelUncheckedUpdateWithoutPartnerInput>
   }
 
-  export type PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput = {
-    where: PartnerProductCategoryScalarWhereInput
-    data: XOR<PartnerProductCategoryUpdateManyMutationInput, PartnerProductCategoryUncheckedUpdateManyWithoutPartnerInput>
+  export type PartnerChannelUpdateManyWithWhereWithoutPartnerInput = {
+    where: PartnerChannelScalarWhereInput
+    data: XOR<PartnerChannelUpdateManyMutationInput, PartnerChannelUncheckedUpdateManyWithoutPartnerInput>
   }
 
-  export type PartnerProductCategoryScalarWhereInput = {
-    AND?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
-    OR?: PartnerProductCategoryScalarWhereInput[]
-    NOT?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
-    id?: StringFilter<"PartnerProductCategory"> | string
-    createdAt?: DateTimeFilter<"PartnerProductCategory"> | Date | string
-    updatedAt?: DateTimeFilter<"PartnerProductCategory"> | Date | string
-    partnerId?: StringFilter<"PartnerProductCategory"> | string
-    productCategoryId?: StringFilter<"PartnerProductCategory"> | string
+  export type PartnerChannelScalarWhereInput = {
+    AND?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
+    OR?: PartnerChannelScalarWhereInput[]
+    NOT?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
+    id?: StringFilter<"PartnerChannel"> | string
+    partnerId?: StringFilter<"PartnerChannel"> | string
+    type?: EnumChannelTypeFilter<"PartnerChannel"> | $Enums.ChannelType
+    url?: StringNullableFilter<"PartnerChannel"> | string | null
+    createdAt?: DateTimeFilter<"PartnerChannel"> | Date | string
+    updatedAt?: DateTimeFilter<"PartnerChannel"> | Date | string
   }
 
   export type PartnerLocationUpsertWithWhereUniqueWithoutPartnerInput = {
@@ -20586,32 +20587,31 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"PartnerLocation"> | Date | string
   }
 
-  export type PartnerChannelUpsertWithWhereUniqueWithoutPartnerInput = {
-    where: PartnerChannelWhereUniqueInput
-    update: XOR<PartnerChannelUpdateWithoutPartnerInput, PartnerChannelUncheckedUpdateWithoutPartnerInput>
-    create: XOR<PartnerChannelCreateWithoutPartnerInput, PartnerChannelUncheckedCreateWithoutPartnerInput>
+  export type PartnerProductCategoryUpsertWithWhereUniqueWithoutPartnerInput = {
+    where: PartnerProductCategoryWhereUniqueInput
+    update: XOR<PartnerProductCategoryUpdateWithoutPartnerInput, PartnerProductCategoryUncheckedUpdateWithoutPartnerInput>
+    create: XOR<PartnerProductCategoryCreateWithoutPartnerInput, PartnerProductCategoryUncheckedCreateWithoutPartnerInput>
   }
 
-  export type PartnerChannelUpdateWithWhereUniqueWithoutPartnerInput = {
-    where: PartnerChannelWhereUniqueInput
-    data: XOR<PartnerChannelUpdateWithoutPartnerInput, PartnerChannelUncheckedUpdateWithoutPartnerInput>
+  export type PartnerProductCategoryUpdateWithWhereUniqueWithoutPartnerInput = {
+    where: PartnerProductCategoryWhereUniqueInput
+    data: XOR<PartnerProductCategoryUpdateWithoutPartnerInput, PartnerProductCategoryUncheckedUpdateWithoutPartnerInput>
   }
 
-  export type PartnerChannelUpdateManyWithWhereWithoutPartnerInput = {
-    where: PartnerChannelScalarWhereInput
-    data: XOR<PartnerChannelUpdateManyMutationInput, PartnerChannelUncheckedUpdateManyWithoutPartnerInput>
+  export type PartnerProductCategoryUpdateManyWithWhereWithoutPartnerInput = {
+    where: PartnerProductCategoryScalarWhereInput
+    data: XOR<PartnerProductCategoryUpdateManyMutationInput, PartnerProductCategoryUncheckedUpdateManyWithoutPartnerInput>
   }
 
-  export type PartnerChannelScalarWhereInput = {
-    AND?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
-    OR?: PartnerChannelScalarWhereInput[]
-    NOT?: PartnerChannelScalarWhereInput | PartnerChannelScalarWhereInput[]
-    id?: StringFilter<"PartnerChannel"> | string
-    partnerId?: StringFilter<"PartnerChannel"> | string
-    type?: EnumChannelTypeFilter<"PartnerChannel"> | $Enums.ChannelType
-    url?: StringNullableFilter<"PartnerChannel"> | string | null
-    createdAt?: DateTimeFilter<"PartnerChannel"> | Date | string
-    updatedAt?: DateTimeFilter<"PartnerChannel"> | Date | string
+  export type PartnerProductCategoryScalarWhereInput = {
+    AND?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
+    OR?: PartnerProductCategoryScalarWhereInput[]
+    NOT?: PartnerProductCategoryScalarWhereInput | PartnerProductCategoryScalarWhereInput[]
+    id?: StringFilter<"PartnerProductCategory"> | string
+    createdAt?: DateTimeFilter<"PartnerProductCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"PartnerProductCategory"> | Date | string
+    partnerId?: StringFilter<"PartnerProductCategory"> | string
+    productCategoryId?: StringFilter<"PartnerProductCategory"> | string
   }
 
   export type PartnerRoleAssignmentUpsertWithWhereUniqueWithoutPartnerInput = {
@@ -20690,9 +20690,9 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
-    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
   }
 
   export type PartnerUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -20704,9 +20704,9 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
-    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
   }
 
   export type PartnerCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -20755,9 +20755,9 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
-    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
   }
 
   export type PartnerUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -20769,9 +20769,9 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
-    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
   }
 
   export type PartnerRoleUpsertWithoutPartnersInput = {
@@ -20810,8 +20810,8 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
     locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput
   }
 
@@ -20824,8 +20824,8 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
     locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput
   }
 
@@ -20884,8 +20884,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
     locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput
   }
 
@@ -20898,8 +20898,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
     locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput
   }
 
@@ -20933,39 +20933,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"PartnerServiceProfile"> | Date | string
   }
 
-  export type PartnerCreateWithoutLocationsInput = {
-    id: string
-    name: string
-    url: string
-    logo: string
-    tagline: string
-    description: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
-    channels?: PartnerChannelCreateNestedManyWithoutPartnerInput
-    roleAssignments?: PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput
-  }
-
-  export type PartnerUncheckedCreateWithoutLocationsInput = {
-    id: string
-    name: string
-    url: string
-    logo: string
-    tagline: string
-    description: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
-    channels?: PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput
-    roleAssignments?: PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput
-  }
-
-  export type PartnerCreateOrConnectWithoutLocationsInput = {
-    where: PartnerWhereUniqueInput
-    create: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
-  }
-
   export type CountryCreateWithoutPartnersInput = {
     code: string
     name: string
@@ -20985,6 +20952,39 @@ export namespace Prisma {
   export type CountryCreateOrConnectWithoutPartnersInput = {
     where: CountryWhereUniqueInput
     create: XOR<CountryCreateWithoutPartnersInput, CountryUncheckedCreateWithoutPartnersInput>
+  }
+
+  export type PartnerCreateWithoutLocationsInput = {
+    id: string
+    name: string
+    url: string
+    logo: string
+    tagline: string
+    description: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    channels?: PartnerChannelCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryCreateNestedManyWithoutPartnerInput
+    roleAssignments?: PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput
+  }
+
+  export type PartnerUncheckedCreateWithoutLocationsInput = {
+    id: string
+    name: string
+    url: string
+    logo: string
+    tagline: string
+    description: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    channels?: PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput
+    productCategories?: PartnerProductCategoryUncheckedCreateNestedManyWithoutPartnerInput
+    roleAssignments?: PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput
+  }
+
+  export type PartnerCreateOrConnectWithoutLocationsInput = {
+    where: PartnerWhereUniqueInput
+    create: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
   }
 
   export type PartnerServiceProfileCreateWithoutLocationInput = {
@@ -21017,45 +21017,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type PartnerUpsertWithoutLocationsInput = {
-    update: XOR<PartnerUpdateWithoutLocationsInput, PartnerUncheckedUpdateWithoutLocationsInput>
-    create: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
-    where?: PartnerWhereInput
-  }
-
-  export type PartnerUpdateToOneWithWhereWithoutLocationsInput = {
-    where?: PartnerWhereInput
-    data: XOR<PartnerUpdateWithoutLocationsInput, PartnerUncheckedUpdateWithoutLocationsInput>
-  }
-
-  export type PartnerUpdateWithoutLocationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
-    tagline?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
-    channels?: PartnerChannelUpdateManyWithoutPartnerNestedInput
-    roleAssignments?: PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput
-  }
-
-  export type PartnerUncheckedUpdateWithoutLocationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
-    tagline?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
-    channels?: PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput
-    roleAssignments?: PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput
-  }
-
   export type CountryUpsertWithoutPartnersInput = {
     update: XOR<CountryUpdateWithoutPartnersInput, CountryUncheckedUpdateWithoutPartnersInput>
     create: XOR<CountryCreateWithoutPartnersInput, CountryUncheckedCreateWithoutPartnersInput>
@@ -21081,6 +21042,45 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resellPlatforms?: ResellPlatformCountryUncheckedUpdateManyWithoutCountryNestedInput
+  }
+
+  export type PartnerUpsertWithoutLocationsInput = {
+    update: XOR<PartnerUpdateWithoutLocationsInput, PartnerUncheckedUpdateWithoutLocationsInput>
+    create: XOR<PartnerCreateWithoutLocationsInput, PartnerUncheckedCreateWithoutLocationsInput>
+    where?: PartnerWhereInput
+  }
+
+  export type PartnerUpdateToOneWithWhereWithoutLocationsInput = {
+    where?: PartnerWhereInput
+    data: XOR<PartnerUpdateWithoutLocationsInput, PartnerUncheckedUpdateWithoutLocationsInput>
+  }
+
+  export type PartnerUpdateWithoutLocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: StringFieldUpdateOperationsInput | string
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: PartnerChannelUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUpdateManyWithoutPartnerNestedInput
+    roleAssignments?: PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput
+  }
+
+  export type PartnerUncheckedUpdateWithoutLocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: StringFieldUpdateOperationsInput | string
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput
+    productCategories?: PartnerProductCategoryUncheckedUpdateManyWithoutPartnerNestedInput
+    roleAssignments?: PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput
   }
 
   export type PartnerServiceProfileUpsertWithWhereUniqueWithoutLocationInput = {
@@ -21130,8 +21130,8 @@ export namespace Prisma {
     lng: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    partner: PartnerCreateNestedOneWithoutLocationsInput
     country: CountryCreateNestedOneWithoutPartnersInput
+    partner: PartnerCreateNestedOneWithoutLocationsInput
   }
 
   export type PartnerLocationUncheckedCreateWithoutServicesInput = {
@@ -21222,8 +21222,8 @@ export namespace Prisma {
     lng?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    partner?: PartnerUpdateOneRequiredWithoutLocationsNestedInput
     country?: CountryUpdateOneRequiredWithoutPartnersNestedInput
+    partner?: PartnerUpdateOneRequiredWithoutLocationsNestedInput
   }
 
   export type PartnerLocationUncheckedUpdateWithoutServicesInput = {
@@ -21413,8 +21413,8 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentCreateNestedManyWithoutPartnerInput
   }
 
@@ -21427,8 +21427,8 @@ export namespace Prisma {
     description: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
     channels?: PartnerChannelUncheckedCreateNestedManyWithoutPartnerInput
+    locations?: PartnerLocationUncheckedCreateNestedManyWithoutPartnerInput
     roleAssignments?: PartnerRoleAssignmentUncheckedCreateNestedManyWithoutPartnerInput
   }
 
@@ -21480,8 +21480,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUpdateManyWithoutPartnerNestedInput
   }
 
@@ -21494,8 +21494,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
     channels?: PartnerChannelUncheckedUpdateManyWithoutPartnerNestedInput
+    locations?: PartnerLocationUncheckedUpdateManyWithoutPartnerNestedInput
     roleAssignments?: PartnerRoleAssignmentUncheckedUpdateManyWithoutPartnerNestedInput
   }
 
@@ -21619,41 +21619,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ResellPlatformCountry"> | Date | string
   }
 
-  export type ResellPlatformCreateWithoutProductCategoriesInput = {
-    id: string
-    name: string
-    url: string
-    logo?: string | null
-    canSell?: boolean
-    tagline: string
-    altTagline?: string | null
-    description: string
-    platformType: $Enums.ResellPlatformType
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    countries?: ResellPlatformCountryCreateNestedManyWithoutResellPlatformInput
-  }
-
-  export type ResellPlatformUncheckedCreateWithoutProductCategoriesInput = {
-    id: string
-    name: string
-    url: string
-    logo?: string | null
-    canSell?: boolean
-    tagline: string
-    altTagline?: string | null
-    description: string
-    platformType: $Enums.ResellPlatformType
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    countries?: ResellPlatformCountryUncheckedCreateNestedManyWithoutResellPlatformInput
-  }
-
-  export type ResellPlatformCreateOrConnectWithoutProductCategoriesInput = {
-    where: ResellPlatformWhereUniqueInput
-    create: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
-  }
-
   export type ProductCategoryCreateWithoutResellPlatformsInput = {
     id: string
     key: string
@@ -21677,45 +21642,39 @@ export namespace Prisma {
     create: XOR<ProductCategoryCreateWithoutResellPlatformsInput, ProductCategoryUncheckedCreateWithoutResellPlatformsInput>
   }
 
-  export type ResellPlatformUpsertWithoutProductCategoriesInput = {
-    update: XOR<ResellPlatformUpdateWithoutProductCategoriesInput, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
+  export type ResellPlatformCreateWithoutProductCategoriesInput = {
+    id: string
+    name: string
+    url: string
+    logo?: string | null
+    tagline: string
+    description: string
+    platformType: $Enums.ResellPlatformType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
+    countries?: ResellPlatformCountryCreateNestedManyWithoutResellPlatformInput
+  }
+
+  export type ResellPlatformUncheckedCreateWithoutProductCategoriesInput = {
+    id: string
+    name: string
+    url: string
+    logo?: string | null
+    tagline: string
+    description: string
+    platformType: $Enums.ResellPlatformType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
+    countries?: ResellPlatformCountryUncheckedCreateNestedManyWithoutResellPlatformInput
+  }
+
+  export type ResellPlatformCreateOrConnectWithoutProductCategoriesInput = {
+    where: ResellPlatformWhereUniqueInput
     create: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
-    where?: ResellPlatformWhereInput
-  }
-
-  export type ResellPlatformUpdateToOneWithWhereWithoutProductCategoriesInput = {
-    where?: ResellPlatformWhereInput
-    data: XOR<ResellPlatformUpdateWithoutProductCategoriesInput, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
-  }
-
-  export type ResellPlatformUpdateWithoutProductCategoriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
-    tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    countries?: ResellPlatformCountryUpdateManyWithoutResellPlatformNestedInput
-  }
-
-  export type ResellPlatformUncheckedUpdateWithoutProductCategoriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
-    tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    countries?: ResellPlatformCountryUncheckedUpdateManyWithoutResellPlatformNestedInput
   }
 
   export type ProductCategoryUpsertWithoutResellPlatformsInput = {
@@ -21747,39 +21706,45 @@ export namespace Prisma {
     partners?: PartnerProductCategoryUncheckedUpdateManyWithoutProductCategoryNestedInput
   }
 
-  export type ResellPlatformCreateWithoutCountriesInput = {
-    id: string
-    name: string
-    url: string
-    logo?: string | null
-    canSell?: boolean
-    tagline: string
-    altTagline?: string | null
-    description: string
-    platformType: $Enums.ResellPlatformType
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    productCategories?: ResellPlatformCategoryCreateNestedManyWithoutResellPlatformInput
+  export type ResellPlatformUpsertWithoutProductCategoriesInput = {
+    update: XOR<ResellPlatformUpdateWithoutProductCategoriesInput, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
+    create: XOR<ResellPlatformCreateWithoutProductCategoriesInput, ResellPlatformUncheckedCreateWithoutProductCategoriesInput>
+    where?: ResellPlatformWhereInput
   }
 
-  export type ResellPlatformUncheckedCreateWithoutCountriesInput = {
-    id: string
-    name: string
-    url: string
-    logo?: string | null
-    canSell?: boolean
-    tagline: string
-    altTagline?: string | null
-    description: string
-    platformType: $Enums.ResellPlatformType
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    productCategories?: ResellPlatformCategoryUncheckedCreateNestedManyWithoutResellPlatformInput
+  export type ResellPlatformUpdateToOneWithWhereWithoutProductCategoriesInput = {
+    where?: ResellPlatformWhereInput
+    data: XOR<ResellPlatformUpdateWithoutProductCategoriesInput, ResellPlatformUncheckedUpdateWithoutProductCategoriesInput>
   }
 
-  export type ResellPlatformCreateOrConnectWithoutCountriesInput = {
-    where: ResellPlatformWhereUniqueInput
-    create: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
+  export type ResellPlatformUpdateWithoutProductCategoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
+    countries?: ResellPlatformCountryUpdateManyWithoutResellPlatformNestedInput
+  }
+
+  export type ResellPlatformUncheckedUpdateWithoutProductCategoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
+    countries?: ResellPlatformCountryUncheckedUpdateManyWithoutResellPlatformNestedInput
   }
 
   export type CountryCreateWithoutResellPlatformsInput = {
@@ -21803,45 +21768,39 @@ export namespace Prisma {
     create: XOR<CountryCreateWithoutResellPlatformsInput, CountryUncheckedCreateWithoutResellPlatformsInput>
   }
 
-  export type ResellPlatformUpsertWithoutCountriesInput = {
-    update: XOR<ResellPlatformUpdateWithoutCountriesInput, ResellPlatformUncheckedUpdateWithoutCountriesInput>
+  export type ResellPlatformCreateWithoutCountriesInput = {
+    id: string
+    name: string
+    url: string
+    logo?: string | null
+    tagline: string
+    description: string
+    platformType: $Enums.ResellPlatformType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
+    productCategories?: ResellPlatformCategoryCreateNestedManyWithoutResellPlatformInput
+  }
+
+  export type ResellPlatformUncheckedCreateWithoutCountriesInput = {
+    id: string
+    name: string
+    url: string
+    logo?: string | null
+    tagline: string
+    description: string
+    platformType: $Enums.ResellPlatformType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    altTagline?: string | null
+    canSell?: boolean
+    productCategories?: ResellPlatformCategoryUncheckedCreateNestedManyWithoutResellPlatformInput
+  }
+
+  export type ResellPlatformCreateOrConnectWithoutCountriesInput = {
+    where: ResellPlatformWhereUniqueInput
     create: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
-    where?: ResellPlatformWhereInput
-  }
-
-  export type ResellPlatformUpdateToOneWithWhereWithoutCountriesInput = {
-    where?: ResellPlatformWhereInput
-    data: XOR<ResellPlatformUpdateWithoutCountriesInput, ResellPlatformUncheckedUpdateWithoutCountriesInput>
-  }
-
-  export type ResellPlatformUpdateWithoutCountriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
-    tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: ResellPlatformCategoryUpdateManyWithoutResellPlatformNestedInput
-  }
-
-  export type ResellPlatformUncheckedUpdateWithoutCountriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    canSell?: BoolFieldUpdateOperationsInput | boolean
-    tagline?: StringFieldUpdateOperationsInput | string
-    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategories?: ResellPlatformCategoryUncheckedUpdateManyWithoutResellPlatformNestedInput
   }
 
   export type CountryUpsertWithoutResellPlatformsInput = {
@@ -21871,28 +21830,45 @@ export namespace Prisma {
     partners?: PartnerLocationUncheckedUpdateManyWithoutCountryNestedInput
   }
 
-  export type ResellPlatformCountryCreateWithoutCountryInput = {
-    id: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    resellPlatform: ResellPlatformCreateNestedOneWithoutCountriesInput
+  export type ResellPlatformUpsertWithoutCountriesInput = {
+    update: XOR<ResellPlatformUpdateWithoutCountriesInput, ResellPlatformUncheckedUpdateWithoutCountriesInput>
+    create: XOR<ResellPlatformCreateWithoutCountriesInput, ResellPlatformUncheckedCreateWithoutCountriesInput>
+    where?: ResellPlatformWhereInput
   }
 
-  export type ResellPlatformCountryUncheckedCreateWithoutCountryInput = {
-    id: string
-    resellPlatformId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type ResellPlatformUpdateToOneWithWhereWithoutCountriesInput = {
+    where?: ResellPlatformWhereInput
+    data: XOR<ResellPlatformUpdateWithoutCountriesInput, ResellPlatformUncheckedUpdateWithoutCountriesInput>
   }
 
-  export type ResellPlatformCountryCreateOrConnectWithoutCountryInput = {
-    where: ResellPlatformCountryWhereUniqueInput
-    create: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput>
+  export type ResellPlatformUpdateWithoutCountriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
+    productCategories?: ResellPlatformCategoryUpdateManyWithoutResellPlatformNestedInput
   }
 
-  export type ResellPlatformCountryCreateManyCountryInputEnvelope = {
-    data: ResellPlatformCountryCreateManyCountryInput | ResellPlatformCountryCreateManyCountryInput[]
-    skipDuplicates?: boolean
+  export type ResellPlatformUncheckedUpdateWithoutCountriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    tagline?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    platformType?: EnumResellPlatformTypeFieldUpdateOperationsInput | $Enums.ResellPlatformType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    altTagline?: NullableStringFieldUpdateOperationsInput | string | null
+    canSell?: BoolFieldUpdateOperationsInput | boolean
+    productCategories?: ResellPlatformCategoryUncheckedUpdateManyWithoutResellPlatformNestedInput
   }
 
   export type PartnerLocationCreateWithoutCountryInput = {
@@ -21929,20 +21905,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput = {
+  export type ResellPlatformCountryCreateWithoutCountryInput = {
+    id: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resellPlatform: ResellPlatformCreateNestedOneWithoutCountriesInput
+  }
+
+  export type ResellPlatformCountryUncheckedCreateWithoutCountryInput = {
+    id: string
+    resellPlatformId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ResellPlatformCountryCreateOrConnectWithoutCountryInput = {
     where: ResellPlatformCountryWhereUniqueInput
-    update: XOR<ResellPlatformCountryUpdateWithoutCountryInput, ResellPlatformCountryUncheckedUpdateWithoutCountryInput>
     create: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput>
   }
 
-  export type ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput = {
-    where: ResellPlatformCountryWhereUniqueInput
-    data: XOR<ResellPlatformCountryUpdateWithoutCountryInput, ResellPlatformCountryUncheckedUpdateWithoutCountryInput>
-  }
-
-  export type ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput = {
-    where: ResellPlatformCountryScalarWhereInput
-    data: XOR<ResellPlatformCountryUpdateManyMutationInput, ResellPlatformCountryUncheckedUpdateManyWithoutCountryInput>
+  export type ResellPlatformCountryCreateManyCountryInputEnvelope = {
+    data: ResellPlatformCountryCreateManyCountryInput | ResellPlatformCountryCreateManyCountryInput[]
+    skipDuplicates?: boolean
   }
 
   export type PartnerLocationUpsertWithWhereUniqueWithoutCountryInput = {
@@ -21961,11 +21945,28 @@ export namespace Prisma {
     data: XOR<PartnerLocationUpdateManyMutationInput, PartnerLocationUncheckedUpdateManyWithoutCountryInput>
   }
 
-  export type PartnerProductCategoryCreateManyPartnerInput = {
+  export type ResellPlatformCountryUpsertWithWhereUniqueWithoutCountryInput = {
+    where: ResellPlatformCountryWhereUniqueInput
+    update: XOR<ResellPlatformCountryUpdateWithoutCountryInput, ResellPlatformCountryUncheckedUpdateWithoutCountryInput>
+    create: XOR<ResellPlatformCountryCreateWithoutCountryInput, ResellPlatformCountryUncheckedCreateWithoutCountryInput>
+  }
+
+  export type ResellPlatformCountryUpdateWithWhereUniqueWithoutCountryInput = {
+    where: ResellPlatformCountryWhereUniqueInput
+    data: XOR<ResellPlatformCountryUpdateWithoutCountryInput, ResellPlatformCountryUncheckedUpdateWithoutCountryInput>
+  }
+
+  export type ResellPlatformCountryUpdateManyWithWhereWithoutCountryInput = {
+    where: ResellPlatformCountryScalarWhereInput
+    data: XOR<ResellPlatformCountryUpdateManyMutationInput, ResellPlatformCountryUncheckedUpdateManyWithoutCountryInput>
+  }
+
+  export type PartnerChannelCreateManyPartnerInput = {
     id: string
+    type: $Enums.ChannelType
+    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    productCategoryId: string
   }
 
   export type PartnerLocationCreateManyPartnerInput = {
@@ -21979,12 +21980,11 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type PartnerChannelCreateManyPartnerInput = {
+  export type PartnerProductCategoryCreateManyPartnerInput = {
     id: string
-    type: $Enums.ChannelType
-    url?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    productCategoryId: string
   }
 
   export type PartnerRoleAssignmentCreateManyPartnerInput = {
@@ -21994,25 +21994,30 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type PartnerProductCategoryUpdateWithoutPartnerInput = {
+  export type PartnerChannelUpdateWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategory?: ProductCategoryUpdateOneRequiredWithoutPartnersNestedInput
+    services?: PartnerServiceProfileUpdateManyWithoutChannelNestedInput
   }
 
-  export type PartnerProductCategoryUncheckedUpdateWithoutPartnerInput = {
+  export type PartnerChannelUncheckedUpdateWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategoryId?: StringFieldUpdateOperationsInput | string
+    services?: PartnerServiceProfileUncheckedUpdateManyWithoutChannelNestedInput
   }
 
-  export type PartnerProductCategoryUncheckedUpdateManyWithoutPartnerInput = {
+  export type PartnerChannelUncheckedUpdateManyWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    productCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PartnerLocationUpdateWithoutPartnerInput = {
@@ -22050,30 +22055,25 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PartnerChannelUpdateWithoutPartnerInput = {
+  export type PartnerProductCategoryUpdateWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: PartnerServiceProfileUpdateManyWithoutChannelNestedInput
+    productCategory?: ProductCategoryUpdateOneRequiredWithoutPartnersNestedInput
   }
 
-  export type PartnerChannelUncheckedUpdateWithoutPartnerInput = {
+  export type PartnerProductCategoryUncheckedUpdateWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: PartnerServiceProfileUncheckedUpdateManyWithoutChannelNestedInput
+    productCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type PartnerChannelUncheckedUpdateManyWithoutPartnerInput = {
+  export type PartnerProductCategoryUncheckedUpdateManyWithoutPartnerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PartnerRoleAssignmentUpdateWithoutPartnerInput = {
@@ -22357,13 +22357,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ResellPlatformCountryCreateManyCountryInput = {
-    id: string
-    resellPlatformId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
   export type PartnerLocationCreateManyCountryInput = {
     id: string
     partnerId: string
@@ -22375,25 +22368,11 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type ResellPlatformCountryUpdateWithoutCountryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput
-  }
-
-  export type ResellPlatformCountryUncheckedUpdateWithoutCountryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    resellPlatformId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ResellPlatformCountryUncheckedUpdateManyWithoutCountryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    resellPlatformId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type ResellPlatformCountryCreateManyCountryInput = {
+    id: string
+    resellPlatformId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PartnerLocationUpdateWithoutCountryInput = {
@@ -22427,6 +22406,27 @@ export namespace Prisma {
     formattedAddress?: StringFieldUpdateOperationsInput | string
     lat?: FloatFieldUpdateOperationsInput | number
     lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResellPlatformCountryUpdateWithoutCountryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resellPlatform?: ResellPlatformUpdateOneRequiredWithoutCountriesNestedInput
+  }
+
+  export type ResellPlatformCountryUncheckedUpdateWithoutCountryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resellPlatformId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResellPlatformCountryUncheckedUpdateManyWithoutCountryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resellPlatformId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

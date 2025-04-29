@@ -17,63 +17,56 @@ model Partner {
   description       String
   createdAt         DateTime                 @default(now())
   updatedAt         DateTime                 @updatedAt
-  productCategories PartnerProductCategory[]
-  locations         PartnerLocation[]
   channels          PartnerChannel[]
+  locations         PartnerLocation[]
+  productCategories PartnerProductCategory[]
   roleAssignments   PartnerRoleAssignment[]
 }
 
 model PartnerRole {
   id        String                  @id
-  key       String                  @unique // e.g. BRAND, STORE, RESELL_PLATFORM
+  key       String                  @unique
   label     String
-  partners  PartnerRoleAssignment[]
   createdAt DateTime                @default(now())
   updatedAt DateTime                @updatedAt
+  partners  PartnerRoleAssignment[]
 }
 
 model PartnerRoleAssignment {
   id        String      @id
-  partner   Partner     @relation(fields: [partnerId], references: [id])
   partnerId String
-  role      PartnerRole @relation(fields: [roleId], references: [id])
   roleId    String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  partner   Partner     @relation(fields: [partnerId], references: [id])
+  role      PartnerRole @relation(fields: [roleId], references: [id])
 
   @@unique([partnerId, roleId])
 }
 
 model PartnerChannel {
   id        String                  @id
-  partner   Partner                 @relation(fields: [partnerId], references: [id])
   partnerId String
-  type      ChannelType // ECOMMERCE, APP, KIOSK, etc.
+  type      ChannelType
   url       String?
-  services  PartnerServiceProfile[]
   createdAt DateTime                @default(now())
   updatedAt DateTime                @updatedAt
-}
-
-enum ChannelType {
-  ECOMMERCE
-  APP
-  KIOSK
-  OTHER
+  partner   Partner                 @relation(fields: [partnerId], references: [id])
+  services  PartnerServiceProfile[]
 }
 
 model PartnerLocation {
   id               String                  @id
-  partner          Partner                 @relation(fields: [partnerId], references: [id])
   partnerId        String
   name             String
   formattedAddress String
   lat              Float
   lng              Float
-  country          Country                 @relation(fields: [countryCode], references: [code])
   countryCode      String
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
+  country          Country                 @relation(fields: [countryCode], references: [code])
+  partner          Partner                 @relation(fields: [partnerId], references: [id])
   services         PartnerServiceProfile[]
 
   @@index([countryCode])
@@ -82,48 +75,48 @@ model PartnerLocation {
 
 model PartnerServiceProfile {
   id            String           @id
-  channel       PartnerChannel?  @relation(fields: [channelId], references: [id])
   channelId     String?
-  location      PartnerLocation? @relation(fields: [locationId], references: [id])
   locationId    String?
-  serviceType   ServiceType      @relation(fields: [serviceTypeId], references: [id])
   serviceTypeId String
   available     Boolean          @default(true)
   notes         String?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
+  channel       PartnerChannel?  @relation(fields: [channelId], references: [id])
+  location      PartnerLocation? @relation(fields: [locationId], references: [id])
+  serviceType   ServiceType      @relation(fields: [serviceTypeId], references: [id])
 
   @@unique([channelId, locationId, serviceTypeId])
 }
 
 model ServiceType {
   id        String                  @id
-  key       String                  @unique // e.g. "pickup", "dropoff", "delivery"
+  key       String                  @unique
   label     String
   icon      String?
-  services  PartnerServiceProfile[]
   createdAt DateTime                @default(now())
   updatedAt DateTime                @updatedAt
+  services  PartnerServiceProfile[]
 }
 
 model ProductCategory {
   id              String                   @id
   key             String                   @unique
   label           String
-  partners        PartnerProductCategory[]
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
+  partners        PartnerProductCategory[]
   resellPlatforms ResellPlatformCategory[]
 }
 
 model PartnerProductCategory {
   id                String          @id
-  partner           Partner         @relation(fields: [partnerId], references: [id])
-  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   partnerId         String
   productCategoryId String
+  partner           Partner         @relation(fields: [partnerId], references: [id])
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
 
   @@unique([partnerId, productCategoryId])
 }
@@ -133,52 +126,59 @@ model ResellPlatform {
   name              String
   url               String                   @unique
   logo              String?
-  canSell           Boolean                  @default(true)
   tagline           String
-  altTagline        String?
   description       String
   platformType      ResellPlatformType
   createdAt         DateTime                 @default(now())
   updatedAt         DateTime                 @updatedAt
+  altTagline        String?
+  canSell           Boolean                  @default(true)
   productCategories ResellPlatformCategory[]
   countries         ResellPlatformCountry[]
 }
 
 model ResellPlatformCategory {
   id                String          @id
-  resellPlatform    ResellPlatform  @relation(fields: [resellPlatformId], references: [id])
-  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
   resellPlatformId  String
   productCategoryId String
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+  resellPlatform    ResellPlatform  @relation(fields: [resellPlatformId], references: [id])
 
   @@unique([resellPlatformId, productCategoryId])
+}
+
+model ResellPlatformCountry {
+  id               String         @id
+  countryCode      String
+  resellPlatformId String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  country          Country        @relation(fields: [countryCode], references: [code])
+  resellPlatform   ResellPlatform @relation(fields: [resellPlatformId], references: [id])
+
+  @@unique([resellPlatformId, countryCode])
+}
+
+model Country {
+  code            String                  @id
+  name            String
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  partners        PartnerLocation[]
+  resellPlatforms ResellPlatformCountry[]
+}
+
+enum ChannelType {
+  ECOMMERCE
+  APP
+  KIOSK
+  OTHER
 }
 
 enum ResellPlatformType {
   B2C
   C2C
   B2B
-}
-
-model ResellPlatformCountry {
-  id               String         @id
-  resellPlatform   ResellPlatform @relation(fields: [resellPlatformId], references: [id])
-  country          Country        @relation(fields: [countryCode], references: [code])
-  countryCode      String
-  resellPlatformId String
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-
-  @@unique([resellPlatformId, countryCode])
-}
-
-model Country {
-  code            String                  @id // ISO 3166-1 alpha-2, e.g., "US", "SE"
-  name            String
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @updatedAt
-  resellPlatforms ResellPlatformCountry[]
-  partners        PartnerLocation[]
 }

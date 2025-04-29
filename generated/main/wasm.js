@@ -203,8 +203,6 @@ exports.Prisma.StorefrontIdentityScalarFieldEnum = {
   externalUrl: 'externalUrl',
   slug: 'slug',
   canonicalLink: 'canonicalLink',
-  iconId: 'iconId',
-  imageId: 'imageId',
   facebookLink: 'facebookLink',
   instagramLink: 'instagramLink',
   twitterLink: 'twitterLink',
@@ -212,27 +210,29 @@ exports.Prisma.StorefrontIdentityScalarFieldEnum = {
   youtubeLink: 'youtubeLink',
   tiktokLink: 'tiktokLink',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  iconId: 'iconId',
+  imageId: 'imageId'
 };
 
 exports.Prisma.StorefrontContactScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  storefrontId: 'storefrontId',
   email: 'email',
   telephone: 'telephone',
   formattedAddress: 'formattedAddress',
-  lat: 'lat',
-  lon: 'lon',
-  weekdays: 'weekdays',
-  startTime: 'startTime',
-  endTime: 'endTime',
   placeId: 'placeId',
-  countryId: 'countryId',
   isDefault: 'isDefault',
-  storefrontId: 'storefrontId',
   accountId: 'accountId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  countryId: 'countryId',
+  endTime: 'endTime',
+  lat: 'lat',
+  lon: 'lon',
+  name: 'name',
+  startTime: 'startTime',
+  weekdays: 'weekdays'
 };
 
 exports.Prisma.StorefrontLocaleScalarFieldEnum = {
@@ -244,10 +244,10 @@ exports.Prisma.StorefrontLocaleScalarFieldEnum = {
   ogTitle: 'ogTitle',
   ogDescription: 'ogDescription',
   paymentAccountId: 'paymentAccountId',
-  accountId: 'accountId',
-  isDefault: 'isDefault',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  accountId: 'accountId',
+  isDefault: 'isDefault'
 };
 
 exports.Prisma.StorefrontCountryScalarFieldEnum = {
@@ -305,16 +305,16 @@ exports.Prisma.StorefrontBrandingScalarFieldEnum = {
   logoUrl: 'logoUrl',
   imageUrl: 'imageUrl',
   url: 'url',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   facebookLink: 'facebookLink',
   instagramLink: 'instagramLink',
-  twitterLink: 'twitterLink',
   linkedin: 'linkedin',
   pinterestLink: 'pinterestLink',
-  youtubeLink: 'youtubeLink',
-  tiktokLink: 'tiktokLink',
   snapchatLink: 'snapchatLink',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  tiktokLink: 'tiktokLink',
+  twitterLink: 'twitterLink',
+  youtubeLink: 'youtubeLink'
 };
 
 exports.Prisma.StorefrontConfigurationScalarFieldEnum = {
@@ -594,11 +594,11 @@ exports.Prisma.ProductMediaScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
   mediaId: 'mediaId',
-  mediaType: 'mediaType',
   order: 'order',
-  alt: 'alt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  mediaType: 'mediaType',
+  alt: 'alt'
 };
 
 exports.Prisma.MediaScalarFieldEnum = {
@@ -613,30 +613,30 @@ exports.Prisma.MediaScalarFieldEnum = {
   alt: 'alt',
   mediaType: 'mediaType',
   source: 'source',
-  bucket: 'bucket',
   accountId: 'accountId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  bucket: 'bucket'
 };
 
 exports.Prisma.CollectionScalarFieldEnum = {
   id: 'id',
   key: 'key',
   collectionType: 'collectionType',
-  parentId: 'parentId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  parentId: 'parentId'
 };
 
 exports.Prisma.CollectionTranslationScalarFieldEnum = {
   id: 'id',
   label: 'label',
-  path: 'path',
-  slug: 'slug',
   localeId: 'localeId',
   collectionId: 'collectionId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  slug: 'slug',
+  path: 'path'
 };
 
 exports.Prisma.StoreCollectionScalarFieldEnum = {
@@ -677,13 +677,13 @@ exports.Prisma.StorePropertyOptionScalarFieldEnum = {
 exports.Prisma.StoreNavigationScalarFieldEnum = {
   id: 'id',
   storefrontId: 'storefrontId',
-  storeCollectionId: 'storeCollectionId',
-  isPrimary: 'isPrimary',
-  parentId: 'parentId',
-  order: 'order',
   slug: 'slug',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isPrimary: 'isPrimary',
+  order: 'order',
+  parentId: 'parentId',
+  storeCollectionId: 'storeCollectionId'
 };
 
 exports.Prisma.StoreNavigationFilterScalarFieldEnum = {
@@ -756,12 +756,12 @@ exports.Prisma.ListPriceScalarFieldEnum = {
 
 exports.Prisma.OfferScalarFieldEnum = {
   id: 'id',
-  listPriceId: 'listPriceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   amount: 'amount',
   available: 'available',
-  validUntil: 'validUntil',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  listPriceId: 'listPriceId',
+  validUntil: 'validUntil'
 };
 
 exports.Prisma.BrandScalarFieldEnum = {
@@ -854,7 +854,6 @@ exports.Prisma.InventoryLocationScalarFieldEnum = {
   name: 'name',
   displayAddress: 'displayAddress',
   unit: 'unit',
-  streetNumber: 'streetNumber',
   street: 'street',
   city: 'city',
   locationType: 'locationType',
@@ -867,7 +866,8 @@ exports.Prisma.InventoryLocationScalarFieldEnum = {
   contactPhone: 'contactPhone',
   accountId: 'accountId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  streetNumber: 'streetNumber'
 };
 
 exports.Prisma.InventoryLocationFunctionScalarFieldEnum = {
@@ -1046,9 +1046,9 @@ exports.Prisma.LocaleScalarFieldEnum = {
   label: 'label',
   countryId: 'countryId',
   languageId: 'languageId',
-  currencyId: 'currencyId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  currencyId: 'currencyId'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {

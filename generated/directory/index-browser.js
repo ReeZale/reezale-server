@@ -206,13 +206,13 @@ exports.Prisma.ResellPlatformScalarFieldEnum = {
   name: 'name',
   url: 'url',
   logo: 'logo',
-  canSell: 'canSell',
   tagline: 'tagline',
-  altTagline: 'altTagline',
   description: 'description',
   platformType: 'platformType',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  altTagline: 'altTagline',
+  canSell: 'canSell'
 };
 
 exports.Prisma.ResellPlatformCategoryScalarFieldEnum = {
