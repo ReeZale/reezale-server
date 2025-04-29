@@ -6,16 +6,18 @@ const router = require("./router");
 
 const app = express();
 
-// ------------------------
-// CORS Setup
-// ------------------------
+console.log("Passed initialization of required");
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+console.log("Passed allowed origins", allowedOrigins);
+
 const allowedBaseDomain = process.env.ALLOWED_BASE_DOMAIN;
+
+console.log("Passed allowed base domain", allowedBaseDomain);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -41,37 +43,37 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+console.log("Passed cors options");
+
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-// ------------------------
-// Middleware
-// ------------------------
+console.log("Passed coors");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ------------------------
-// Routes
-// ------------------------
+console.log("Passed middleware");
 
 app.use("/api/v1", router);
 
-// ------------------------
-// BigInt Serializer
-// ------------------------
+console.log("Passed route");
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-// ------------------------
-// Start Server
-// ------------------------
+console.log("Passed big int");
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+console.log("Port being used", process);
+
+try {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+} catch (error) {
+  console.log("Error", error);
+}

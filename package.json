@@ -4,14 +4,8 @@
   "description": "custome data scraper",
   "main": "index.js",
   "scripts": {
-    "start": "npm run start:prod",
-    "start:prod": "npm run build && npm run migrate:deploy && node index.js",
-    "build": "npx prisma generate && npx prisma generate --schema=prisma-directory/schema.prisma",
-    "migrate:deploy": "npx prisma migrate deploy --schema=prisma/schema.prisma && npx prisma migrate deploy --schema=prisma-directory/schema.prisma",
-    "seed": "npx prisma db seed"
-  },
-  "prisma": {
-    "seed": "node prisma/seed/index.js"
+    "build": "echo 'No build step necessary'",
+    "start": "node index.js"
   },
   "author": "Zachary Rodney",
   "license": "ISC",
